@@ -2,10 +2,11 @@
 name = "rdkit"
 version = "0.1.0"
 edition = "2021"
-author = "Xavier Lange <xrlange@gmail.com>"
+authors = ["Xavier Lange <xrlange@gmail.com>"]
 license = "MIT"
 description = "High level RDKit functionality for rust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rdkit-sys = "0.1.12"
+cxx = "1"
+rdkit-sys = "0.2.0"
