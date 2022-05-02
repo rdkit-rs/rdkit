@@ -1,10 +1,10 @@
-use rdkit::Molecule;
+use rdkit::ROMol;
 
 fn main() {
     let smiles1 = "c1ccccc1CCCCCCCC";
-    let mol1 = Molecule::from_smile(smiles1).unwrap();
+    let mol1 = ROMol::from_smile(smiles1).unwrap();
     let smiles2 = "c1ccccc1CCCCCC";
-    let mol2 = Molecule::from_smile(smiles2).unwrap();
+    let mol2 = ROMol::from_smile(smiles2).unwrap();
 
     let mol1_fingerprint = mol1.fingerprint();
 

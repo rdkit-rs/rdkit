@@ -1,6 +1,6 @@
-use rdkit::Molecule;
+use rdkit::ROMol;
 
 #[test]
 fn test_rdmol() {
-    let _ = Molecule::from_smile("c1ccccc1C(=O)NC").unwrap();
+    let _ = ROMol::from_smile("c1ccccc1C(=O)NC").unwrap();
 }
