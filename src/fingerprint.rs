@@ -1,6 +1,6 @@
 use cxx::SharedPtr;
 
-use rdkit_sys::fingerprint::ffi as fingerprint_ffi;
+use rdkit_sys::*;
 
 pub struct Fingerprint {
     pub(crate) ptr: SharedPtr<fingerprint_ffi::ExplicitBitVect>,

@@ -9,4 +9,5 @@ description = "High level RDKit functionality for rust"
 
 [dependencies]
 cxx = "1"
-rdkit-sys = "0.2.0"
+#rdkit-sys = "0.2.0"
+rdkit-sys = { path = "../rdkit-sys"}
