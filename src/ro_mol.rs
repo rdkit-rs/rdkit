@@ -22,7 +22,7 @@ impl ROMol {
     }
 
     pub fn to_rw_mol(self, quick_copy: bool, conf_id: i32) -> RWMol {
-        let ptr = rdkit_sys::rw_mol_ffi::rw_mol_from_ro_mol(self.ptr.clone(), quick_copy, conf_id);
+        let ptr = rdkit_sys::rw_mol_ffi::rw_mol_from_ro_mol(self.ptr, quick_copy, conf_id);
         RWMol {
             ptr
         }

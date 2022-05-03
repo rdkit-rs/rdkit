@@ -13,7 +13,7 @@ impl TautomerEnumerator {
     }
 
     pub fn enumerate(&self, ro_mol: crate::ROMol) -> TautomerEnumeratorResult {
-        let t_enumerator_result = rdkit_sys::mol_standardize_ffi::tautomer_enumerate(self.t_enumerator.clone(), ro_mol.ptr.clone());
+        let t_enumerator_result = rdkit_sys::mol_standardize_ffi::tautomer_enumerate(self.t_enumerator.clone(), ro_mol.ptr);
 
         TautomerEnumeratorResult {
             pos: 0,
