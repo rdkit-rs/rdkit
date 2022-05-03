@@ -1,5 +1,4 @@
 use cxx::SharedPtr;
-use rdkit_sys::ro_mol_ffi::ROMol;
 use crate::RWMol;
 
 pub struct CleanupParameters {
@@ -49,7 +48,7 @@ pub struct TautomerEnumeratorResult {
 }
 
 impl Iterator for TautomerEnumeratorResult {
-    type Item = SharedPtr<ROMol>;
+    type Item = crate::ROMol;
 
     fn next(&mut self) -> Option<Self::Item> {
         let next = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_at(self.t_enumerator_result.clone(), self.pos);
@@ -57,7 +56,7 @@ impl Iterator for TautomerEnumeratorResult {
         if next.is_null() {
             None
         } else {
-            Some(next)
+            Some(crate::ROMol{ ptr: next })
         }
     }
 
