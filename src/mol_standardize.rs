@@ -1,5 +1,19 @@
 use cxx::SharedPtr;
 use rdkit_sys::ro_mol_ffi::ROMol;
+use crate::RWMol;
+
+pub struct CleanupParameters {
+    pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::CleanupParameters>
+}
+
+impl Default for CleanupParameters {
+    fn default() -> Self {
+        CleanupParameters {
+            ptr: rdkit_sys::mol_standardize_ffi::default_cleanup_parameters()
+        }
+    }
+}
+
 
 pub struct TautomerEnumerator {
     pub(crate) t_enumerator: SharedPtr<rdkit_sys::mol_standardize_ffi::TautomerEnumerator>
@@ -50,5 +64,28 @@ impl Iterator for TautomerEnumeratorResult {
     fn size_hint(&self) -> (usize, Option<usize>) {
         let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(self.t_enumerator_result.clone());
         (size as usize, Some(size as usize))
+    }
+}
+
+pub fn fragment_parent(rw_mol: RWMol, cleanup_params: CleanupParameters, skip_standardize: bool) -> RWMol {
+    let ptr = rdkit_sys::mol_standardize_ffi::fragment_parent(rw_mol.ptr.clone(), cleanup_params.ptr.clone(), skip_standardize);
+    RWMol{ ptr }
+}
+
+pub struct Uncharger {
+    pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::Uncharger>
+}
+
+impl Uncharger {
+    pub fn new(standardize: bool) -> Self {
+        Uncharger {
+            ptr: rdkit_sys::mol_standardize_ffi::new_uncharger(standardize)
+        }
+    }
+
+    pub fn uncharge(&self, mol: RWMol) -> RWMol {
+        RWMol {
+            ptr: rdkit_sys::mol_standardize_ffi::uncharger_uncharge(self.ptr.clone(), mol.ptr.clone())
+        }
     }
 }
