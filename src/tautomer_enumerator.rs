@@ -39,6 +39,7 @@ impl Iterator for TautomerEnumeratorResult {
 
     fn next(&mut self) -> Option<Self::Item> {
         let next = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_at(self.t_enumerator_result.clone(), self.pos);
+        self.pos += 1;
         if next.is_null() {
             None
         } else {
