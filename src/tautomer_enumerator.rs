@@ -7,9 +7,7 @@ pub struct TautomerEnumerator {
 
 impl TautomerEnumerator {
     pub fn new() -> Self {
-        TautomerEnumerator {
-            t_enumerator: rdkit_sys::mol_standardize_ffi::tautomer_enumerator()
-        }
+        Self::default()
     }
 
     pub fn enumerate(&self, ro_mol: crate::ROMol) -> TautomerEnumeratorResult {
@@ -18,6 +16,14 @@ impl TautomerEnumerator {
         TautomerEnumeratorResult {
             pos: 0,
             t_enumerator_result
+        }
+    }
+}
+
+impl Default for TautomerEnumerator {
+    fn default() -> Self {
+        TautomerEnumerator {
+            t_enumerator: rdkit_sys::mol_standardize_ffi::tautomer_enumerator()
         }
     }
 }
