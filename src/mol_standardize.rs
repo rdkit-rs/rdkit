@@ -1,5 +1,5 @@
 use cxx::SharedPtr;
-use crate::RWMol;
+use crate::{ ROMol, RWMol };
 
 pub struct CleanupParameters {
     pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::CleanupParameters>
@@ -82,8 +82,8 @@ impl Uncharger {
         }
     }
 
-    pub fn uncharge(&self, mol: RWMol) -> RWMol {
-        RWMol {
+    pub fn uncharge(&self, mol: ROMol) -> ROMol {
+        ROMol {
             ptr: rdkit_sys::mol_standardize_ffi::uncharger_uncharge(self.ptr.clone(), mol.ptr.clone())
         }
     }
