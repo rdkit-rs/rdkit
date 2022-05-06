@@ -31,7 +31,6 @@ fn test_enumerate_tautomer() {
     let romol = ROMol::from_smile(smiles).unwrap();
     let te = TautomerEnumerator::new();
     let ter = te.enumerate(romol);
-    for t in ter {
-        println!("{:?}", t.as_smile());
-    }
+    let ts = ter.collect::<Vec<_>>();
+    assert_eq!(ts.len(), 3);
 }

@@ -13,30 +13,27 @@ impl Default for CleanupParameters {
     }
 }
 
-
 pub struct TautomerEnumerator {
-    pub(crate) t_enumerator: SharedPtr<rdkit_sys::mol_standardize_ffi::TautomerEnumerator>
+    pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::TautomerEnumerator>
 }
 
 impl TautomerEnumerator {
     pub fn new() -> Self {
-        Self::default()
+        let ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator();
+
+        TautomerEnumerator {
+            ptr
+        }
     }
 
     pub fn enumerate(&self, ro_mol: crate::ROMol) -> TautomerEnumeratorResult {
-        let t_enumerator_result = rdkit_sys::mol_standardize_ffi::tautomer_enumerate(self.t_enumerator.clone(), ro_mol.ptr);
+        let t_enumerator_result = rdkit_sys::mol_standardize_ffi::tautomer_enumerate(self.ptr.clone(), ro_mol.ptr.clone());
+        let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(t_enumerator_result.clone()) as usize;
 
         TautomerEnumeratorResult {
             pos: 0,
+            size,
             t_enumerator_result
-        }
-    }
-}
-
-impl Default for TautomerEnumerator {
-    fn default() -> Self {
-        TautomerEnumerator {
-            t_enumerator: rdkit_sys::mol_standardize_ffi::tautomer_enumerator()
         }
     }
 }
@@ -45,18 +42,24 @@ pub struct TautomerEnumeratorResult {
     // t_enumerator: SharedPtr<TautomerEnumerator>,
     pub(crate) t_enumerator_result: SharedPtr<rdkit_sys::mol_standardize_ffi::TautomerEnumeratorResult>,
     pos: usize,
+    size: usize,
 }
 
 impl Iterator for TautomerEnumeratorResult {
     type Item = crate::ROMol;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let next = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_at(self.t_enumerator_result.clone(), self.pos);
-        self.pos += 1;
-        if next.is_null() {
+        if self.pos >= self.size {
             None
         } else {
-            Some(crate::ROMol{ ptr: next })
+            let next = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_at(self.t_enumerator_result.clone(), self.pos);
+            if next.is_null() {
+                log::warn!("got a null ptr from tautomer_enumerator_result->at({})", self.pos);
+                None
+            } else {
+                self.pos += 1;
+                Some(crate::ROMol{ ptr: next })
+            }
         }
     }
 
