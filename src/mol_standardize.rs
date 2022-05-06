@@ -36,6 +36,13 @@ impl TautomerEnumerator {
             t_enumerator_result
         }
     }
+
+    pub fn canonicalize(&self, ro_mol: crate::ROMol) -> crate::ROMol {
+        let canonical_mol_ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(self.ptr.clone(), ro_mol.ptr.clone());
+        crate::ROMol {
+            ptr: canonical_mol_ptr
+        }
+    }
 }
 
 pub struct TautomerEnumeratorResult {
