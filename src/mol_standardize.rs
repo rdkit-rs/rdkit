@@ -26,7 +26,7 @@ impl TautomerEnumerator {
         }
     }
 
-    pub fn enumerate(&self, ro_mol: crate::ROMol) -> TautomerEnumeratorResult {
+    pub fn enumerate(&self, ro_mol: &crate::ROMol) -> TautomerEnumeratorResult {
         let t_enumerator_result = rdkit_sys::mol_standardize_ffi::tautomer_enumerate(self.ptr.clone(), ro_mol.ptr.clone());
         let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(t_enumerator_result.clone()) as usize;
 
@@ -37,7 +37,7 @@ impl TautomerEnumerator {
         }
     }
 
-    pub fn canonicalize(&self, ro_mol: crate::ROMol) -> crate::ROMol {
+    pub fn canonicalize(&self, ro_mol: &crate::ROMol) -> crate::ROMol {
         let canonical_mol_ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(self.ptr.clone(), ro_mol.ptr.clone());
         crate::ROMol {
             ptr: canonical_mol_ptr
@@ -76,7 +76,7 @@ impl Iterator for TautomerEnumeratorResult {
     }
 }
 
-pub fn fragment_parent(rw_mol: RWMol, cleanup_params: CleanupParameters, skip_standardize: bool) -> RWMol {
+pub fn fragment_parent(rw_mol: &RWMol, cleanup_params: &CleanupParameters, skip_standardize: bool) -> RWMol {
     let ptr = rdkit_sys::mol_standardize_ffi::fragment_parent(rw_mol.ptr.clone(), cleanup_params.ptr.clone(), skip_standardize);
     RWMol{ ptr }
 }
@@ -92,7 +92,7 @@ impl Uncharger {
         }
     }
 
-    pub fn uncharge(&self, mol: ROMol) -> ROMol {
+    pub fn uncharge(&self, mol: &ROMol) -> ROMol {
         ROMol {
             ptr: rdkit_sys::mol_standardize_ffi::uncharger_uncharge(self.ptr.clone(), mol.ptr.clone())
         }
