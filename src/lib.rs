@@ -9,3 +9,6 @@ pub use rw_mol::*;
 
 mod mol_standardize;
 pub use mol_standardize::*;
+
+mod substruct_match;
+pub use substruct_match::*;
