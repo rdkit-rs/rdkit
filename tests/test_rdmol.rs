@@ -34,3 +34,23 @@ fn test_enumerate_tautomer() {
     let ts = ter.collect::<Vec<_>>();
     assert_eq!(ts.len(), 3);
 }
+
+#[test]
+fn test_stdz() {
+    let smiles = "CC.Oc1c(cccc3CC(C(=O)[O-]))c3nc2c(C[NH+])cncc12.[Cl-]";
+    let romol = ROMol::from_smile(smiles).unwrap();
+    let rwmol = romol.to_rw_mol(false, 1);
+
+    let cleanup_params = CleanupParameters::default();
+    let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, true);
+
+    // i.e. need RWMol --> ROMol method for RWMol; for now convert to smiles as intermediate
+    let parent_romol= ROMol::from_smile(&parent_rwmol.as_smile()).unwrap();
+
+    let uncharger = Uncharger::new(false);
+    let uncharged_mol = uncharger.uncharge(&parent_romol);
+
+    let te = TautomerEnumerator::new();
+    let canon_taut = te.canonicalize(&uncharged_mol);
+    println!("{:?}", canon_taut.as_smile());
+}
