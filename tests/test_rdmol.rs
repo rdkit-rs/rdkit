@@ -44,11 +44,8 @@ fn test_stdz() {
     let cleanup_params = CleanupParameters::default();
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, true);
 
-    // i.e. need RWMol --> ROMol method for RWMol; for now convert to smiles as intermediate
-    let parent_romol= ROMol::from_smile(&parent_rwmol.as_smile()).unwrap();
-
     let uncharger = Uncharger::new(false);
-    let uncharged_mol = uncharger.uncharge(&parent_romol);
+    let uncharged_mol = uncharger.uncharge(&parent_rwmol.to_romol());
 
     let te = TautomerEnumerator::new();
     let canon_taut = te.canonicalize(&uncharged_mol);
