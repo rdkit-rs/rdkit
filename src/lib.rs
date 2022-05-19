@@ -1,3 +1,6 @@
+mod descriptors;
+pub use descriptors::*;
+
 mod fingerprint;
 pub use fingerprint::*;
 
