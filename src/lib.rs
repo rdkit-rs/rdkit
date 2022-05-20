@@ -1,6 +1,9 @@
 mod descriptors;
 pub use descriptors::*;
 
+mod file_parsers;
+pub use file_parsers::*;
+
 mod fingerprint;
 pub use fingerprint::*;
 

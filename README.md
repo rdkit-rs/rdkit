@@ -2,11 +2,7 @@ RDKit
 ---
 
 A high-level library for performing common RDKit tasks such as SMILE parsing, molecule normalization, etc. Uses
-the low-level C++ API with bindings from [rdkit-sys](https://crates.io/crate/rdkit-sys).
-
-Provides `Molecule` and `Fingerprint` along with some benchmarks proving speed. Concepts in this `RDKit` may not
-correspond one-to-one with RDKit C++ concepts. For a more accurate correspondence, consider using the `rdkit-sys` bindings
-directly.
+the C++ API via bindings from [rdkit-sys](https://crates.io/crate/rdkit-sys).
 
 Prerequisites
 ---
@@ -14,3 +10,6 @@ Prerequisites
 On a Mac:
 
     brew install rdkit
+
+On Linux you will need a custom build of rdkit with static libraries. We are working to provide suitable debian packages.
+This is holding up our CI.

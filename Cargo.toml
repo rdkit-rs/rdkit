@@ -1,6 +1,6 @@
 [package]
 name = "rdkit"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2021"
 authors = ["Xavier Lange <xrlange@gmail.com>"]
 license = "MIT"
@@ -12,3 +12,4 @@ cxx = "1"
 log = "0.4"
 rdkit-sys = "0.2.7"
 #rdkit-sys = { path = "../rdkit-sys"}
+flate2 = "1"
