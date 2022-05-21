@@ -21,11 +21,9 @@ impl ROMol {
         ro_mol_ffi::mol_to_smiles(self.ptr.clone())
     }
 
-    pub fn to_rw_mol(&self, quick_copy: bool, conf_id: i32) -> RWMol {
+    pub fn as_rw_mol(&self, quick_copy: bool, conf_id: i32) -> RWMol {
         let ptr = rdkit_sys::rw_mol_ffi::rw_mol_from_ro_mol(self.ptr.clone(), quick_copy, conf_id);
-        RWMol {
-            ptr
-        }
+        RWMol { ptr }
     }
 
     pub fn fingerprint(&self) -> Fingerprint {
@@ -37,14 +35,14 @@ impl ROMol {
 impl Debug for ROMol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let smile = self.as_smile();
-        f.debug_struct("Molecule").field("ptr", &smile).finish()
+        f.debug_tuple("ROMol").field(&smile).finish()
     }
 }
 
 impl Clone for ROMol {
     fn clone(&self) -> Self {
         ROMol {
-            ptr: rdkit_sys::ro_mol_ffi::copy_mol(self.ptr.clone())
+            ptr: rdkit_sys::ro_mol_ffi::copy_mol(self.ptr.clone()),
         }
     }
 }

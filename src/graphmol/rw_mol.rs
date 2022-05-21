@@ -40,12 +40,12 @@ impl RWMol {
         ro_mol_ffi::mol_to_smiles(cast_ptr)
     }
 
-    pub fn to_romol(&self) -> ROMol {
+    pub fn to_ro_mol(self) -> ROMol {
         let ptr = unsafe {
             std::mem::transmute::<
                 SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
                 SharedPtr<rdkit_sys::ro_mol_ffi::ROMol>,
-            >(self.ptr.clone())
+            >(self.ptr)
         };
         ROMol { ptr }
     }
@@ -60,9 +60,7 @@ impl Clone for RWMol {
 
 impl std::fmt::Debug for RWMol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let romol = self.to_romol();
-        let smile = romol.as_smile();
-
-        write!(f, "{}", smile)
+        let smile = self.as_smile();
+        f.debug_tuple("RWMol").field(&smile).finish()
     }
 }

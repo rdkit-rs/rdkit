@@ -1,4 +1,4 @@
-use rdkit::{ TautomerEnumerator, ROMol };
+use rdkit::{ROMol, TautomerEnumerator};
 
 fn main() {
     let mol = ROMol::from_smile("c1ccccc1C(=O)NC").unwrap();
