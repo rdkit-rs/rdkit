@@ -1,38 +1,15 @@
-use cxx::SharedPtr;
+use bitvec::prelude::*;
 
-use rdkit_sys::*;
-
-pub struct Fingerprint {
-    pub(crate) ptr: SharedPtr<fingerprint_ffi::ExplicitBitVect>,
-}
-
-impl Clone for Fingerprint {
-    fn clone(&self) -> Self {
-        Fingerprint {
-            ptr: fingerprint_ffi::copy_explicit_bit_vect(self.ptr.clone()),
-        }
-    }
-}
+#[derive(Clone, Debug)]
+pub struct Fingerprint(pub BitVec<u8, bitvec::order::Lsb0>);
 
 impl Fingerprint {
-    pub fn or(&self, other: &Fingerprint) -> Fingerprint {
-        let clone = self.clone();
-        fingerprint_ffi::fingerprint_or(clone.ptr.clone(), other.ptr.clone());
-        clone
-    }
-
-    pub fn and(&self, other: &Fingerprint) -> Fingerprint {
-        let clone = self.clone();
-        fingerprint_ffi::fingerprint_and(clone.ptr.clone(), other.ptr.clone());
-        clone
-    }
-
     pub fn tanimoto_distance(&self, other: &Fingerprint) -> f32 {
-        let and = self.and(other);
-        let or = self.or(other);
+        let and = self.0.clone() & &other.0;
+        let or = self.0.clone() | &other.0;
 
-        let and_ones = fingerprint_ffi::get_num_on_bits(and.ptr);
-        let or_ones = fingerprint_ffi::get_num_on_bits(or.ptr);
+        let and_ones = and.count_ones();
+        let or_ones = or.count_ones();
 
         and_ones as f32 / or_ones as f32
     }
