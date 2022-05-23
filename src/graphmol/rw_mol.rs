@@ -23,8 +23,22 @@ impl RWMol {
             strict_parsing,
         );
 
-        if ptr.is_null() {
+        if ptr.is_null() && !sanitize {
             None
+        } else if ptr.is_null() && sanitize {
+            // buggy mol block handling
+            let ptr2 = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(
+                &mol_block,
+                false,
+                remove_hs,
+                strict_parsing,
+            );
+
+            if ptr2.is_null() {
+                None
+            } else {
+                Some(RWMol { ptr: ptr2 })
+            }
         } else {
             Some(RWMol { ptr })
         }

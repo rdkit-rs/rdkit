@@ -72,6 +72,7 @@ impl<R: BufRead> Iterator for MolBlockIter<R> {
 
         let rw_mol =
             RWMol::from_mol_block(block, self.sanitize, self.remove_hs, self.strict_parsing);
+
         return Some(rw_mol);
     }
 }

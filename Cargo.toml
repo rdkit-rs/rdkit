@@ -1,6 +1,6 @@
 [package]
 name = "rdkit"
-version = "0.2.7"
+version = "0.2.8"
 edition = "2021"
 authors = ["Xavier Lange <xrlange@gmail.com>"]
 license = "MIT"
@@ -14,3 +14,6 @@ log = "0.4"
 rdkit-sys = "0.2.9"
 #rdkit-sys = { path = "../rdkit-sys"}
 flate2 = "1"
+
+[dev-dependencies]
+env_logger = "0.9.0"
