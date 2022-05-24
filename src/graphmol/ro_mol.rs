@@ -1,4 +1,3 @@
-use bitvec::order::Lsb0;
 use std::fmt::{Debug, Formatter};
 
 use cxx::let_cxx_string;
