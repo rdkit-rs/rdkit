@@ -52,7 +52,7 @@ impl MolBlockIter<GzBufReader> {
 }
 
 impl<R: BufRead> Iterator for MolBlockIter<R> {
-    type Item = Option<RWMol>;
+    type Item = Result<RWMol, String>;
 
     fn next(&mut self) -> Option<Self::Item> {
         loop {
@@ -73,6 +73,11 @@ impl<R: BufRead> Iterator for MolBlockIter<R> {
         let rw_mol =
             RWMol::from_mol_block(block, self.sanitize, self.remove_hs, self.strict_parsing);
 
-        return Some(rw_mol);
+        let result = match rw_mol {
+            Some(rw_mol) => Ok(rw_mol),
+            _ => Err(block.to_string()),
+        };
+
+        Some(result)
     }
 }

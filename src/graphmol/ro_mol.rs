@@ -29,10 +29,7 @@ impl ROMol {
 
     pub fn fingerprint(&self) -> Fingerprint {
         let ptr = fingerprint_ffi::fingerprint_mol(self.ptr.clone());
-        let unique_ptr_bytes = fingerprint_ffi::explicit_bit_vect_to_bytes_vec(ptr);
-        let rust_bytes: Vec<_> = unique_ptr_bytes.into_iter().map(|x| *x).collect();
-        let bits = bitvec::vec::BitVec::<_, Lsb0>::from_vec(rust_bytes);
-        Fingerprint(bits)
+        Fingerprint::new(ptr)
     }
 }
 

@@ -11,7 +11,7 @@ fn test_neutralize() {
     let romol = ROMol::from_smile(smiles).unwrap();
     let uncharger = Uncharger::new(false);
     let uncharged_mol = uncharger.uncharge(&romol);
-    println!("{:?}", uncharged_mol.as_smile());
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smile());
 }
 
 #[test]
@@ -21,8 +21,11 @@ fn test_fragment_parent() {
     let rwmol = romol.as_rw_mol(false, 1);
     let cleanup_params = CleanupParameters::default();
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, true);
-    println!("{:?}", parent_rwmol.as_smile());
-    println!("{:?}", rwmol.as_smile());
+    assert_eq!(
+        "Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1",
+        parent_rwmol.as_smile()
+    );
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smile());
 }
 
 #[test]
@@ -49,7 +52,10 @@ fn test_stdz() {
 
     let te = TautomerEnumerator::new();
     let canon_taut = te.canonicalize(&uncharged_mol);
-    println!("{:?}", canon_taut.as_smile());
+    assert_eq!(
+        "[N]Cc1cncc2c(=O)c3cccc(CCC(=O)O)c3[nH]c12",
+        canon_taut.as_smile()
+    );
 }
 
 #[test]
