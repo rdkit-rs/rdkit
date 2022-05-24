@@ -1,7 +1,6 @@
 use std::fmt::{Debug, Formatter};
 
 use cxx::let_cxx_string;
-
 use rdkit_sys::*;
 
 use crate::{Fingerprint, RWMol};

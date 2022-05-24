@@ -1,5 +1,4 @@
-use rdkit::ROMol;
-use rdkit::substruct_match;
+use rdkit::{substruct_match, ROMol};
 
 #[test]
 fn test_substruct_match() {

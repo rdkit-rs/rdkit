@@ -1,7 +1,9 @@
-use crate::ROMol;
+use std::fmt::Formatter;
+
 use cxx::{let_cxx_string, SharedPtr};
 use rdkit_sys::*;
-use std::fmt::Formatter;
+
+use crate::ROMol;
 
 pub struct RWMol {
     pub(crate) ptr: SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
