@@ -1,4 +1,14 @@
+use std::collections::HashMap;
+
 use rdkit::{Properties, ROMol};
+
+#[test]
+fn test_a_thing() {
+    let mol = ROMol::from_smile("c1ccccc1C(=O)NC").unwrap();
+    let properties = Properties::new();
+    let computed: HashMap<String, f64> = properties.compute_properties(&mol);
+    assert_eq!(*computed.get("NumAtoms").unwrap(), 19.0);
+}
 
 #[test]
 fn test_computing_properties() {

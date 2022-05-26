@@ -10,10 +10,10 @@ pub struct ROMol {
 }
 
 impl ROMol {
-    pub fn from_smile(smile: &str) -> Option<Self> {
+    pub fn from_smile(smile: &str) -> Result<Self, cxx::Exception> {
         let_cxx_string!(smile_cxx_string = smile);
-        let ptr = ro_mol_ffi::mol_from_smiles(&smile_cxx_string);
-        Some(Self { ptr })
+        let ptr = ro_mol_ffi::smiles_to_mol(&smile_cxx_string)?;
+        Ok(Self { ptr })
     }
 
     pub fn as_smile(&self) -> String {
