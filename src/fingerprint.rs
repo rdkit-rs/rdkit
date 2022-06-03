@@ -2,7 +2,7 @@ use bitvec::prelude::*;
 use cxx::SharedPtr;
 
 #[derive(Clone, Debug)]
-pub struct Fingerprint(pub BitVec<u8, bitvec::order::Lsb0>);
+pub struct Fingerprint(pub BitVec<u64, bitvec::order::Lsb0>);
 
 impl Fingerprint {
     pub fn new(ptr: SharedPtr<rdkit_sys::fingerprint_ffi::ExplicitBitVect>) -> Self {

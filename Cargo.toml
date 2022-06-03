@@ -1,6 +1,6 @@
 [package]
 name = "rdkit"
-version = "0.2.10"
+version = "0.2.11"
 edition = "2021"
 authors = ["Xavier Lange <xrlange@gmail.com>"]
 license = "MIT"
@@ -11,7 +11,7 @@ description = "High level RDKit functionality for rust"
 bitvec = "1"
 cxx = "1"
 log = "0.4"
-rdkit-sys = "0.2.9"
+rdkit-sys = "0.2.14"
 #rdkit-sys = { path = "../rdkit-sys"}
 flate2 = "1"
 
