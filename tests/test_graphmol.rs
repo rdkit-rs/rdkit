@@ -1,4 +1,7 @@
-use rdkit::{fragment_parent, CleanupParameters, ROMol, RWMol, TautomerEnumerator, Uncharger};
+use rdkit::{
+    detect_chemistry_problems, fragment_parent, CleanupParameters, ROMol, RWMol,
+    SmilesParserParams, TautomerEnumerator, Uncharger,
+};
 
 #[test]
 fn test_rdmol() {
@@ -234,4 +237,21 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
 
     let rw_mol = RWMol::from_mol_block(mol_block, false, false, false).unwrap();
     assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smile());
+}
+
+#[test]
+fn test_detect_chemistry_problems() {
+    let smile = "N#[N]c1ccc(cc1)N(C)CN(C)(C)(C)";
+    let mut parser_params = SmilesParserParams::default();
+    parser_params.sanitize(false);
+    let mol = ROMol::from_smile_with_params(smile, &parser_params).unwrap();
+
+    let problems = detect_chemistry_problems(&mol);
+    assert_eq!(
+        problems,
+        vec![
+            "AtomValenceException".to_string(),
+            "AtomValenceException".to_string()
+        ]
+    );
 }

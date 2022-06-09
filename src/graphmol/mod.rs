@@ -1,3 +1,6 @@
+mod mol_ops;
+pub use mol_ops::*;
+
 mod ro_mol;
 pub use ro_mol::*;
 

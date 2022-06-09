@@ -16,6 +16,15 @@ impl ROMol {
         Ok(Self { ptr })
     }
 
+    pub fn from_smile_with_params(
+        smile: &str,
+        params: &SmilesParserParams,
+    ) -> Result<Self, cxx::Exception> {
+        let_cxx_string!(smile_cxx_string = smile);
+        let ptr = ro_mol_ffi::smiles_to_mol_with_params(&smile_cxx_string, params.ptr.clone())?;
+        Ok(Self { ptr })
+    }
+
     pub fn as_smile(&self) -> String {
         ro_mol_ffi::mol_to_smiles(self.ptr.clone())
     }
@@ -42,6 +51,24 @@ impl Clone for ROMol {
     fn clone(&self) -> Self {
         ROMol {
             ptr: rdkit_sys::ro_mol_ffi::copy_mol(self.ptr.clone()),
+        }
+    }
+}
+
+pub struct SmilesParserParams {
+    pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::SmilesParserParams>,
+}
+
+impl SmilesParserParams {
+    pub fn sanitize(&mut self, value: bool) {
+        rdkit_sys::ro_mol_ffi::smiles_parser_params_set_sanitize(self.ptr.clone(), value);
+    }
+}
+
+impl Default for SmilesParserParams {
+    fn default() -> Self {
+        SmilesParserParams {
+            ptr: rdkit_sys::ro_mol_ffi::new_smiles_parser_params(),
         }
     }
 }
