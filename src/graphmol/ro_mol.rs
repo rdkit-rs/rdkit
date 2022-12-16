@@ -11,27 +11,18 @@ pub struct ROMol {
 
 #[derive(Debug, PartialEq, thiserror::Error)]
 pub enum ROMolError {
-    #[error("could not convert smile to romol (nullptr)")]
-    UnknownConversionError,
-    #[error("could not convert smile to romol (exception)")]
-    ConversionException(String)
+    #[error("could not convert smile to romol")]
+    ConversionError
 }
 
 impl ROMol {
     pub fn from_smile(smile: &str) -> Result<Self, ROMolError> {
         let_cxx_string!(smile_cxx_string = smile);
         let ptr = ro_mol_ffi::smiles_to_mol(&smile_cxx_string);
-        match ptr {
-            Ok(ptr) => {
-                if ptr.is_null() {
-                    Err(ROMolError::UnknownConversionError)
-                } else {
-                    Ok(ROMol { ptr })
-                }
-            },
-            Err(e) => {
-                Err(ROMolError::ConversionException(e.to_string()))
-            }
+        if ptr.is_null() {
+            Err(ROMolError::ConversionError)
+        } else {
+            Ok(Self { ptr })
         }
     }
 
