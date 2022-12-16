@@ -50,7 +50,7 @@ mod tests {
             .iter()
             .map(|bignum| {
                 let mut bytes = vec![];
-                bytes.write_u64(bignum);
+                bytes.write_u64::<BigEndian>(0 as u64);
                 bytes
             })
             .flatten()
