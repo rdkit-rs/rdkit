@@ -1,7 +1,4 @@
-use rdkit::{
-    detect_chemistry_problems, fragment_parent, CleanupParameters, ROMol, RWMol,
-    SmilesParserParams, TautomerEnumerator, Uncharger,
-};
+use rdkit::{detect_chemistry_problems, fragment_parent, CleanupParameters, ROMol, RWMol, SmilesParserParams, TautomerEnumerator, Uncharger, ROMolError};
 
 #[test]
 fn test_rdmol() {
@@ -29,6 +26,14 @@ fn test_fragment_parent() {
         parent_rwmol.as_smile()
     );
     assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smile());
+}
+
+#[test]
+fn test_bad_ro_mol_conversion() {
+    env_logger::init();
+    let smiles = "string";
+    let romol = ROMol::from_smile(smiles);
+    assert_eq!(romol.err(), Some(ROMolError::ConversionError))
 }
 
 #[test]

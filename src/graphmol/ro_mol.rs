@@ -9,11 +9,21 @@ pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
 }
 
+#[derive(Debug, PartialEq, thiserror::Error)]
+pub enum ROMolError {
+    #[error("could not convert smile to romol")]
+    ConversionError
+}
+
 impl ROMol {
-    pub fn from_smile(smile: &str) -> Result<Self, cxx::Exception> {
+    pub fn from_smile(smile: &str) -> Result<Self, ROMolError> {
         let_cxx_string!(smile_cxx_string = smile);
-        let ptr = ro_mol_ffi::smiles_to_mol(&smile_cxx_string)?;
-        Ok(Self { ptr })
+        let ptr = ro_mol_ffi::smiles_to_mol(&smile_cxx_string);
+        if ptr.is_null() {
+            Err(ROMolError::ConversionError)
+        } else {
+            Ok(Self { ptr })
+        }
     }
 
     pub fn from_smile_with_params(

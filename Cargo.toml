@@ -9,11 +9,12 @@ description = "High level RDKit functionality for rust"
 
 [dependencies]
 bitvec = "1"
+byteorder = "1.4.3"
 cxx = "1"
-log = "0.4"
-rdkit-sys = "0.2.16"
-#rdkit-sys = { path = "../rdkit-sys"}
 flate2 = "1"
+log = "0.4"
+rdkit-sys = "0.2.20"
+thiserror = "1"
 
 [dev-dependencies]
 env_logger = "0.9.0"
