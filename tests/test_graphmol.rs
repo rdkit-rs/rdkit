@@ -30,7 +30,6 @@ fn test_fragment_parent() {
 
 #[test]
 fn test_ro_mol_conversion_with_unknown_error() {
-    env_logger::init();
     let smiles = "string";
     let romol = ROMol::from_smile(smiles);
     assert_eq!(romol.err(), Some(ROMolError::UnknownConversionError))
@@ -38,7 +37,6 @@ fn test_ro_mol_conversion_with_unknown_error() {
 
 #[test]
 fn test_ro_mol_conversion_with_conversion_exception() {
-    env_logger::init();
     let smiles = "F(C)(C)(C)(C)(C)";
     let romol = ROMol::from_smile(smiles);
     assert_eq!(romol.err(), Some(ROMolError::ConversionException("Explicit valence for atom # 0 F, 5, is greater than permitted".to_string())))
@@ -261,10 +259,10 @@ fn test_detect_chemistry_problems() {
 
     let problems = detect_chemistry_problems(&mol);
     assert_eq!(
-        problems,
-        vec![
-            "AtomValenceException".to_string(),
-            "AtomValenceException".to_string()
+        &problems,
+        &[
+            ("AtomValenceException".to_string(), Some(1)),
+             ("AtomValenceException".to_string(), Some(11))
         ]
     );
 }

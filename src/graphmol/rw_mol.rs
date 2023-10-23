@@ -39,7 +39,7 @@ impl RWMol {
                 SharedPtr<rdkit_sys::ro_mol_ffi::ROMol>,
             >(self.ptr.clone())
         };
-        ro_mol_ffi::mol_to_smiles(cast_ptr)
+        ro_mol_ffi::mol_to_smiles(&cast_ptr)
     }
 
     pub fn to_ro_mol(self) -> ROMol {
@@ -55,7 +55,7 @@ impl RWMol {
 
 impl Clone for RWMol {
     fn clone(&self) -> Self {
-        let ptr = rw_mol_ffi::rw_mol_from_rw_mol(self.ptr.clone());
+        let ptr = rw_mol_ffi::rw_mol_from_rw_mol(&self.ptr);
         RWMol { ptr }
     }
 }

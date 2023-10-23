@@ -27,11 +27,11 @@ impl TautomerEnumerator {
 
     pub fn enumerate(&self, ro_mol: &crate::ROMol) -> TautomerEnumeratorResult {
         let t_enumerator_result = rdkit_sys::mol_standardize_ffi::tautomer_enumerate(
-            self.ptr.clone(),
-            ro_mol.ptr.clone(),
+            &self.ptr,
+            &ro_mol.ptr,
         );
         let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(
-            t_enumerator_result.clone(),
+            &t_enumerator_result,
         ) as usize;
 
         TautomerEnumeratorResult {
@@ -43,8 +43,8 @@ impl TautomerEnumerator {
 
     pub fn canonicalize(&self, ro_mol: &crate::ROMol) -> crate::ROMol {
         let canonical_mol_ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(
-            self.ptr.clone(),
-            ro_mol.ptr.clone(),
+            &self.ptr,
+            &ro_mol.ptr,
         );
         crate::ROMol {
             ptr: canonical_mol_ptr,
@@ -68,7 +68,7 @@ impl Iterator for TautomerEnumeratorResult {
             None
         } else {
             let next = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_at(
-                self.t_enumerator_result.clone(),
+                &self.t_enumerator_result,
                 self.pos,
             );
             if next.is_null() {
@@ -86,7 +86,7 @@ impl Iterator for TautomerEnumeratorResult {
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(
-            self.t_enumerator_result.clone(),
+            &self.t_enumerator_result,
         );
         (size as usize, Some(size as usize))
     }
@@ -98,8 +98,8 @@ pub fn fragment_parent(
     skip_standardize: bool,
 ) -> RWMol {
     let ptr = rdkit_sys::mol_standardize_ffi::fragment_parent(
-        rw_mol.ptr.clone(),
-        cleanup_params.ptr.clone(),
+        &rw_mol.ptr,
+        &cleanup_params.ptr,
         skip_standardize,
     );
     RWMol { ptr }
@@ -119,8 +119,8 @@ impl Uncharger {
     pub fn uncharge(&self, mol: &ROMol) -> ROMol {
         ROMol {
             ptr: rdkit_sys::mol_standardize_ffi::uncharger_uncharge(
-                self.ptr.clone(),
-                mol.ptr.clone(),
+                &self.ptr,
+                &mol.ptr,
             ),
         }
     }

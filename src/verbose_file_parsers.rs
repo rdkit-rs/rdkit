@@ -1,14 +1,13 @@
 use std::{
-    fs::File,
-    io::{BufRead, BufReader},
+    io::{BufRead},
     path::Path,
 };
 
 use flate2::bufread::GzDecoder;
 
-use crate::RWMol;
+use crate::{GzBufReader, RWMol};
 
-pub struct MolBlockIter<R: BufRead> {
+pub struct VerboseMolBlockIter<R: BufRead> {
     buf_read: R,
     buf: Vec<u8>,
     sanitize: bool,
@@ -16,9 +15,9 @@ pub struct MolBlockIter<R: BufRead> {
     strict_parsing: bool,
 }
 
-impl<R: BufRead> MolBlockIter<R> {
+impl<R: BufRead> VerboseMolBlockIter<R> {
     pub fn new(buf_read: R, sanitize: bool, remove_hs: bool, strict_parsing: bool) -> Self {
-        MolBlockIter {
+        VerboseMolBlockIter {
             buf_read,
             buf: Vec::with_capacity(1024),
             sanitize,
@@ -28,9 +27,8 @@ impl<R: BufRead> MolBlockIter<R> {
     }
 }
 
-pub type GzBufReader = BufReader<flate2::bufread::GzDecoder<BufReader<File>>>;
 
-impl MolBlockIter<GzBufReader> {
+impl VerboseMolBlockIter<GzBufReader> {
     pub fn from_gz_file(
         p: impl AsRef<Path>,
         sanitize: bool,
@@ -54,8 +52,8 @@ impl MolBlockIter<GzBufReader> {
     }
 }
 
-impl<R: BufRead> Iterator for MolBlockIter<R> {
-    type Item = Result<RWMol, String>;
+impl<R: BufRead> Iterator for VerboseMolBlockIter<R> {
+    type Item = Result<(RWMol,String), String>;
 
     fn next(&mut self) -> Option<Self::Item> {
         // Consume all `$` characters and break when buffer is larger than 1. Exit function at EOF.
@@ -78,7 +76,7 @@ impl<R: BufRead> Iterator for MolBlockIter<R> {
             RWMol::from_mol_block(block, self.sanitize, self.remove_hs, self.strict_parsing);
 
         let result = match rw_mol {
-            Some(rw_mol) => Ok(rw_mol),
+            Some(rw_mol) => Ok((rw_mol, block.to_string())),
             _ => Err(block.to_string()),
         };
 
