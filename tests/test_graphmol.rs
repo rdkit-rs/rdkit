@@ -1,4 +1,7 @@
-use rdkit::{detect_chemistry_problems, fragment_parent, CleanupParameters, ROMol, RWMol, SmilesParserParams, TautomerEnumerator, Uncharger, ROMolError};
+use rdkit::{
+    detect_chemistry_problems, fragment_parent, CleanupParameters, ROMol, ROMolError, RWMol,
+    SmilesParserParams, TautomerEnumerator, Uncharger,
+};
 
 #[test]
 fn test_rdmol() {
@@ -39,7 +42,12 @@ fn test_ro_mol_conversion_with_unknown_error() {
 fn test_ro_mol_conversion_with_conversion_exception() {
     let smiles = "F(C)(C)(C)(C)(C)";
     let romol = ROMol::from_smile(smiles);
-    assert_eq!(romol.err(), Some(ROMolError::ConversionException("Explicit valence for atom # 0 F, 5, is greater than permitted".to_string())))
+    assert_eq!(
+        romol.err(),
+        Some(ROMolError::ConversionException(
+            "Explicit valence for atom # 0 F, 5, is greater than permitted".to_string()
+        ))
+    )
 }
 
 #[test]
@@ -262,7 +270,7 @@ fn test_detect_chemistry_problems() {
         &problems,
         &[
             ("AtomValenceException".to_string(), Some(1)),
-             ("AtomValenceException".to_string(), Some(11))
+            ("AtomValenceException".to_string(), Some(11))
         ]
     );
 }

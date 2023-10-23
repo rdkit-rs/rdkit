@@ -1,7 +1,4 @@
-use std::{
-    io::{BufRead},
-    path::Path,
-};
+use std::{io::BufRead, path::Path};
 
 use flate2::bufread::GzDecoder;
 
@@ -26,7 +23,6 @@ impl<R: BufRead> VerboseMolBlockIter<R> {
         }
     }
 }
-
 
 impl VerboseMolBlockIter<GzBufReader> {
     pub fn from_gz_file(
@@ -53,10 +49,11 @@ impl VerboseMolBlockIter<GzBufReader> {
 }
 
 impl<R: BufRead> Iterator for VerboseMolBlockIter<R> {
-    type Item = Result<(RWMol,String), String>;
+    type Item = Result<(RWMol, String), String>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // Consume all `$` characters and break when buffer is larger than 1. Exit function at EOF.
+        // Consume all `$` characters and break when buffer is larger than 1. Exit
+        // function at EOF.
         loop {
             self.buf.clear();
             let read = self.buf_read.read_until(b'$', &mut self.buf).unwrap();
