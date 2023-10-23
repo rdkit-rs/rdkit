@@ -26,10 +26,8 @@ impl TautomerEnumerator {
     }
 
     pub fn enumerate(&self, ro_mol: &crate::ROMol) -> TautomerEnumeratorResult {
-        let t_enumerator_result = rdkit_sys::mol_standardize_ffi::tautomer_enumerate(
-            &self.ptr,
-            &ro_mol.ptr,
-        );
+        let t_enumerator_result =
+            rdkit_sys::mol_standardize_ffi::tautomer_enumerate(&self.ptr, &ro_mol.ptr);
         let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(
             &t_enumerator_result,
         ) as usize;
@@ -118,10 +116,7 @@ impl Uncharger {
 
     pub fn uncharge(&self, mol: &ROMol) -> ROMol {
         ROMol {
-            ptr: rdkit_sys::mol_standardize_ffi::uncharger_uncharge(
-                &self.ptr,
-                &mol.ptr,
-            ),
+            ptr: rdkit_sys::mol_standardize_ffi::uncharger_uncharge(&self.ptr, &mol.ptr),
         }
     }
 }

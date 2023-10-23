@@ -10,7 +10,7 @@ impl Fingerprint {
         let rdkit_fingerprint_bytes: Vec<u64> = unique_ptr_bytes.into_iter().map(|x| *x).collect();
         let mut bitvec_u64 = bitvec::vec::BitVec::<u64, Lsb0>::from_vec(rdkit_fingerprint_bytes);
 
-        let mut idiomatic_bitvec_u8 = bitvec::vec::BitVec::<u8,Lsb0>::new();
+        let mut idiomatic_bitvec_u8 = bitvec::vec::BitVec::<u8, Lsb0>::new();
         idiomatic_bitvec_u8.append(&mut bitvec_u64);
 
         Fingerprint(idiomatic_bitvec_u8)

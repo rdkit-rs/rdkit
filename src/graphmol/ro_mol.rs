@@ -14,7 +14,7 @@ pub enum ROMolError {
     #[error("could not convert smile to romol (nullptr)")]
     UnknownConversionError,
     #[error("could not convert smile to romol (exception)")]
-    ConversionException(String)
+    ConversionException(String),
 }
 
 impl ROMol {
@@ -28,10 +28,8 @@ impl ROMol {
                 } else {
                     Ok(ROMol { ptr })
                 }
-            },
-            Err(e) => {
-                Err(ROMolError::ConversionException(e.to_string()))
             }
+            Err(e) => Err(ROMolError::ConversionException(e.to_string())),
         }
     }
 
