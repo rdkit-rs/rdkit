@@ -273,4 +273,10 @@ fn test_detect_chemistry_problems() {
             ("AtomValenceException".to_string(), Some(11))
         ]
     );
+
+    let problem_atom_one = mol.atom_with_idx(1);
+    assert_eq!(format!("{}", problem_atom_one), "N");
+
+    let problem_atom_two = mol.atom_with_idx(11);
+    assert_eq!(format!("{}", problem_atom_two), "N");
 }
