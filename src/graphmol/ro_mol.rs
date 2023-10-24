@@ -68,6 +68,10 @@ impl ROMol {
         let ptr = ro_mol_ffi::get_atom_with_idx(&self.ptr, idx);
         Atom::from_ptr(ptr)
     }
+
+    pub fn update_property_cache(&mut self, strict: bool) {
+        ro_mol_ffi::ro_mol_update_property_cache(&mut self.ptr, strict)
+    }
 }
 
 impl Debug for ROMol {

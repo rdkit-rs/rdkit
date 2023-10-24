@@ -62,6 +62,11 @@ pub struct RemoveHsParameters {
 }
 
 impl RemoveHsParameters {
+    pub fn new() -> Self {
+        let ptr = rdkit_sys::mol_ops_ffi::new_remove_hs_parameters();
+        RemoveHsParameters { ptr }
+    }
+
     pub fn get_remove_degree_zero(&self) -> bool {
         rdkit_sys::mol_ops_ffi::get_remove_degree_zero(&self.ptr)
     }
