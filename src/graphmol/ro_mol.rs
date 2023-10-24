@@ -3,7 +3,7 @@ use std::fmt::{Debug, Formatter};
 use cxx::let_cxx_string;
 use rdkit_sys::*;
 
-use crate::{Fingerprint, RWMol};
+use crate::{AtomIter, Fingerprint, RWMol};
 
 pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
@@ -47,13 +47,17 @@ impl ROMol {
     }
 
     pub fn as_rw_mol(&self, quick_copy: bool, conf_id: i32) -> RWMol {
-        let ptr = rdkit_sys::rw_mol_ffi::rw_mol_from_ro_mol(&self.ptr, quick_copy, conf_id);
+        let ptr = rw_mol_ffi::rw_mol_from_ro_mol(&self.ptr, quick_copy, conf_id);
         RWMol { ptr }
     }
 
     pub fn fingerprint(&self) -> Fingerprint {
         let ptr = fingerprint_ffi::fingerprint_mol(&self.ptr);
         Fingerprint::new(ptr)
+    }
+
+    pub fn atoms(&self, only_explicit: bool) -> AtomIter {
+        AtomIter::new(self, only_explicit)
     }
 }
 
@@ -67,7 +71,7 @@ impl Debug for ROMol {
 impl Clone for ROMol {
     fn clone(&self) -> Self {
         ROMol {
-            ptr: rdkit_sys::ro_mol_ffi::copy_mol(&self.ptr),
+            ptr: ro_mol_ffi::copy_mol(&self.ptr),
         }
     }
 }
@@ -85,7 +89,7 @@ impl SmilesParserParams {
 impl Default for SmilesParserParams {
     fn default() -> Self {
         SmilesParserParams {
-            ptr: rdkit_sys::ro_mol_ffi::new_smiles_parser_params(),
+            ptr: ro_mol_ffi::new_smiles_parser_params(),
         }
     }
 }
