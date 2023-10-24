@@ -3,7 +3,7 @@ use std::fmt::{Debug, Formatter};
 use cxx::let_cxx_string;
 use rdkit_sys::*;
 
-use crate::{AtomIter, Fingerprint, RWMol};
+use crate::{Atom, AtomIter, Fingerprint, RWMol};
 
 pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
@@ -58,6 +58,15 @@ impl ROMol {
 
     pub fn atoms(&self, only_explicit: bool) -> AtomIter {
         AtomIter::new(self, only_explicit)
+    }
+
+    pub fn num_atoms(&self, only_explicit: bool) -> u32 {
+        rdkit_sys::ro_mol_ffi::get_num_atoms(&self.ptr, only_explicit)
+    }
+
+    pub fn atom_with_idx(&self, idx: u32) -> Atom {
+        let ptr = ro_mol_ffi::get_atom_with_idx(&self.ptr, idx);
+        Atom::from_ptr(ptr)
     }
 }
 

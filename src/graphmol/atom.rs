@@ -24,6 +24,10 @@ impl std::fmt::Debug for Atom {
 }
 
 impl Atom {
+    pub fn from_ptr(ptr: SharedPtr<ro_mol_ffi::Atom>) -> Self {
+        Self { ptr }
+    }
+
     pub fn symbol(&self) -> String {
         ro_mol_ffi::get_symbol(&self.ptr)
     }
@@ -69,8 +73,7 @@ pub struct AtomIter<'a> {
 
 impl<'a> AtomIter<'a> {
     pub fn new(ro_mol: &'a ROMol, only_explicit: bool) -> Self {
-        let num_atoms = rdkit_sys::ro_mol_ffi::get_num_atoms(&ro_mol.ptr, only_explicit);
-
+        let num_atoms = ro_mol.num_atoms(only_explicit);
         Self {
             ro_mol,
             num_atoms,
@@ -87,9 +90,9 @@ impl<'a> Iterator for AtomIter<'a> {
             return None;
         }
 
-        let ptr = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&self.ro_mol.ptr, self.idx);
+        let atom = self.ro_mol.atom_with_idx(self.idx);
         self.idx += 1;
 
-        return Some(Atom { ptr });
+        return Some(atom);
     }
 }
