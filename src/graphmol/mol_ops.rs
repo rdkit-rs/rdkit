@@ -3,18 +3,37 @@ use rdkit_sys::ro_mol_ffi as ro_mol;
 
 use crate::ROMol;
 
-pub fn detect_chemistry_problems(mol: &ROMol) -> Vec<(String, Option<u32>)> {
+#[derive(Debug, PartialEq)]
+pub enum MolSanitizeException {
+    MolSanitizeException,
+    AtomSanitizeException { atom_idx: u32 },
+    KekulizeException, // todo don't support the vec<u32> return type just yet
+    AtomKekulizeException { atom_idx: u32 },
+    AtomValenceException { atom_idx: u32 },
+}
+
+pub fn detect_chemistry_problems(mol: &ROMol) -> Vec<MolSanitizeException> {
     let problems = rdkit_sys::ro_mol_ffi::detect_chemistry_problems(&mol.ptr);
     problems
         .iter()
         .map(|p| {
             let type_ = ro_mol::mol_sanitize_exception_type(p);
             match type_.as_str() {
+                "MolSanitizeException" => MolSanitizeException::MolSanitizeException,
+                "AtomSanitizeException" => {
+                    let atom_idx = ro_mol::atom_sanitize_exception_get_atom_idx(p);
+                    MolSanitizeException::AtomSanitizeException { atom_idx }
+                }
+                "KekulizeException" => MolSanitizeException::KekulizeException,
+                "AtomKekulizeException" => {
+                    let atom_idx = ro_mol::atom_sanitize_exception_get_atom_idx(p);
+                    MolSanitizeException::AtomKekulizeException { atom_idx }
+                }
                 "AtomValenceException" => {
                     let atom_idx = ro_mol::atom_sanitize_exception_get_atom_idx(p);
-                    (type_, Some(atom_idx))
+                    MolSanitizeException::AtomValenceException { atom_idx }
                 }
-                _ => (type_, None),
+                _ => panic!("unsupported exception flavor"),
             }
         })
         .collect()
