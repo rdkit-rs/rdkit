@@ -7,6 +7,9 @@ license = "MIT"
 description = "High level RDKit functionality for rust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+members = ["rdkit-sys"]
+
 [dependencies]
 bitvec = "1"
 byteorder = "1.4.3"

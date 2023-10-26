@@ -1,0 +1,23 @@
+[package]
+name = "rdkit-sys"
+authors = ["Xavier Lange (xrlange@gmail.com)", "chrissly31415"]
+version = "0.4.0"
+edition = "2021"
+license = "MIT"
+description = "RDKit CFFI library builder and bindings"
+repository = "https://github.com/rdkit-rs/rdkit/tree/main/rdkit-sys"
+exclude = ["rdkit-*", "*.tar.gz", "examples/"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cxx = "1.0.109"
+
+[build-dependencies]
+env_logger = "0.10.0"
+cxx-build = "1.0.109"
+which = "4.4.2"
+
+[features]
+default = []
+dynamic-linking-from-conda = []
