@@ -1,6 +1,6 @@
 use rdkit::{
-    detect_chemistry_problems, fragment_parent, CleanupParameters, ROMol, ROMolError, RWMol,
-    SmilesParserParams, TautomerEnumerator, Uncharger,
+    detect_chemistry_problems, fragment_parent, CleanupParameters, MolSanitizeException, ROMol,
+    ROMolError, RWMol, SmilesParserParams, TautomerEnumerator, Uncharger,
 };
 
 #[test]
@@ -269,8 +269,14 @@ fn test_detect_chemistry_problems() {
     assert_eq!(
         &problems,
         &[
-            ("AtomValenceException".to_string(), Some(1)),
-            ("AtomValenceException".to_string(), Some(11))
+            MolSanitizeException::AtomValenceException { atom_idx: 1 },
+            MolSanitizeException::AtomValenceException { atom_idx: 11 },
         ]
     );
+
+    let problem_atom_one = mol.atom_with_idx(1);
+    assert_eq!(format!("{}", problem_atom_one), "N");
+
+    let problem_atom_two = mol.atom_with_idx(11);
+    assert_eq!(format!("{}", problem_atom_two), "N");
 }
