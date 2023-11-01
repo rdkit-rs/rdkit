@@ -7,7 +7,7 @@ pub struct Fingerprint(pub BitVec<u8, bitvec::order::Lsb0>);
 impl Fingerprint {
     pub fn new(ptr: SharedPtr<rdkit_sys::fingerprint_ffi::ExplicitBitVect>) -> Self {
         let unique_ptr_bytes = rdkit_sys::fingerprint_ffi::explicit_bit_vect_to_u64_vec(&ptr);
-        let rdkit_fingerprint_bytes: Vec<u64> = unique_ptr_bytes.into_iter().map(|x| *x).collect();
+        let rdkit_fingerprint_bytes: Vec<u64> = unique_ptr_bytes.into_iter().copied().collect();
         let mut bitvec_u64 = bitvec::vec::BitVec::<u64, Lsb0>::from_vec(rdkit_fingerprint_bytes);
 
         let mut idiomatic_bitvec_u8 = bitvec::vec::BitVec::<u8, Lsb0>::new();

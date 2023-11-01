@@ -30,8 +30,9 @@ fn test_remove_hs() {
 
     let new_new_mol = add_hs(&new_mol, true, true, true);
     let new_new_smile = new_new_mol.as_smile();
+    assert_eq!(new_new_smile, "C");
 
-    let mut remove_hs_parameters = RemoveHsParameters::new();
+    let remove_hs_parameters = RemoveHsParameters::new();
     let new_new_new_mol = remove_hs(&new_new_mol, &remove_hs_parameters, true);
     let new_new_new_smile = new_new_new_mol.as_smile();
 

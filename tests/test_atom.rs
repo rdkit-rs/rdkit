@@ -7,7 +7,7 @@ fn test_atom() {
 
     assert_eq!(format!("{:?}", atoms), "[C]");
 
-    assert_eq!(atoms[0].get_is_aromatic(), false);
+    assert!(!atoms[0].get_is_aromatic());
     assert_eq!(atoms[0].get_atomic_num(), 6);
 
     // these three need to be wrapped in a Result since it can throw an

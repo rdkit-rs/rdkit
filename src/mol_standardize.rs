@@ -18,6 +18,12 @@ pub struct TautomerEnumerator {
     pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::TautomerEnumerator>,
 }
 
+impl Default for TautomerEnumerator {
+    fn default() -> Self {
+        TautomerEnumerator::new()
+    }
+}
+
 impl TautomerEnumerator {
     pub fn new() -> Self {
         let ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator();

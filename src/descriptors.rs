@@ -8,6 +8,12 @@ pub struct Properties {
     ptr: SharedPtr<rdkit_sys::descriptors_ffi::Properties>,
 }
 
+impl Default for Properties {
+    fn default() -> Self {
+        Properties::new()
+    }
+}
+
 impl Properties {
     pub fn new() -> Self {
         Properties {
@@ -24,7 +30,7 @@ impl Properties {
 
         names
             .into_iter()
-            .zip(computed.into_iter())
+            .zip(computed.as_slice())
             .map(|(k, v)| (k.to_string(), *v))
             .collect()
     }

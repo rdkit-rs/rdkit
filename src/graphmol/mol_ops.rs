@@ -61,6 +61,12 @@ pub struct RemoveHsParameters {
     ptr: SharedPtr<rdkit_sys::mol_ops_ffi::RemoveHsParameters>,
 }
 
+impl Default for RemoveHsParameters {
+    fn default() -> Self {
+        RemoveHsParameters::new()
+    }
+}
+
 impl RemoveHsParameters {
     pub fn new() -> Self {
         let ptr = rdkit_sys::mol_ops_ffi::new_remove_hs_parameters();
