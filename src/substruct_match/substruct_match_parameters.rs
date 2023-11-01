@@ -1,19 +1,11 @@
-use cxx::{CxxVector, SharedPtr};
+use cxx::SharedPtr;
 use rdkit_sys::substruct_match_ffi::new_substruct_match_parameters;
 
-use crate::{ROMol, SubstructMatchItem};
-
-pub fn substruct_match(
-    mol: &ROMol,
-    query: &ROMol,
-    params: &SubstructMatchParameters,
-) -> Vec<SubstructMatchItem> {
-}
-
 pub struct SubstructMatchParameters {
-    ptr: SharedPtr<rdkit_sys::substruct_match_ffi::SubstructMatchParameters>,
+    pub ptr: SharedPtr<rdkit_sys::substruct_match_ffi::SubstructMatchParameters>,
 }
 
+#[allow(dead_code)]
 impl SubstructMatchParameters {
     pub fn new() -> Self {
         let ptr = new_substruct_match_parameters();

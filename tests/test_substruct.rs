@@ -1,4 +1,4 @@
-use rdkit::{substruct_match::substruct_match, ROMol, SubstructMatchParameters};
+use rdkit::{substruct_match, ROMol, SubstructMatchParameters};
 
 #[test]
 fn test_substruct_match() {
@@ -6,6 +6,6 @@ fn test_substruct_match() {
     let query = ROMol::from_smile("C").unwrap();
     let params = SubstructMatchParameters::new();
 
-    let does_it_match = substruct_match(&mol, &query);
-    assert_eq!(does_it_match, true);
+    let does_it_match = substruct_match(&mol, &query, &params);
+    assert_eq!(does_it_match.len(), 42);
 }
