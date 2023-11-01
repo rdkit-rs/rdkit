@@ -1,4 +1,4 @@
-const CPP_VERSION_FLAG: &'static str = "-std=c++17";
+const CPP_VERSION_FLAG: &str = "-std=c++17";
 
 fn main() {
     if std::env::var("DOCS_RS").is_ok() {
@@ -26,7 +26,7 @@ fn main() {
                         .map(|p| p.to_str().unwrap().to_string())
                         .unwrap_or_else(|_| panic!("conda not found"));
                     let mut conda = std::process::Command::new(conda);
-                    conda.args(&["info", "--base"]);
+                    conda.args(["info", "--base"]);
 
                     let output = conda.output().unwrap();
                     let stdout = String::from_utf8(output.stdout).unwrap();
@@ -94,8 +94,8 @@ fn main() {
         let h_path = wrapper_root
             .join("include")
             .join(format!("{}.h", base_name));
-        let meta =
-            std::fs::metadata(&h_path).expect(&format!("could not get metadata for {h_path:?}"));
+        let meta = std::fs::metadata(&h_path)
+            .unwrap_or_else(|_| panic!("could not get metadata for {h_path:?}"));
         if !meta.is_file() {
             panic!("{} must exist", h_path.display())
         }

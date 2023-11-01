@@ -5,6 +5,12 @@ pub struct SubstructMatchParameters {
     pub ptr: SharedPtr<rdkit_sys::substruct_match_ffi::SubstructMatchParameters>,
 }
 
+impl Default for SubstructMatchParameters {
+    fn default() -> Self {
+        SubstructMatchParameters::new()
+    }
+}
+
 #[allow(dead_code)]
 impl SubstructMatchParameters {
     pub fn new() -> Self {

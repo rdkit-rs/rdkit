@@ -93,6 +93,6 @@ impl<'a> Iterator for AtomIter<'a> {
         let atom = self.ro_mol.atom_with_idx(self.idx);
         self.idx += 1;
 
-        return Some(atom);
+        Some(atom)
     }
 }
