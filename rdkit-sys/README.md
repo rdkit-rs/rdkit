@@ -13,13 +13,6 @@ The goal is to do 1-1 bindings with the C++ library, exposing all the classes as
 a high-level functionality like the MinimalLib (cffiwrapper). Our goal is to expose the building blocks. If you're looking
 for idiomatic Rust, check out the [rdkit](https://crates.io/crate/rdkit) crate.
 
-Static Linking
----
-
-The `build.rs` script informs cargo how to find headers, library files, and finally how to link the final result. This crate
-currently links all RDKit libraries statically, meaning output binaries are portable and users of your software will
-not need to find their own RDKit.
-
 Prerequisites
 ---
 
@@ -27,8 +20,7 @@ On Mac:
 
     brew install rdkit
 
-boost is a RDKit C++ dependency, cmake is how you create RDKit's Makefile, llvm is used by bind-gen to create the rust
-bindings.rs file with all the dylib definitions required to use RDKit from rust.
+Also known to work with conda-managed RDKit, be sure to set the `dynamic-linking-from-conda` feature. Not as tested, please open an issue if you have a hard time.
 
 Testing
 ---
