@@ -1,0 +1,46 @@
+on:
+  pull_request: {}
+
+env:
+  REGISTRY: ghcr.io
+  REPO_LOWER: rdkit-rs/cheminee
+
+jobs:
+  test:
+    env:
+      ARCH: amd64
+    runs-on: buildjet-16vcpu-ubuntu-2204
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Run sccache-cache
+        uses: mozilla/sccache-action@eaed7fb9f8fb32adea8bd40d7f276f312de9beaf
+        with:
+          version: "v0.4.0-pre.10"
+
+      - name: Run sccache stat for check
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+
+      - name: Install rdkit
+        run: |
+          sudo bash -c "echo 'deb [trusted=yes] https://rdkit-rs-debian.s3.amazonaws.com jammy main' > /etc/apt/sources.list.d/rdkit-rs.list"
+          sudo apt-get update
+          sudo apt-get install -y build-essential librdkit-dev libssl-dev libboost1.74-dev libboost-serialization1.74-dev pkg-config
+
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name: Rust Format Check
+        run: RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+
+      - name: Clippy Check
+        run: RUST_WRAPPER=$SCCACHE_PATH cargo clippy
