@@ -78,7 +78,15 @@ jobs:
           components: rustfmt, clippy
 
       - name: Rust Format Check
-        run: RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+        run: |
+          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+          pushd rdkit-sys
+          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+          popd
 
       - name: Clippy Check
-        run: RUST_WRAPPER=$SCCACHE_PATH cargo clippy
+        run: |
+          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
+          pushd rdkit-sys
+          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
+          popd
