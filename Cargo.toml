@@ -16,7 +16,7 @@ byteorder = "1.4.3"
 cxx = "1"
 flate2 = "1"
 log = "0.4"
-rdkit-sys = { path = "rdkit-sys" }
+rdkit-sys = { path = "rdkit-sys", version = "0.4.1" }
 thiserror = "1"
 
 [dev-dependencies]
