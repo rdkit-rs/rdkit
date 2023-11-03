@@ -1,7 +1,7 @@
 use cxx::SharedPtr;
 
 pub struct ScaffoldNetworkParams {
-    ptr: SharedPtr<rdkit_sys::scaffold_network_ffi::ScaffoldNetworkParams>,
+    ptr: SharedPtr<rdkit_sys::scaffold_network_ffi::ScaffoldNetworkParamsLocal>,
 }
 
 impl Default for ScaffoldNetworkParams {
