@@ -10,6 +10,11 @@ fn test_atom() {
     assert!(!atoms[0].get_is_aromatic());
     assert_eq!(atoms[0].get_atomic_num(), 6);
 
+    assert_eq!(
+        atoms[0].get_hybridization_type(),
+        rdkit::HybridizationType::SP3
+    );
+
     // these three need to be wrapped in a Result since it can throw an
     // exception
     //

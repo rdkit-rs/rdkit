@@ -34,5 +34,9 @@ namespace RDKit {
     void set_num_explicit_hs(std::shared_ptr<Atom> &atom, int what);
     void atom_update_property_cache(std::shared_ptr<Atom> &mol, bool strict);
 
+    using HybridizationType = Atom::HybridizationType;
+    void atom_set_hybridization(std::shared_ptr<Atom> &atom, HybridizationType what);
+    HybridizationType atom_get_hybridization(const std::shared_ptr<Atom> &atom);
+
     void ro_mol_update_property_cache(std::shared_ptr<ROMol> &mol, bool strict);
 }

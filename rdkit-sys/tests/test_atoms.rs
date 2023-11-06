@@ -19,4 +19,10 @@ fn test_atoms() {
         &atoms,
         &["C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C"]
     );
+
+    let mut atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&romol, 2);
+    rdkit_sys::ro_mol_ffi::atom_set_hybridization(
+        &mut atom,
+        rdkit_sys::ro_mol_ffi::HybridizationType::SP3,
+    );
 }

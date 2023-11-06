@@ -1,4 +1,4 @@
-use rdkit::{add_hs, remove_hs, ROMol, RemoveHsParameters};
+use rdkit::{add_hs, remove_hs, set_hybridization, ROMol, RemoveHsParameters};
 
 // # Create mol and check for chemistry problems
 //        mol = Chem.MolFromSmiles(smiles, sanitize=False)
@@ -33,8 +33,10 @@ fn test_remove_hs() {
     assert_eq!(new_new_smile, "C");
 
     let remove_hs_parameters = RemoveHsParameters::new();
-    let new_new_new_mol = remove_hs(&new_new_mol, &remove_hs_parameters, true);
+    let mut new_new_new_mol = remove_hs(&new_new_mol, &remove_hs_parameters, true);
     let new_new_new_smile = new_new_new_mol.as_smile();
+
+    set_hybridization(&mut new_new_new_mol);
 
     assert_eq!(new_new_new_smile, "C");
 }

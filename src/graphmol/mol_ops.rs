@@ -201,3 +201,7 @@ impl RemoveHsParameters {
         rdkit_sys::mol_ops_ffi::set_remove_nontetrahedral_neighbors(&mut self.ptr, what)
     }
 }
+
+pub fn set_hybridization(romol: &mut ROMol) {
+    rdkit_sys::mol_ops_ffi::romol_set_hybridization(&mut romol.ptr);
+}

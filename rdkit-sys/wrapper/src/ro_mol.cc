@@ -105,6 +105,14 @@ namespace RDKit {
       atom->updatePropertyCache(strict);
     }
 
+    using HybridizationType = Atom::HybridizationType;
+    void atom_set_hybridization(std::shared_ptr<Atom> &atom, HybridizationType what) {
+      atom->setHybridization(what);
+    }
+    HybridizationType atom_get_hybridization(const std::shared_ptr<Atom> &atom) {
+      return atom->getHybridization();
+    }
+
     void ro_mol_update_property_cache(std::shared_ptr<ROMol> &mol, bool strict) {
       mol->updatePropertyCache(strict);
     }

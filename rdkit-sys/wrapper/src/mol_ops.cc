@@ -135,7 +135,7 @@ namespace RDKit {
     return std::shared_ptr<ROMol>(new_mol);
   }
 
-  void set_hybridization(std::shared_ptr<ROMol> &mol) {
+  void romol_set_hybridization(std::shared_ptr<ROMol> &mol) {
     MolOps::setHybridization(*mol);
   }
 }

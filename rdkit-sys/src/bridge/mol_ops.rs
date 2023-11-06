@@ -79,7 +79,6 @@ pub mod ffi {
             add_residue_info: bool,
         ) -> SharedPtr<ROMol>;
 
-        // void set_hybridization(std::shared_ptr<ROMol> &mol);
-        pub fn set_hybridization(mol: &mut SharedPtr<ROMol>);
+        pub fn romol_set_hybridization(mol: &mut SharedPtr<ROMol>);
     }
 }
