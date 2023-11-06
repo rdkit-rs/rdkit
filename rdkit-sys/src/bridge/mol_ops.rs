@@ -5,6 +5,7 @@ pub mod ffi {
         include!("wrapper/include/mol_ops.h");
 
         pub type ROMol = crate::ro_mol_ffi::ROMol;
+        pub type RWMol = crate::rw_mol_ffi::RWMol;
 
         pub type RemoveHsParameters;
         pub fn new_remove_hs_parameters() -> SharedPtr<RemoveHsParameters>;
@@ -80,5 +81,7 @@ pub mod ffi {
         ) -> SharedPtr<ROMol>;
 
         pub fn romol_set_hybridization(mol: &mut SharedPtr<ROMol>);
+
+        pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>);
     }
 }

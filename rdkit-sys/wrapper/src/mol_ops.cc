@@ -138,4 +138,8 @@ namespace RDKit {
   void romol_set_hybridization(std::shared_ptr<ROMol> &mol) {
     MolOps::setHybridization(*mol);
   }
+
+  void clean_up(std::shared_ptr<RWMol> &rw_mol) {
+    MolOps::cleanUp(*rw_mol);
+  }
 }

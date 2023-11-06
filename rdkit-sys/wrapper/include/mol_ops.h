@@ -67,4 +67,7 @@ namespace RDKit {
   std::shared_ptr<ROMol> add_hs(const std::shared_ptr<ROMol> &mol, bool explicit_only, bool add_coords, bool add_residue_info);
 
   void romol_set_hybridization(std::shared_ptr<ROMol> &mol);
+
+  // pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>)
+  void clean_up(std::shared_ptr<RWMol> &rw_mol);
 }
