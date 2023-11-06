@@ -8,6 +8,7 @@ use crate::ROMol;
 pub struct Atom {
     ptr: SharedPtr<rdkit_sys::ro_mol_ffi::Atom>,
 }
+pub use rdkit_sys::ro_mol_ffi::HybridizationType;
 
 impl std::fmt::Display for Atom {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -62,6 +63,14 @@ impl Atom {
 
     pub fn update_property_cache(&mut self, strict: bool) {
         ro_mol_ffi::atom_update_property_cache(&mut self.ptr, strict)
+    }
+
+    pub fn set_hybridization_type(&mut self, what: HybridizationType) {
+        ro_mol_ffi::atom_set_hybridization(&mut self.ptr, what);
+    }
+
+    pub fn get_hybridization_type(&self) -> HybridizationType {
+        ro_mol_ffi::atom_get_hybridization(&self.ptr)
     }
 }
 

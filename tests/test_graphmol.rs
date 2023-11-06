@@ -1,6 +1,7 @@
 use rdkit::{
-    detect_chemistry_problems, fragment_parent, CleanupParameters, MolSanitizeException, ROMol,
-    ROMolError, RWMol, SmilesParserParams, TautomerEnumerator, Uncharger,
+    detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
+    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters,
+    TautomerEnumerator, Uncharger,
 };
 
 #[test]
@@ -279,4 +280,17 @@ fn test_detect_chemistry_problems() {
 
     let problem_atom_two = mol.atom_with_idx(11);
     assert_eq!(format!("{}", problem_atom_two), "N");
+}
+
+#[test]
+fn test_building_rwmol_from_smarts() {
+    let smarts = "[+1!h0!$([*]~[-1,-2,-3,-4]),-1!$([*]~[+1,+2,+3,+4])]";
+
+    let ro_mol = ROMol::from_smile("C[N+](C)(C)C").unwrap();
+
+    let rwmol = RWMol::from_smarts(smarts).unwrap();
+    let query_mol = rwmol.to_ro_mol();
+
+    let result = substruct_match(&ro_mol, &query_mol, &SubstructMatchParameters::default());
+    assert_eq!(result.len(), 0);
 }

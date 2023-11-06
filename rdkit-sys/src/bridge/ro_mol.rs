@@ -1,5 +1,19 @@
 #[cxx::bridge(namespace = "RDKit")]
 pub mod ffi {
+    #[repr(i32)]
+    #[derive(Debug, PartialEq)]
+    pub enum HybridizationType {
+        UNSPECIFIED,
+        S,
+        SP,
+        SP2,
+        SP3,
+        SP2D,
+        SP3D,
+        SP3D2,
+        OTHER,
+    }
+
     unsafe extern "C++" {
         include!("wrapper/include/ro_mol.h");
 
@@ -7,6 +21,7 @@ pub mod ffi {
         pub type ExplicitBitVect = crate::fingerprint_ffi::ExplicitBitVect;
         pub type SmilesParserParams;
         pub type Atom;
+        pub type HybridizationType;
 
         pub type MolSanitizeException;
         pub type MolSanitizeExceptionUniquePtr; //  = UniquePtr<MolSanitizeException>;
@@ -50,6 +65,8 @@ pub mod ffi {
         pub fn set_formal_charge(atom: &mut SharedPtr<Atom>, what: i32);
         pub fn set_num_explicit_hs(atom: &mut SharedPtr<Atom>, what: i32);
         pub fn atom_update_property_cache(atom: &mut SharedPtr<Atom>, strict: bool);
+        pub fn atom_set_hybridization(atom: &mut SharedPtr<Atom>, what: HybridizationType);
+        pub fn atom_get_hybridization(atom: &SharedPtr<Atom>) -> HybridizationType;
 
         pub fn ro_mol_update_property_cache(atom: &mut SharedPtr<ROMol>, strict: bool);
     }

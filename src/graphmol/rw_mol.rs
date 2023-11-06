@@ -18,12 +18,8 @@ impl RWMol {
     ) -> Option<Self> {
         let_cxx_string!(mol_block = mol_block);
 
-        let ptr = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(
-            &mol_block,
-            sanitize,
-            remove_hs,
-            strict_parsing,
-        );
+        let ptr =
+            rw_mol_ffi::rw_mol_from_mol_block(&mol_block, sanitize, remove_hs, strict_parsing);
 
         if ptr.is_null() {
             None
@@ -50,6 +46,13 @@ impl RWMol {
             >(self.ptr)
         };
         ROMol { ptr }
+    }
+
+    pub fn from_smarts(smarts: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let_cxx_string!(smarts = smarts);
+
+        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts)?;
+        Ok(RWMol { ptr })
     }
 }
 
