@@ -65,4 +65,6 @@ namespace RDKit {
   );
 
   std::shared_ptr<ROMol> add_hs(const std::shared_ptr<ROMol> &mol, bool explicit_only, bool add_coords, bool add_residue_info);
+
+  void set_hybridization(std::shared_ptr<ROMol> &mol);
 }
