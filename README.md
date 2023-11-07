@@ -1,7 +1,7 @@
 RDKit
 ---
 
-A high-level library for performing common RDKit tasks such as SMILE parsing, molecule normalization, etc. Uses
+A high-level library for performing common RDKit tasks such as SMILES parsing, molecule normalization, etc. Uses
 the C++ API via bindings from [rdkit-sys](https://crates.io/crate/rdkit-sys).
 
 Prerequisites

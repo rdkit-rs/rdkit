@@ -7,8 +7,8 @@ fn test_rw_mol_from_smarts() {
     let rwmol = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts).unwrap();
     let romol = rdkit_sys::rw_mol_ffi::rw_mol_to_ro_mol(rwmol);
 
-    let smile = rdkit_sys::ro_mol_ffi::mol_to_smiles(&romol);
-    assert_eq!(smile, "*".to_string());
+    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&romol);
+    assert_eq!(smiles, "*".to_string());
 }
 
 #[test]

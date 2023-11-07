@@ -9,7 +9,7 @@
 //! It is highly recommend you read through the [RDKit C++ API documentation](https://www.rdkit.org/docs/cppapi/index.html) to learn more
 //! about what exactly is possible with RDKit.
 //!
-//! If you just want high level access to SMILE parsing and various clean up
+//! If you just want high level access to SMILES parsing and various clean up
 //! operations, please refer to the high level accompanying crate [rdkit](https://www.crates.io/crate/rdkit).
 
 mod bridge;
