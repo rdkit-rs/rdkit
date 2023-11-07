@@ -1,6 +1,6 @@
 #[test]
 fn test_atom() {
-    let romol = rdkit::ROMol::from_smile("C").unwrap();
+    let romol = rdkit::ROMol::from_smiles("C").unwrap();
 
     let atom_iter = romol.atoms(true);
     let atoms = atom_iter.collect::<Vec<_>>();

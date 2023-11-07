@@ -3,8 +3,8 @@ use rdkit::ROMol;
 
 #[test]
 fn test_fingerprint() {
-    let smile = "c1ccccc1CCCCCCCC";
-    let mol = ROMol::from_smile(smile).unwrap();
+    let smiles = "c1ccccc1CCCCCCCC";
+    let mol = ROMol::from_smiles(smiles).unwrap();
     let fingerprint = mol.fingerprint();
     let expected = bitvec![
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

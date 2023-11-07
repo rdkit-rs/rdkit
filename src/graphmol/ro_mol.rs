@@ -11,16 +11,16 @@ pub struct ROMol {
 
 #[derive(Debug, PartialEq, thiserror::Error)]
 pub enum ROMolError {
-    #[error("could not convert smile to romol (nullptr)")]
+    #[error("could not convert smiles to romol (nullptr)")]
     UnknownConversionError,
-    #[error("could not convert smile to romol (exception)")]
+    #[error("could not convert smiles to romol (exception)")]
     ConversionException(String),
 }
 
 impl ROMol {
-    pub fn from_smile(smile: &str) -> Result<Self, ROMolError> {
-        let_cxx_string!(smile_cxx_string = smile);
-        let ptr = ro_mol_ffi::smiles_to_mol(&smile_cxx_string);
+    pub fn from_smiles(smiles: &str) -> Result<Self, ROMolError> {
+        let_cxx_string!(smiles_cxx_string = smiles);
+        let ptr = ro_mol_ffi::smiles_to_mol(&smiles_cxx_string);
         match ptr {
             Ok(ptr) => {
                 if ptr.is_null() {
@@ -33,16 +33,16 @@ impl ROMol {
         }
     }
 
-    pub fn from_smile_with_params(
-        smile: &str,
+    pub fn from_smiles_with_params(
+        smiles: &str,
         params: &SmilesParserParams,
     ) -> Result<Self, cxx::Exception> {
-        let_cxx_string!(smile_cxx_string = smile);
-        let ptr = ro_mol_ffi::smiles_to_mol_with_params(&smile_cxx_string, &params.ptr)?;
+        let_cxx_string!(smiles_cxx_string = smiles);
+        let ptr = ro_mol_ffi::smiles_to_mol_with_params(&smiles_cxx_string, &params.ptr)?;
         Ok(Self { ptr })
     }
 
-    pub fn as_smile(&self) -> String {
+    pub fn as_smiles(&self) -> String {
         ro_mol_ffi::mol_to_smiles(&self.ptr)
     }
 
@@ -76,8 +76,8 @@ impl ROMol {
 
 impl Debug for ROMol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let smile = self.as_smile();
-        f.debug_tuple("ROMol").field(&smile).finish()
+        let smiles = self.as_smiles();
+        f.debug_tuple("ROMol").field(&smiles).finish()
     }
 }
 

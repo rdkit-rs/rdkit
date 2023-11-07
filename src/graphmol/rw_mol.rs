@@ -28,7 +28,7 @@ impl RWMol {
         }
     }
 
-    pub fn as_smile(&self) -> String {
+    pub fn as_smiles(&self) -> String {
         let cast_ptr = unsafe {
             std::mem::transmute::<
                 SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
@@ -65,7 +65,7 @@ impl Clone for RWMol {
 
 impl std::fmt::Debug for RWMol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let smile = self.as_smile();
-        f.debug_tuple("RWMol").field(&smile).finish()
+        let smiles = self.as_smiles();
+        f.debug_tuple("RWMol").field(&smiles).finish()
     }
 }

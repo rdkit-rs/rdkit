@@ -2,8 +2,8 @@ use cxx::let_cxx_string;
 
 #[test]
 fn test_descriptors() {
-    let_cxx_string!(smile = "c1ccccc1C(=O)NC");
-    let mol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smile).unwrap();
+    let_cxx_string!(smiles = "c1ccccc1C(=O)NC");
+    let mol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
 
     let properties = rdkit_sys::descriptors_ffi::new_properties();
 
