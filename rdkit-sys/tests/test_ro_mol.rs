@@ -38,7 +38,7 @@ fn parse_without_sanitize_test() {
 
     assert!(romol.is_ok());
 
-    let romol = romol.unwrap();
+    let mut romol = romol.unwrap();
     let problems = rdkit_sys::ro_mol_ffi::detect_chemistry_problems(&romol);
     assert_eq!(problems.len(), 2);
 
@@ -56,8 +56,10 @@ fn parse_without_sanitize_test() {
 
     let atoms = atom_idxs
         .into_iter()
-        .map(|idx| rdkit_sys::ro_mol_ffi::get_atom_with_idx(&romol, idx))
-        .map(|a| rdkit_sys::ro_mol_ffi::get_symbol(&a))
+        .map(|idx| {
+            let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, idx);
+            rdkit_sys::ro_mol_ffi::get_symbol(atom.as_ref())
+        })
         .collect::<Vec<_>>();
     assert_eq!(atoms, &["N", "N"]);
 }

@@ -264,7 +264,7 @@ fn test_detect_chemistry_problems() {
     let smile = "N#[N]c1ccc(cc1)N(C)CN(C)(C)(C)";
     let mut parser_params = SmilesParserParams::default();
     parser_params.sanitize(false);
-    let mol = ROMol::from_smile_with_params(smile, &parser_params).unwrap();
+    let mut mol = ROMol::from_smile_with_params(smile, &parser_params).unwrap();
 
     let problems = detect_chemistry_problems(&mol);
     assert_eq!(
