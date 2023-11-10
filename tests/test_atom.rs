@@ -1,6 +1,6 @@
 #[test]
 fn test_atom() {
-    let mut romol = rdkit::ROMol::from_smile("C").unwrap();
+    let romol = rdkit::ROMol::from_smiles("C").unwrap();
 
     let atom = romol.atom_with_idx(0);
 

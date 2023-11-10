@@ -33,10 +33,10 @@ mod tests {
 
     #[test]
     fn make_sure_fingerprint_works() {
-        let mol = ROMol::from_smile("CCC=O").unwrap();
+        let mol = ROMol::from_smiles("CCC=O").unwrap();
         let fingerprint = mol.fingerprint();
 
-        let mol_two = ROMol::from_smile("CCC=N").unwrap();
+        let mol_two = ROMol::from_smiles("CCC=N").unwrap();
         let fingerprint_two = mol_two.fingerprint();
 
         let distance = fingerprint.tanimoto_distance(&fingerprint_two);
