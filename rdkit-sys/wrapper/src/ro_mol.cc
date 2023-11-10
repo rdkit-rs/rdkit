@@ -69,48 +69,45 @@ namespace RDKit {
       return mol->getNumAtoms(only_explicit);
     }
 
-    std::shared_ptr<Atom> get_atom_with_idx(const std::shared_ptr<ROMol> &mol, unsigned int idx) {
-      Atom *borrowed_atom = mol->getAtomWithIdx(idx);
-      Atom *atom = new Atom((*borrowed_atom));
-
-      return std::shared_ptr<Atom>(atom);
+    Atom& get_atom_with_idx(std::shared_ptr<ROMol> &mol, unsigned int idx) {
+      return *mol->getAtomWithIdx(idx);
     }
 
-    rust::String get_symbol(const std::shared_ptr<Atom> &atom) {
-      return atom->getSymbol();
+    rust::String get_symbol(const Atom &atom) {
+      return atom.getSymbol();
     }
 
-    bool get_is_aromatic(const std::shared_ptr<Atom> &atom) {
-      return atom->getIsAromatic();
+    bool get_is_aromatic(const Atom &atom) {
+      return atom.getIsAromatic();
     }
-    int get_atomic_num(const std::shared_ptr<Atom> &atom) {
-      return atom->getAtomicNum();
+    int get_atomic_num(const Atom &atom) {
+      return atom.getAtomicNum();
     }
-    int get_formal_charge(const std::shared_ptr<Atom> &atom) {
-      return atom->getFormalCharge();
+    int get_formal_charge(const Atom &atom) {
+      return atom.getFormalCharge();
     }
-    unsigned int get_total_num_hs(const std::shared_ptr<Atom> &atom) {
-      return atom->getTotalNumHs();
+    unsigned int get_total_num_hs(const Atom &atom) {
+      return atom.getTotalNumHs();
     }
-    unsigned int get_total_valence(const std::shared_ptr<Atom> &atom) {
-      return atom->getTotalValence();
+    unsigned int get_total_valence(const Atom &atom) {
+      return atom.getTotalValence();
     }
-    void set_formal_charge(std::shared_ptr<Atom> &atom, int what) {
-      atom->setFormalCharge(what);
+    void set_formal_charge(Atom &atom, int what) {
+      atom.setFormalCharge(what);
     }
-    void set_num_explicit_hs(std::shared_ptr<Atom> &atom, int what) {
-      atom->setNumExplicitHs(what);
+    void set_num_explicit_hs(Atom &atom, int what) {
+      atom.setNumExplicitHs(what);
     }
-    void atom_update_property_cache(std::shared_ptr<Atom> &atom, bool strict) {
-      atom->updatePropertyCache(strict);
+    void atom_update_property_cache(Atom &atom, bool strict) {
+      atom.updatePropertyCache(strict);
     }
 
     using HybridizationType = Atom::HybridizationType;
-    void atom_set_hybridization(std::shared_ptr<Atom> &atom, HybridizationType what) {
-      atom->setHybridization(what);
+    void atom_set_hybridization(Atom &atom, HybridizationType what) {
+      atom.setHybridization(what);
     }
-    HybridizationType atom_get_hybridization(const std::shared_ptr<Atom> &atom) {
-      return atom->getHybridization();
+    HybridizationType atom_get_hybridization(const Atom &atom) {
+      return atom.getHybridization();
     }
 
     void ro_mol_update_property_cache(std::shared_ptr<ROMol> &mol, bool strict) {

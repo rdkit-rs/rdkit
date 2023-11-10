@@ -10,8 +10,8 @@ fn test_atoms() {
     let atoms = (0..num_atoms)
         .into_iter()
         .map(|idx| {
-            let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&romol, idx);
-            rdkit_sys::ro_mol_ffi::get_symbol(&atom)
+            let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, idx);
+            rdkit_sys::ro_mol_ffi::get_symbol(atom.as_ref())
         })
         .collect::<Vec<_>>();
 
@@ -20,9 +20,9 @@ fn test_atoms() {
         &["C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C"]
     );
 
-    let mut atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&romol, 2);
+    let mut atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 2);
     rdkit_sys::ro_mol_ffi::atom_set_hybridization(
-        &mut atom,
+        atom.as_mut(),
         rdkit_sys::ro_mol_ffi::HybridizationType::SP3,
     );
 }

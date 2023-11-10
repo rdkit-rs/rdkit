@@ -3,7 +3,7 @@ use std::fmt::{Debug, Formatter};
 use cxx::let_cxx_string;
 use rdkit_sys::*;
 
-use crate::{Atom, AtomIter, Fingerprint, RWMol};
+use crate::{Atom, Fingerprint, RWMol};
 
 pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
@@ -56,16 +56,12 @@ impl ROMol {
         Fingerprint::new(ptr)
     }
 
-    pub fn atoms(&self, only_explicit: bool) -> AtomIter {
-        AtomIter::new(self, only_explicit)
-    }
-
     pub fn num_atoms(&self, only_explicit: bool) -> u32 {
-        rdkit_sys::ro_mol_ffi::get_num_atoms(&self.ptr, only_explicit)
+        ro_mol_ffi::get_num_atoms(&self.ptr, only_explicit)
     }
 
-    pub fn atom_with_idx(&self, idx: u32) -> Atom {
-        let ptr = ro_mol_ffi::get_atom_with_idx(&self.ptr, idx);
+    pub fn atom_with_idx(&mut self, idx: u32) -> Atom {
+        let ptr = ro_mol_ffi::get_atom_with_idx(&mut self.ptr, idx);
         Atom::from_ptr(ptr)
     }
 
@@ -95,7 +91,7 @@ pub struct SmilesParserParams {
 
 impl SmilesParserParams {
     pub fn sanitize(&mut self, value: bool) {
-        rdkit_sys::ro_mol_ffi::smiles_parser_params_set_sanitize(&self.ptr, value);
+        ro_mol_ffi::smiles_parser_params_set_sanitize(&self.ptr, value);
     }
 }
 
