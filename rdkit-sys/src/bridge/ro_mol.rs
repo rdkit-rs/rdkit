@@ -56,7 +56,7 @@ pub mod ffi {
         pub fn mol_to_smiles_with_params(
             mol: &SharedPtr<ROMol>,
             params: &SharedPtr<SmilesWriteParams>,
-        ) -> String;
+        ) -> Result<String>;
 
         pub fn detect_chemistry_problems(
             mol: &SharedPtr<ROMol>,

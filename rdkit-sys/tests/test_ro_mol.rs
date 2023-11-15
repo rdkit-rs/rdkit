@@ -77,11 +77,33 @@ fn mol_to_smiles_with_params_diff_atom_root_test() {
 
     for at in 0..4 {
         rdkit_sys::ro_mol_ffi::smiles_write_params_set_rooted_at_atom(&params, at);
-        let aug_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles_with_params(&ro_mol, &params);
+        let aug_smiles =
+            rdkit_sys::ro_mol_ffi::mol_to_smiles_with_params(&ro_mol, &params).unwrap();
         smiles_set.insert(aug_smiles);
     }
 
     assert_eq!(smiles_set.len(), 4)
+}
+
+#[test]
+fn mol_to_smiles_rooted_at_atom_error() {
+    cxx::let_cxx_string!(smiles = "C(I)(Br)(F)");
+    let ro_mol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+
+    let params = rdkit_sys::ro_mol_ffi::new_smiles_write_params();
+
+    rdkit_sys::ro_mol_ffi::smiles_write_params_set_rooted_at_atom(&params, 4);
+    let aug_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles_with_params(&ro_mol, &params);
+
+    if let Err(e) = aug_smiles {
+        assert_eq!(
+            e.what(),
+            // a small typo in rdkit here.
+            "rootedAtomAtom must be less than the number of atoms"
+        )
+    } else {
+        panic!("expected err variant")
+    }
 }
 
 #[test]
@@ -96,7 +118,8 @@ fn mol_to_smiles_with_params_random_smiles_test() {
 
     let mut smiles_set: HashSet<String> = HashSet::new();
     for _ in 0..20 {
-        let aug_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles_with_params(&ro_mol, &params);
+        let aug_smiles =
+            rdkit_sys::ro_mol_ffi::mol_to_smiles_with_params(&ro_mol, &params).unwrap();
         smiles_set.insert(aug_smiles);
     }
 

@@ -1,6 +1,7 @@
 use std::fmt::{Debug, Formatter};
 
 use cxx::let_cxx_string;
+use log::error;
 use rdkit_sys::*;
 
 use crate::{Atom, Fingerprint, RWMol};
@@ -15,6 +16,8 @@ pub enum ROMolError {
     UnknownConversionError,
     #[error("could not convert smiles to romol (exception)")]
     ConversionException(String),
+    #[error("rooted_at_atom must be less than the number of atoms")]
+    RootedAtomBoundsError
 }
 
 impl ROMol {
@@ -46,7 +49,8 @@ impl ROMol {
         ro_mol_ffi::mol_to_smiles(&self.ptr)
     }
 
-    pub fn as_smiles_with_params(&self, params: &SmilesWriteParams) -> String {
+    pub fn as_smiles_with_params(&self, params: &SmilesWriteParams) -> Result<String, ROMolError> {
+
         ro_mol_ffi::mol_to_smiles_with_params(&self.ptr, &params.ptr)
     }
 
