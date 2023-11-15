@@ -1,7 +1,7 @@
 use rdkit::{
     detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
-    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters,
-    TautomerEnumerator, Uncharger,
+    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SmilesWriteParams,
+    SubstructMatchParameters, TautomerEnumerator, Uncharger,
 };
 
 #[test]
@@ -293,4 +293,49 @@ fn test_building_rwmol_from_smarts() {
 
     let result = substruct_match(&ro_mol, &query_mol, &SubstructMatchParameters::default());
     assert_eq!(result.len(), 0);
+}
+
+#[test]
+fn test_smiles_write_rooted_at_atom() {
+    let input_smi = "COc1cc(OC)c2c(c1)OC1(c3ccc(OC)c(OC)c3)C(c3ccccc3)CC(O)C21O";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+    let canonical_smi = ro_mol.as_smiles();
+
+    let mut params = SmilesWriteParams::default();
+    let another_can_smi = ro_mol.as_smiles_with_params(&params);
+
+    assert_eq!(canonical_smi, another_can_smi);
+    params.rooted_at_atom(1);
+
+    let non_canonical_smi = ro_mol.as_smiles_with_params(&params);
+    assert_ne!(canonical_smi, non_canonical_smi);
+}
+
+#[test]
+fn test_smiles_write_do_random() {
+    use std::collections::HashSet;
+    let input_smi = "COc1cc(OC)c2c(c1)OC1(c3ccc(OC)c(OC)c3)C(c3ccccc3)CC(O)C21O";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+
+    let mut params = SmilesWriteParams::default();
+    params.do_random(true);
+
+    let mut smiles_set: HashSet<String> = HashSet::new();
+    for _ in 0..20 {
+        let rand_smi = ro_mol.as_smiles_with_params(&params);
+        smiles_set.insert(rand_smi);
+    }
+    assert!(smiles_set.len() > 1);
+}
+
+#[test]
+fn test_as_random_smiles_vec() {
+    use std::collections::HashSet;
+    let input_smi = "COc1cc(OC)c2c(c1)OC1(c3ccc(OC)c(OC)c3)C(c3ccccc3)CC(O)C21O";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+
+    let smiles_vec = ro_mol.as_random_smiles_vec(20);
+    let smiles_set: HashSet<&String> = HashSet::from_iter(smiles_vec.iter());
+
+    assert!(smiles_set.len() > 1);
 }

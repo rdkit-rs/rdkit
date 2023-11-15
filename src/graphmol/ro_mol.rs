@@ -46,6 +46,18 @@ impl ROMol {
         ro_mol_ffi::mol_to_smiles(&self.ptr)
     }
 
+    pub fn as_smiles_with_params(&self, params: &SmilesWriteParams) -> String {
+        ro_mol_ffi::mol_to_smiles_with_params(&self.ptr, &params.ptr)
+    }
+
+    pub fn as_random_smiles_vec(&self, num_smiles: usize) -> Vec<String> {
+        let mut params = SmilesWriteParams::default();
+        params.do_random(true);
+        (0..num_smiles)
+            .map(|_| self.as_smiles_with_params(&params))
+            .collect()
+    }
+
     pub fn as_rw_mol(&self, quick_copy: bool, conf_id: i32) -> RWMol {
         let ptr = rw_mol_ffi::rw_mol_from_ro_mol(&self.ptr, quick_copy, conf_id);
         RWMol { ptr }
@@ -99,6 +111,28 @@ impl Default for SmilesParserParams {
     fn default() -> Self {
         SmilesParserParams {
             ptr: ro_mol_ffi::new_smiles_parser_params(),
+        }
+    }
+}
+
+pub struct SmilesWriteParams {
+    pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::SmilesWriteParams>,
+}
+
+impl SmilesWriteParams {
+    pub fn do_random(&mut self, value: bool) {
+        ro_mol_ffi::smiles_write_params_set_do_random(&self.ptr, value);
+    }
+
+    pub fn rooted_at_atom(&mut self, value: i32) {
+        ro_mol_ffi::smiles_write_params_set_rooted_at_atom(&self.ptr, value);
+    }
+}
+
+impl Default for SmilesWriteParams {
+    fn default() -> Self {
+        SmilesWriteParams {
+            ptr: ro_mol_ffi::new_smiles_write_params(),
         }
     }
 }
