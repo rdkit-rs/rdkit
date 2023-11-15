@@ -302,13 +302,25 @@ fn test_smiles_write_rooted_at_atom() {
     let canonical_smi = ro_mol.as_smiles();
 
     let mut params = SmilesWriteParams::default();
-    let another_can_smi = ro_mol.as_smiles_with_params(&params);
+    let another_can_smi = ro_mol.as_smiles_with_params(&params).unwrap();
 
     assert_eq!(canonical_smi, another_can_smi);
     params.rooted_at_atom(1);
 
-    let non_canonical_smi = ro_mol.as_smiles_with_params(&params);
+    let non_canonical_smi = ro_mol.as_smiles_with_params(&params).unwrap();
     assert_ne!(canonical_smi, non_canonical_smi);
+}
+
+#[test]
+fn test_smiles_out_of_bounds_rooted_at_atom() {
+    let input_smi = "C";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+
+    let mut params = SmilesWriteParams::default();
+    params.rooted_at_atom(1);
+
+    let result = ro_mol.as_smiles_with_params(&params);
+    assert!(result.is_err())
 }
 
 #[test]
@@ -322,7 +334,7 @@ fn test_smiles_write_do_random() {
 
     let mut smiles_set: HashSet<String> = HashSet::new();
     for _ in 0..20 {
-        let rand_smi = ro_mol.as_smiles_with_params(&params);
+        let rand_smi = ro_mol.as_smiles_with_params(&params).unwrap();
         smiles_set.insert(rand_smi);
     }
     assert!(smiles_set.len() > 1);

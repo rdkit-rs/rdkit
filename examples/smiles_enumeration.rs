@@ -8,9 +8,9 @@ fn enumerate_smiles(mol: &ROMol) -> Vec<String> {
     let n_atoms = mol.num_atoms(true);
     let mut params = SmilesWriteParams::default();
     let mut smiles_vec = Vec::new();
-    for atom_idx in 0..=n_atoms {
+    for atom_idx in 0..n_atoms {
         params.rooted_at_atom(atom_idx as i32);
-        let aug_smi = mol.as_smiles_with_params(&params);
+        let aug_smi = mol.as_smiles_with_params(&params).unwrap();
         smiles_vec.push(aug_smi);
     }
     smiles_vec

@@ -16,8 +16,8 @@ pub enum ROMolError {
     UnknownConversionError,
     #[error("could not convert smiles to romol (exception)")]
     ConversionException(String),
-    #[error("rooted_at_atom must be less than the number of atoms")]
-    RootedAtomBoundsError
+    #[error("could not write smiles from romol")]
+    SmilesWriteError(String),
 }
 
 impl ROMol {
@@ -49,16 +49,22 @@ impl ROMol {
         ro_mol_ffi::mol_to_smiles(&self.ptr)
     }
 
+    /// # Errors
+    /// Will return `Err` if rooted_at_atom within `params` is greater than the
+    /// number of atoms in the mol.
     pub fn as_smiles_with_params(&self, params: &SmilesWriteParams) -> Result<String, ROMolError> {
-
-        ro_mol_ffi::mol_to_smiles_with_params(&self.ptr, &params.ptr)
+        let res = ro_mol_ffi::mol_to_smiles_with_params(&self.ptr, &params.ptr);
+        match res {
+            Ok(smi) => Ok(smi),
+            Err(e) => Err(ROMolError::SmilesWriteError(e.to_string())),
+        }
     }
 
     pub fn as_random_smiles_vec(&self, num_smiles: usize) -> Vec<String> {
         let mut params = SmilesWriteParams::default();
         params.do_random(true);
         (0..num_smiles)
-            .map(|_| self.as_smiles_with_params(&params))
+            .map(|_| self.as_smiles_with_params(&params).unwrap())
             .collect()
     }
 
