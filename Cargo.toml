@@ -1,6 +1,6 @@
 [package]
 name = "rdkit"
-version = "0.4.4"
+version = "0.4.5"
 edition = "2021"
 authors = ["Xavier Lange <xrlange@gmail.com>"]
 license = "MIT"
@@ -16,7 +16,7 @@ byteorder = "1.4.3"
 cxx = "1"
 flate2 = "1"
 log = "0.4"
-rdkit-sys = { path = "rdkit-sys", version = "0.4.1" }
+rdkit-sys = { path = "rdkit-sys", version = "0.4.5" }
 thiserror = "1"
 
 [dev-dependencies]
