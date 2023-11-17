@@ -289,7 +289,7 @@ fn test_building_rwmol_from_smarts() {
     let rwmol = RWMol::from_smarts(smarts).unwrap();
     let query_mol = rwmol.to_ro_mol();
     let result = substruct_match(&romol, &query_mol, &SubstructMatchParameters::default());
-    println!("{:?}", result);
+    // println!("{:?}", result);
     assert_eq!(result.len(), 1);
 }
 
