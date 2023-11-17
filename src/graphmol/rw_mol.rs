@@ -18,12 +18,8 @@ impl RWMol {
     ) -> Option<Self> {
         let_cxx_string!(mol_block = mol_block);
 
-        let ptr = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(
-            &mol_block,
-            sanitize,
-            remove_hs,
-            strict_parsing,
-        );
+        let ptr =
+            rw_mol_ffi::rw_mol_from_mol_block(&mol_block, sanitize, remove_hs, strict_parsing);
 
         if ptr.is_null() {
             None
@@ -32,7 +28,7 @@ impl RWMol {
         }
     }
 
-    pub fn as_smile(&self) -> String {
+    pub fn as_smiles(&self) -> String {
         let cast_ptr = unsafe {
             std::mem::transmute::<
                 SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
@@ -51,6 +47,13 @@ impl RWMol {
         };
         ROMol { ptr }
     }
+
+    pub fn from_smarts(smarts: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let_cxx_string!(smarts = smarts);
+
+        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts)?;
+        Ok(RWMol { ptr })
+    }
 }
 
 impl Clone for RWMol {
@@ -62,7 +65,7 @@ impl Clone for RWMol {
 
 impl std::fmt::Debug for RWMol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let smile = self.as_smile();
-        f.debug_tuple("RWMol").field(&smile).finish()
+        let smiles = self.as_smiles();
+        f.debug_tuple("RWMol").field(&smiles).finish()
     }
 }

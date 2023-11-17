@@ -1,20 +1,12 @@
 use cxx::{ExternType, SharedPtr};
 
-pub struct SharedROMol {
-    s: SharedPtr<crate::ro_mol_ffi::ROMol>,
-}
-
-unsafe impl ExternType for SharedROMol {
-    type Id = cxx::type_id!("SharedROMol");
-    type Kind = cxx::kind::Opaque;
-}
-
 #[cxx::bridge(namespace = "RDKit")]
 pub mod ffi {
 
     unsafe extern "C++" {
         include!("wrapper/include/scaffold_network.h");
 
+        pub type ROMol = crate::ro_mol_ffi::ROMol;
         pub type ScaffoldNetworkParamsLocal;
 
         pub fn default_scaffold_network_params() -> SharedPtr<ScaffoldNetworkParamsLocal>;
@@ -89,7 +81,7 @@ pub mod ffi {
         pub fn default_scaffold_network() -> SharedPtr<ScaffoldNetworkClass>;
 
         pub fn create_scaffold_network(
-            mol: &CxxVector<crate::bridge::scaffold_network::SharedROMol>,
+            mol: &SharedPtr<ROMol>,
             scaffold_network_params: &SharedPtr<ScaffoldNetworkParamsLocal>,
         ) -> SharedPtr<ScaffoldNetworkClass>;
 

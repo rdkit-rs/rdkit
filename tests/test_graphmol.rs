@@ -1,47 +1,48 @@
 use rdkit::{
-    detect_chemistry_problems, fragment_parent, CleanupParameters, MolSanitizeException, ROMol,
-    ROMolError, RWMol, SmilesParserParams, TautomerEnumerator, Uncharger,
+    detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
+    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters,
+    TautomerEnumerator, Uncharger,
 };
 
 #[test]
 fn test_rdmol() {
-    let _ = ROMol::from_smile("c1ccccc1C(=O)NC").unwrap();
+    let _ = ROMol::from_smiles("c1ccccc1C(=O)NC").unwrap();
 }
 
 #[test]
 fn test_neutralize() {
     let smiles = "CCOC(=O)C(C)(C)OC1=CC=C(C=C1)Cl.CO.C1=CC(=CC=C1C(=O)N[C@@H](CCC(=O)O)C(=O)O)NCC2=CN=C3C(=N2)C(=O)NC(=N3)N";
-    let romol = ROMol::from_smile(smiles).unwrap();
+    let romol = ROMol::from_smiles(smiles).unwrap();
     let uncharger = Uncharger::new(false);
     let uncharged_mol = uncharger.uncharge(&romol);
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smile());
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smiles());
 }
 
 #[test]
 fn test_fragment_parent() {
     let smiles = "CCOC(=O)C(C)(C)OC1=CC=C(C=C1)Cl.CO.C1=CC(=CC=C1C(=O)N[C@@H](CCC(=O)O)C(=O)O)NCC2=CN=C3C(=N2)C(=O)NC(=N3)N";
-    let romol = ROMol::from_smile(smiles).unwrap();
+    let romol = ROMol::from_smiles(smiles).unwrap();
     let rwmol = romol.as_rw_mol(false, 1);
     let cleanup_params = CleanupParameters::default();
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, true);
     assert_eq!(
         "Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1",
-        parent_rwmol.as_smile()
+        parent_rwmol.as_smiles()
     );
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smile());
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles());
 }
 
 #[test]
 fn test_ro_mol_conversion_with_unknown_error() {
     let smiles = "string";
-    let romol = ROMol::from_smile(smiles);
+    let romol = ROMol::from_smiles(smiles);
     assert_eq!(romol.err(), Some(ROMolError::UnknownConversionError))
 }
 
 #[test]
 fn test_ro_mol_conversion_with_conversion_exception() {
     let smiles = "F(C)(C)(C)(C)(C)";
-    let romol = ROMol::from_smile(smiles);
+    let romol = ROMol::from_smiles(smiles);
     assert_eq!(
         romol.err(),
         Some(ROMolError::ConversionException(
@@ -53,7 +54,7 @@ fn test_ro_mol_conversion_with_conversion_exception() {
 #[test]
 fn test_enumerate_tautomer() {
     let smiles = "Oc1c(cccc3)c3nc2ccncc12";
-    let romol = ROMol::from_smile(smiles).unwrap();
+    let romol = ROMol::from_smiles(smiles).unwrap();
     let te = TautomerEnumerator::new();
     let ter = te.enumerate(&romol);
     let ts = ter.collect::<Vec<_>>();
@@ -63,7 +64,7 @@ fn test_enumerate_tautomer() {
 #[test]
 fn test_stdz() {
     let smiles = "CC.Oc1c(cccc3CC(C(=O)[O-]))c3nc2c(C[NH+])cncc12.[Cl-]";
-    let romol = ROMol::from_smile(smiles).unwrap();
+    let romol = ROMol::from_smiles(smiles).unwrap();
     let rwmol = romol.as_rw_mol(false, 1);
 
     let cleanup_params = CleanupParameters::default();
@@ -76,7 +77,7 @@ fn test_stdz() {
     let canon_taut = te.canonicalize(&uncharged_mol);
     assert_eq!(
         "[N]Cc1cncc2c(=O)c3cccc(CCC(=O)O)c3[nH]c12",
-        canon_taut.as_smile()
+        canon_taut.as_smiles()
     );
 }
 
@@ -255,7 +256,7 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
 "#;
 
     let rw_mol = RWMol::from_mol_block(mol_block, false, false, false).unwrap();
-    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smile());
+    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smiles());
 }
 
 #[test]
@@ -263,7 +264,7 @@ fn test_detect_chemistry_problems() {
     let smile = "N#[N]c1ccc(cc1)N(C)CN(C)(C)(C)";
     let mut parser_params = SmilesParserParams::default();
     parser_params.sanitize(false);
-    let mol = ROMol::from_smile_with_params(smile, &parser_params).unwrap();
+    let mut mol = ROMol::from_smiles_with_params(smile, &parser_params).unwrap();
 
     let problems = detect_chemistry_problems(&mol);
     assert_eq!(
@@ -279,4 +280,17 @@ fn test_detect_chemistry_problems() {
 
     let problem_atom_two = mol.atom_with_idx(11);
     assert_eq!(format!("{}", problem_atom_two), "N");
+}
+
+#[test]
+fn test_building_rwmol_from_smarts() {
+    let smarts = "[+1!h0!$([*]~[-1,-2,-3,-4]),-1!$([*]~[+1,+2,+3,+4])]";
+
+    let ro_mol = ROMol::from_smiles("C[N+](C)(C)C").unwrap();
+
+    let rwmol = RWMol::from_smarts(smarts).unwrap();
+    let query_mol = rwmol.to_ro_mol();
+
+    let result = substruct_match(&ro_mol, &query_mol, &SubstructMatchParameters::default());
+    assert_eq!(result.len(), 0);
 }

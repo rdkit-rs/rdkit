@@ -134,4 +134,12 @@ namespace RDKit {
     ROMol *new_mol = MolOps::addHs(*mol, explicit_only, add_coords, nullptr, add_residue_info);
     return std::shared_ptr<ROMol>(new_mol);
   }
+
+  void romol_set_hybridization(std::shared_ptr<ROMol> &mol) {
+    MolOps::setHybridization(*mol);
+  }
+
+  void clean_up(std::shared_ptr<RWMol> &rw_mol) {
+    MolOps::cleanUp(*rw_mol);
+  }
 }

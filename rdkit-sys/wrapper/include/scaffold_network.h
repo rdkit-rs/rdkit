@@ -36,9 +36,9 @@ namespace RDKit {
 
   std::shared_ptr<ScaffoldNetworkClass> default_scaffold_network();
 
-//  std::shared_ptr<ScaffoldNetworkClass> create_scaffold_network(const std::vector<ROMolSharedPtr> &mols, const std::shared_ptr<ScaffoldNetworkParamsLocal> &scaffold_network_params) {
-//    throw std::invalid_argument("sup");
-//  }
+  std::shared_ptr<ScaffoldNetworkClass> create_scaffold_network(const std::shared_ptr<ROMol> &mol, const std::shared_ptr<ScaffoldNetworkParamsLocal> &scaffold_network_params) {
+    throw std::invalid_argument("sup");
+  }
 
 //  pub fn create_scaffold_network(
 //      mol: &CxxVector<ROMolSharedPtr>,

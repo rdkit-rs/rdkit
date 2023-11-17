@@ -1,7 +1,7 @@
 use cxx::SharedPtr;
 use rdkit_sys::ro_mol_ffi as ro_mol;
 
-use crate::ROMol;
+use crate::{ROMol, RWMol};
 
 #[derive(Debug, PartialEq)]
 pub enum MolSanitizeException {
@@ -200,4 +200,12 @@ impl RemoveHsParameters {
     pub fn set_remove_nontetrahedral_neighbors(&mut self, what: bool) {
         rdkit_sys::mol_ops_ffi::set_remove_nontetrahedral_neighbors(&mut self.ptr, what)
     }
+}
+
+pub fn set_hybridization(romol: &mut ROMol) {
+    rdkit_sys::mol_ops_ffi::romol_set_hybridization(&mut romol.ptr);
+}
+
+pub fn clean_up(rw_mol: &mut RWMol) {
+    rdkit_sys::mol_ops_ffi::clean_up(&mut rw_mol.ptr);
 }

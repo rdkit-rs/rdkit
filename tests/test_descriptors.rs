@@ -4,7 +4,7 @@ use rdkit::{Properties, ROMol};
 
 #[test]
 fn test_a_thing() {
-    let mol = ROMol::from_smile("c1ccccc1C(=O)NC").unwrap();
+    let mol = ROMol::from_smiles("c1ccccc1C(=O)NC").unwrap();
     let properties = Properties::new();
     let computed: HashMap<String, f64> = properties.compute_properties(&mol);
     assert_eq!(*computed.get("NumAtoms").unwrap(), 19.0);
@@ -13,7 +13,7 @@ fn test_a_thing() {
 #[test]
 fn test_computing_properties() {
     let smiles = "CCOC(=O)C(C)(C)OC1=CC=C(C=C1)Cl.CO.C1=CC(=CC=C1C(=O)N[C@@H](CCC(=O)O)C(=O)O)NCC2=CN=C3C(=N2)C(=O)NC(=N3)N";
-    let romol = ROMol::from_smile(smiles).unwrap();
+    let romol = ROMol::from_smiles(smiles).unwrap();
 
     let properties = Properties::new();
 

@@ -3,7 +3,7 @@ use std::fmt::{Debug, Formatter};
 use cxx::let_cxx_string;
 use rdkit_sys::*;
 
-use crate::{Atom, AtomIter, Fingerprint, RWMol};
+use crate::{Atom, Fingerprint, RWMol};
 
 pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
@@ -11,16 +11,16 @@ pub struct ROMol {
 
 #[derive(Debug, PartialEq, thiserror::Error)]
 pub enum ROMolError {
-    #[error("could not convert smile to romol (nullptr)")]
+    #[error("could not convert smiles to romol (nullptr)")]
     UnknownConversionError,
-    #[error("could not convert smile to romol (exception)")]
+    #[error("could not convert smiles to romol (exception)")]
     ConversionException(String),
 }
 
 impl ROMol {
-    pub fn from_smile(smile: &str) -> Result<Self, ROMolError> {
-        let_cxx_string!(smile_cxx_string = smile);
-        let ptr = ro_mol_ffi::smiles_to_mol(&smile_cxx_string);
+    pub fn from_smiles(smiles: &str) -> Result<Self, ROMolError> {
+        let_cxx_string!(smiles_cxx_string = smiles);
+        let ptr = ro_mol_ffi::smiles_to_mol(&smiles_cxx_string);
         match ptr {
             Ok(ptr) => {
                 if ptr.is_null() {
@@ -33,16 +33,16 @@ impl ROMol {
         }
     }
 
-    pub fn from_smile_with_params(
-        smile: &str,
+    pub fn from_smiles_with_params(
+        smiles: &str,
         params: &SmilesParserParams,
     ) -> Result<Self, cxx::Exception> {
-        let_cxx_string!(smile_cxx_string = smile);
-        let ptr = ro_mol_ffi::smiles_to_mol_with_params(&smile_cxx_string, &params.ptr)?;
+        let_cxx_string!(smiles_cxx_string = smiles);
+        let ptr = ro_mol_ffi::smiles_to_mol_with_params(&smiles_cxx_string, &params.ptr)?;
         Ok(Self { ptr })
     }
 
-    pub fn as_smile(&self) -> String {
+    pub fn as_smiles(&self) -> String {
         ro_mol_ffi::mol_to_smiles(&self.ptr)
     }
 
@@ -56,16 +56,12 @@ impl ROMol {
         Fingerprint::new(ptr)
     }
 
-    pub fn atoms(&self, only_explicit: bool) -> AtomIter {
-        AtomIter::new(self, only_explicit)
-    }
-
     pub fn num_atoms(&self, only_explicit: bool) -> u32 {
-        rdkit_sys::ro_mol_ffi::get_num_atoms(&self.ptr, only_explicit)
+        ro_mol_ffi::get_num_atoms(&self.ptr, only_explicit)
     }
 
-    pub fn atom_with_idx(&self, idx: u32) -> Atom {
-        let ptr = ro_mol_ffi::get_atom_with_idx(&self.ptr, idx);
+    pub fn atom_with_idx(&mut self, idx: u32) -> Atom {
+        let ptr = ro_mol_ffi::get_atom_with_idx(&mut self.ptr, idx);
         Atom::from_ptr(ptr)
     }
 
@@ -76,8 +72,8 @@ impl ROMol {
 
 impl Debug for ROMol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let smile = self.as_smile();
-        f.debug_tuple("ROMol").field(&smile).finish()
+        let smiles = self.as_smiles();
+        f.debug_tuple("ROMol").field(&smiles).finish()
     }
 }
 
@@ -95,7 +91,7 @@ pub struct SmilesParserParams {
 
 impl SmilesParserParams {
     pub fn sanitize(&mut self, value: bool) {
-        rdkit_sys::ro_mol_ffi::smiles_parser_params_set_sanitize(&self.ptr, value);
+        ro_mol_ffi::smiles_parser_params_set_sanitize(&self.ptr, value);
     }
 }
 

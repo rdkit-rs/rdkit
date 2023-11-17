@@ -1,5 +1,18 @@
 #[cxx::bridge(namespace = "RDKit")]
 pub mod ffi {
+    #[repr(i32)]
+    #[derive(Debug, PartialEq)]
+    pub enum HybridizationType {
+        UNSPECIFIED,
+        S,
+        SP,
+        SP2,
+        SP3,
+        SP2D,
+        SP3D,
+        SP3D2,
+        OTHER,
+    }
 
     unsafe extern "C++" {
         include!("wrapper/include/ro_mol.h");
@@ -9,6 +22,7 @@ pub mod ffi {
         pub type ExplicitBitVect = crate::fingerprint_ffi::ExplicitBitVect;
         pub type SmilesParserParams;
         pub type Atom;
+        pub type HybridizationType;
 
         pub type MolSanitizeException;
         pub type MolSanitizeExceptionUniquePtr; //  = UniquePtr<MolSanitizeException>;
@@ -42,16 +56,18 @@ pub mod ffi {
         ) -> u32;
 
         pub fn get_num_atoms(mol: &SharedPtr<ROMol>, onlyExplicit: bool) -> u32;
-        pub fn get_atom_with_idx(mol: &SharedPtr<ROMol>, idx: u32) -> SharedPtr<Atom>;
-        pub fn get_symbol(atom: &SharedPtr<Atom>) -> String;
-        pub fn get_is_aromatic(atom: &SharedPtr<Atom>) -> bool;
-        pub fn get_atomic_num(atom: &SharedPtr<Atom>) -> i32;
-        pub fn get_formal_charge(atom: &SharedPtr<Atom>) -> i32;
-        pub fn get_total_num_hs(atom: &SharedPtr<Atom>) -> u32;
-        pub fn get_total_valence(atom: &SharedPtr<Atom>) -> u32;
-        pub fn set_formal_charge(atom: &mut SharedPtr<Atom>, what: i32);
-        pub fn set_num_explicit_hs(atom: &mut SharedPtr<Atom>, what: i32);
-        pub fn atom_update_property_cache(atom: &mut SharedPtr<Atom>, strict: bool);
+        pub fn get_atom_with_idx(mol: &mut SharedPtr<ROMol>, idx: u32) -> Pin<&mut Atom>;
+        pub fn get_symbol(atom: Pin<&Atom>) -> String;
+        pub fn get_is_aromatic(atom: Pin<&Atom>) -> bool;
+        pub fn get_atomic_num(atom: Pin<&Atom>) -> i32;
+        pub fn get_formal_charge(atom: Pin<&Atom>) -> i32;
+        pub fn get_total_num_hs(atom: Pin<&Atom>) -> u32;
+        pub fn get_total_valence(atom: Pin<&Atom>) -> u32;
+        pub fn set_formal_charge(atom: Pin<&mut Atom>, what: i32);
+        pub fn set_num_explicit_hs(atom: Pin<&mut Atom>, what: i32);
+        pub fn atom_update_property_cache(atom: Pin<&mut Atom>, strict: bool);
+        pub fn atom_set_hybridization(atom: Pin<&mut Atom>, what: HybridizationType);
+        pub fn atom_get_hybridization(atom: Pin<&Atom>) -> HybridizationType;
 
         pub fn ro_mol_update_property_cache(atom: &mut SharedPtr<ROMol>, strict: bool);
     }
