@@ -1,7 +1,7 @@
 #[test]
 fn test_atoms() {
     cxx::let_cxx_string!(smiles = "c1ccccc1CCCCCCCC");
-    let romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let mut romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
 
     let num_atoms = rdkit_sys::ro_mol_ffi::get_num_atoms(&romol, true);
 
