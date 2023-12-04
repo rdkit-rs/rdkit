@@ -1,3 +1,4 @@
+use std::io::ErrorKind;
 use rdkit::{
     detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
     MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters,
@@ -293,4 +294,12 @@ fn test_building_rwmol_from_smarts() {
 
     let result = substruct_match(&ro_mol, &query_mol, &SubstructMatchParameters::default());
     assert_eq!(result.len(), 0);
+}
+
+#[test]
+fn test_building_rwmol_from_invalid_smarts() {
+    let smarts = "string";
+    let e =RWMol::from_smarts(smarts).unwrap_err();
+    assert_eq!(e.kind(), ErrorKind::InvalidData);
+
 }
