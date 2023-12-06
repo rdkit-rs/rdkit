@@ -1,5 +1,4 @@
 use std::fmt::Formatter;
-use std::io::{Error, ErrorKind};
 
 use cxx::{let_cxx_string, SharedPtr};
 use rdkit_sys::*;
@@ -49,12 +48,13 @@ impl RWMol {
         ROMol { ptr }
     }
 
-    pub fn from_smarts(smarts: &str) -> Result<Self, Error> {
+    pub fn from_smarts(smarts: &str) -> Result<Self, &str> {
+        if smarts.is_empty(){ return Err("empty SMARTS"); }
         let_cxx_string!(smarts = smarts);
 
-        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts)?;
+        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts).unwrap();
         if ptr.is_null() {
-            Err(Error::new(ErrorKind::InvalidData, "Invalid smart"))
+            Err("invalid SMARTS")
         } else {
             Ok(RWMol { ptr })
 
