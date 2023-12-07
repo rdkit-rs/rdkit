@@ -9,6 +9,16 @@ pub struct RWMol {
     pub(crate) ptr: SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
 }
 
+#[derive(Debug, PartialEq, thiserror::Error)]
+pub enum RWMolError {
+    #[error("Could not convert smarts to RWMol (nullptr)")]
+    UnknownConversionError,
+    #[error("could not convert smarts to RWMol (exception)")]
+    ConversionException(String),
+    #[error("Could not convert smarts to RWMol (empty smarts)")]
+    EmptyInputError
+}
+
 impl RWMol {
     pub fn from_mol_block(
         mol_block: &str,
@@ -48,16 +58,20 @@ impl RWMol {
         ROMol { ptr }
     }
 
-    pub fn from_smarts(smarts: &str) -> Result<Self, &str> {
-        if smarts.is_empty(){ return Err("empty SMARTS"); }
+    pub fn from_smarts(smarts: &str) -> Result<Self, RWMolError> {
+        if smarts.is_empty(){ return Err(RWMolError::EmptyInputError); }
         let_cxx_string!(smarts = smarts);
 
-        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts).unwrap();
-        if ptr.is_null() {
-            Err("invalid SMARTS")
-        } else {
-            Ok(RWMol { ptr })
-
+        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts);
+        match ptr {
+            Ok(ptr) => {
+                if ptr.is_null() {
+                    Err(RWMolError::UnknownConversionError)
+                } else {
+                    Ok(RWMol { ptr })
+                }
+            }
+            Err(e) => Err(RWMolError::ConversionException(e.to_string())),
         }
     }
 }
