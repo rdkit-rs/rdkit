@@ -1,4 +1,8 @@
-use rdkit::{detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters, MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters, TautomerEnumerator, Uncharger, RWMolError};
+use rdkit::{
+    detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
+    MolSanitizeException, ROMol, ROMolError, RWMol, RWMolError, SmilesParserParams,
+    SubstructMatchParameters, TautomerEnumerator, Uncharger,
+};
 
 #[test]
 fn test_rdmol() {
@@ -294,14 +298,13 @@ fn test_building_rwmol_from_smarts() {
 #[test]
 fn test_building_rwmol_from_invalid_smarts() {
     let smarts = "string";
-    let rw_mol =RWMol::from_smarts(smarts);
+    let rw_mol = RWMol::from_smarts(smarts);
     assert_eq!(rw_mol.err(), Some(RWMolError::UnknownConversionError))
-
 }
 
 #[test]
 fn test_building_rwmol_from_empty_smarts() {
     let smarts = "";
-    let rw_mol =RWMol::from_smarts(smarts);
+    let rw_mol = RWMol::from_smarts(smarts);
     assert_eq!(rw_mol.err(), Some(RWMolError::EmptyInputError))
 }
