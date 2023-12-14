@@ -16,6 +16,9 @@ pub use mol_standardize::*;
 mod periodic_table;
 pub use periodic_table::*;
 
+mod scaffold_network;
+pub use scaffold_network::*;
+
 mod substruct_match;
 pub use substruct_match::*;
 

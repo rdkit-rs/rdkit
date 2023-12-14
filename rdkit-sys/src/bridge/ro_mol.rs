@@ -18,6 +18,7 @@ pub mod ffi {
         include!("wrapper/include/ro_mol.h");
 
         pub type ROMol;
+
         pub type ExplicitBitVect = crate::fingerprint_ffi::ExplicitBitVect;
         pub type SmilesParserParams;
         pub type Atom;

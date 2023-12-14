@@ -9,6 +9,8 @@
 #include <GraphMol/MolStandardize/Tautomer.h>
 
 namespace RDKit {
+    using ROMolSharedPtr = std::shared_ptr<ROMol>;
+
     std::shared_ptr<ROMol> copy_mol(const std::shared_ptr<ROMol> &mol);
     std::shared_ptr<ROMol> smiles_to_mol(const std::string &smiles);
     rust::String mol_to_smiles(const std::shared_ptr<ROMol> &mol);
