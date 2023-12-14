@@ -52,6 +52,14 @@ impl RWMol {
         let_cxx_string!(smarts = smarts);
 
         let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts)?;
+
+        if ptr.is_null() {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "could not build rwmol (invalid SMARTS?)",
+            )
+            .into());
+        }
         Ok(RWMol { ptr })
     }
 }

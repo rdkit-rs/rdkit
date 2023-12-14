@@ -294,3 +294,8 @@ fn test_building_rwmol_from_smarts() {
     let result = substruct_match(&ro_mol, &query_mol, &SubstructMatchParameters::default());
     assert_eq!(result.len(), 0);
 }
+
+#[test]
+fn test_building_rwmol_from_junk_smarts() {
+    assert!(RWMol::from_smarts("abdi###bhd").is_err())
+}
