@@ -85,10 +85,10 @@ pub mod ffi {
             scaffold_network_params: &SharedPtr<ScaffoldNetworkParamsLocal>,
         ) -> SharedPtr<ScaffoldNetworkClass>;
 
-        // pub fn update_scaffold_network(
-        //     scaffold_network: &mut SharedPtr<ScaffoldNetworkClass>,
-        //     mol: &CxxVector<ROMolSharedPtr>,
-        //     scaffold_network_params: &SharedPtr<ScaffoldNetworkParamsLocal>,
-        // );
+        pub fn update_scaffold_network(
+            mol: &SharedPtr<ROMol>,
+            scaffold_network: &mut SharedPtr<ScaffoldNetworkClass>,
+            scaffold_network_params: &SharedPtr<ScaffoldNetworkParamsLocal>,
+        );
     }
 }

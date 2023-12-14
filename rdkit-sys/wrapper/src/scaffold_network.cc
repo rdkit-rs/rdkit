@@ -98,4 +98,11 @@ namespace RDKit {
   bool get_collect_mol_counts(const std::shared_ptr<ScaffoldNetworkParams> &params) {
     return params->collectMolCounts;
   }
+
+  void update_scaffold_network(const std::shared_ptr<ROMol> &mol, std::shared_ptr<ScaffoldNetworkClass> &scaffold_network, const std::shared_ptr<ScaffoldNetworkParams> &scaffold_network_params) {
+    std::vector<ROMol> mols;
+    mols.push_back(*mol);
+    ScaffoldNetwork::updateScaffoldNetwork(&mols, *scaffold_network, *scaffold_network_params);
+  }
+
 }
