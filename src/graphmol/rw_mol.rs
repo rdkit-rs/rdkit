@@ -9,6 +9,14 @@ pub struct RWMol {
     pub(crate) ptr: SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
 }
 
+#[derive(Debug, PartialEq, thiserror::Error)]
+pub enum RWMolError {
+    #[error("Could not convert smarts to RWMol (nullptr)")]
+    UnknownConversionError,
+    #[error("could not convert smarts to RWMol (exception)")]
+    ConversionException(String),
+}
+
 impl RWMol {
     pub fn from_mol_block(
         mol_block: &str,
@@ -48,11 +56,20 @@ impl RWMol {
         ROMol { ptr }
     }
 
-    pub fn from_smarts(smarts: &str) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn from_smarts(smarts: &str) -> Result<Self, RWMolError> {
         let_cxx_string!(smarts = smarts);
 
-        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts)?;
-        Ok(RWMol { ptr })
+        let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts);
+        match ptr {
+            Ok(ptr) => {
+                if ptr.is_null() {
+                    Err(RWMolError::UnknownConversionError)
+                } else {
+                    Ok(RWMol { ptr })
+                }
+            }
+            Err(e) => Err(RWMolError::ConversionException(e.to_string())),
+        }
     }
 }
 
