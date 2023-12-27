@@ -15,8 +15,6 @@ pub enum RWMolError {
     UnknownConversionError,
     #[error("could not convert smarts to RWMol (exception)")]
     ConversionException(String),
-    #[error("Could not convert smarts to RWMol (empty smarts)")]
-    EmptyInputError,
 }
 
 impl RWMol {
@@ -59,9 +57,6 @@ impl RWMol {
     }
 
     pub fn from_smarts(smarts: &str) -> Result<Self, RWMolError> {
-        if smarts.is_empty() {
-            return Err(RWMolError::EmptyInputError);
-        }
         let_cxx_string!(smarts = smarts);
 
         let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts);

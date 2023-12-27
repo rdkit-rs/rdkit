@@ -301,10 +301,3 @@ fn test_building_rwmol_from_invalid_smarts() {
     let rw_mol = RWMol::from_smarts(smarts);
     assert_eq!(rw_mol.err(), Some(RWMolError::UnknownConversionError))
 }
-
-#[test]
-fn test_building_rwmol_from_empty_smarts() {
-    let smarts = "";
-    let rw_mol = RWMol::from_smarts(smarts);
-    assert_eq!(rw_mol.err(), Some(RWMolError::EmptyInputError))
-}
