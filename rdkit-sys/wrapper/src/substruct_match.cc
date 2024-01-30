@@ -2,13 +2,25 @@
 #include <GraphMol/GraphMol.h>
 #include <GraphMol/Substruct/SubstructMatch.h>
 
-namespace RDKit {
-    using SubstructMatchItem = std::pair<int, int>;
+#include <iostream>
 
+namespace RDKit {
     std::unique_ptr<std::vector<MatchVectType>> substruct_match(const std::shared_ptr<ROMol> &mol, const std::shared_ptr<ROMol> &other_mol, const std::shared_ptr<SubstructMatchParameters> &params) {
         std::vector<MatchVectType> match = SubstructMatch(*mol, *other_mol, *params);
         std::vector<MatchVectType> *heap_match = new std::vector<MatchVectType>(match);
+
+        //for (auto& m : *heap_match) {      // reference avoids copying element
+        //  for (auto &p : m) {
+        //    std::cout << "p first: " << p.first << " p second: " << p.second << std::endl;
+        //  }
+        //}
+
         return std::unique_ptr<std::vector<MatchVectType>>(heap_match);
+    }
+
+    rust::Vec<rust::Vec<i32>> substruct_match_gen_2(const std::shared_ptr<ROMol> &mol, const std::shared_ptr<ROMol> &other_mol, const std::shared_ptr<SubstructMatchParameters> &params) {
+      auto vec: rust::Vec<rust::Vec<i32>> = rust::Vec();
+      return vec;
     }
 
     std::shared_ptr<SubstructMatchParameters> new_substruct_match_parameters() {
@@ -59,11 +71,11 @@ namespace RDKit {
         params->uniquify = what;
     }
 
-    int substruct_match_item_query_atom_idx(const SubstructMatchItem &item) {
+    int substruct_match_item_query_atom_idx(const std::pair<int, int> &item) {
         return item.first;
     }
 
-    int substruct_match_item_mol_atom_idx(const SubstructMatchItem &item) {
+    int substruct_match_item_mol_atom_idx(const std::pair<int, int> &item) {
         return item.second;
     }
 }
