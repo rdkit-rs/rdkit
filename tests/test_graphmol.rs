@@ -292,4 +292,3 @@ fn test_building_rwmol_from_smarts() {
     // println!("{:?}", result);
     assert_eq!(result.len(), 1);
 }
-
