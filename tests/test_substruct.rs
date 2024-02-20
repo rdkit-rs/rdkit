@@ -1,4 +1,4 @@
-use rdkit::{substruct_match, ROMol, SubstructMatchParameters};
+use rdkit::{substruct_match, ROMol, SubstructMatchItem, SubstructMatchParameters};
 
 #[test]
 fn test_substruct_match() {
@@ -7,10 +7,65 @@ fn test_substruct_match() {
     let params = SubstructMatchParameters::new();
 
     let atom_matches = substruct_match(&mol, &query, &params);
-    assert_ne!(atom_matches.len(), 0);
-
-    let atom_match = atom_matches.get(0).unwrap();
-    let atom_match_query_atom_idx = atom_match.query_atom_idx;
-
-    assert_eq!(atom_match_query_atom_idx, 0);
+    assert_eq!(
+        atom_matches,
+        vec![
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 0,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 1,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 2,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 3,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 4,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 5,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 6,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 7,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 8,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 9,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 10,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 11,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 12,
+            },],
+            vec![SubstructMatchItem {
+                query_atom_idx: 0,
+                mol_atom_idx: 13,
+            },],
+        ]
+    );
 }

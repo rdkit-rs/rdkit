@@ -1,6 +1,6 @@
 use rdkit_sys::substruct_match_ffi::SubstructMatchItem as SubstructMatchItemFFI;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 #[allow(dead_code)]
 pub struct SubstructMatchItem {
     pub query_atom_idx: i32,
