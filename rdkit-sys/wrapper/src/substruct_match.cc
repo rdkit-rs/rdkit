@@ -58,6 +58,14 @@ namespace RDKit {
     void set_uniquify(std::shared_ptr<SubstructMatchParameters> &params, bool what) {
         params->uniquify = what;
     }
+     std::unique_ptr<std::vector<SubstructMatchItem>> substruct_matchvect_type_to_vec_substruct_match_item(const MatchVectType &match_vect) {
+        std::vector<SubstructMatchItem> *match_items = new std::vector<SubstructMatchItem>();
+        for (auto match : match_vect) {
+          match_items->push_back(std::pair<int,int>(match));
+        }
+
+        return std::unique_ptr<std::vector<SubstructMatchItem>>(match_items);
+     }
 
     int substruct_match_item_query_atom_idx(const SubstructMatchItem &item) {
         return item.first;

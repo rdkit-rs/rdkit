@@ -1,10 +1,10 @@
 use rdkit_sys::substruct_match_ffi::SubstructMatchItem as SubstructMatchItemFFI;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 #[allow(dead_code)]
 pub struct SubstructMatchItem {
-    query_atom_idx: i32,
-    mol_atom_idx: i32,
+    pub query_atom_idx: i32,
+    pub mol_atom_idx: i32,
 }
 
 impl From<&SubstructMatchItemFFI> for SubstructMatchItem {
