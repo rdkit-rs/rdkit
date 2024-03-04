@@ -6,8 +6,9 @@
 
 namespace RDKit {
     using SubstructMatchItem = std::pair<int, int>;
+    using MatchVectType = MatchVectType;
 
-    std::unique_ptr<std::vector<SubstructMatchItem>> substruct_match(const std::shared_ptr<ROMol> &mol, const std::shared_ptr<ROMol> &other_mol, const std::shared_ptr<SubstructMatchParameters> &params);
+    std::unique_ptr<std::vector<MatchVectType>> substruct_match(const std::shared_ptr<ROMol> &mol, const std::shared_ptr<ROMol> &other_mol, const std::shared_ptr<SubstructMatchParameters> &params);
 
     std::shared_ptr<SubstructMatchParameters> new_substruct_match_parameters();
     bool get_use_chirality(const std::shared_ptr<SubstructMatchParameters> &params);
@@ -25,6 +26,7 @@ namespace RDKit {
     void set_recursion_possible(std::shared_ptr<SubstructMatchParameters> &params, bool what);
     void set_uniquify(std::shared_ptr<SubstructMatchParameters> &params, bool what);
 
+    std::unique_ptr<std::vector<SubstructMatchItem>> substruct_matchvect_type_to_vec_substruct_match_item(const MatchVectType &match_vect);
     int substruct_match_item_query_atom_idx(const SubstructMatchItem &item);
     int substruct_match_item_mol_atom_idx(const SubstructMatchItem &item);
 }

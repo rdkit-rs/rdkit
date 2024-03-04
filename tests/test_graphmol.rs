@@ -285,14 +285,12 @@ fn test_detect_chemistry_problems() {
 #[test]
 fn test_building_rwmol_from_smarts() {
     let smarts = "[+1!h0!$([*]~[-1,-2,-3,-4]),-1!$([*]~[+1,+2,+3,+4])]";
-
-    let ro_mol = ROMol::from_smiles("C[N+](C)(C)C").unwrap();
-
+    let romol = ROMol::from_smiles("[NH4+]").unwrap();
     let rwmol = RWMol::from_smarts(smarts).unwrap();
     let query_mol = rwmol.to_ro_mol();
-
-    let result = substruct_match(&ro_mol, &query_mol, &SubstructMatchParameters::default());
-    assert_eq!(result.len(), 0);
+    let result = substruct_match(&romol, &query_mol, &SubstructMatchParameters::default());
+    // println!("{:?}", result);
+    assert_eq!(result.len(), 1);
 }
 
 #[test]

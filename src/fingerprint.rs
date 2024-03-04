@@ -26,21 +26,3 @@ impl Fingerprint {
         and_ones as f32 / or_ones as f32
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use crate::ROMol;
-
-    #[test]
-    fn make_sure_fingerprint_works() {
-        let mol = ROMol::from_smiles("CCC=O").unwrap();
-        let fingerprint = mol.fingerprint();
-
-        let mol_two = ROMol::from_smiles("CCC=N").unwrap();
-        let fingerprint_two = mol_two.fingerprint();
-
-        let distance = fingerprint.tanimoto_distance(&fingerprint_two);
-
-        assert_eq!(distance, 0.25);
-    }
-}

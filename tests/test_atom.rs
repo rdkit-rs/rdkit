@@ -1,25 +1,17 @@
 #[test]
 fn test_atom() {
-    let mut romol = rdkit::ROMol::from_smiles("C").unwrap();
-
+    let mut romol = rdkit::ROMol::from_smiles("[NH4+]").unwrap();
     let atom = romol.atom_with_idx(0);
 
-    assert_eq!(format!("{:?}", atom), "C");
-
+    assert_eq!(atom.symbol(), "N");
     assert!(!atom.get_is_aromatic());
-    assert_eq!(atom.get_atomic_num(), 6);
-
+    assert_eq!(atom.get_atomic_num(), 7);
     assert_eq!(atom.get_hybridization_type(), rdkit::HybridizationType::SP3);
+    assert_eq!(atom.get_formal_charge(), 1);
+    assert_eq!(atom.get_total_num_hs(), 4);
+    assert_eq!(atom.get_total_valence(), 4);
 
-    for idx in 0..romol.num_atoms(true) {
-        println!("fetching {}", idx);
-        let atom = romol.atom_with_idx(idx);
-        println!("{:?}", atom);
-    }
-
-    // TODO: these three need to be wrapped in a Result since it can throw an
-    // exception
-    //
+    // TODO: these three need to be wrapped in a Result since it can throw an exception
     // assert_eq!(atoms[0].get_formal_charge(), 0);
     // assert_eq!(atoms[0].get_total_num_hs(), 100);
     // assert_eq!(atoms[0].get_total_valence(), 100);
