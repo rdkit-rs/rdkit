@@ -15,20 +15,20 @@ fn main() {
         &tautomer_enumerator_result,
         0,
     );
-    let first_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&first);
+    let first_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&first).unwrap();
     println!("first smiles: {}", first_smiles);
 
     let second = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_at(
         &tautomer_enumerator_result,
         1,
     );
-    let second_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&second);
+    let second_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&second).unwrap();
     println!("second smiles: {}", second_smiles);
 
     let canonical_mol = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(
         &tautomer_enumerator,
         &mol,
     );
-    let canonical_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&canonical_mol);
+    let canonical_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&canonical_mol).unwrap();
     println!("canonical: {}", canonical_smiles);
 }

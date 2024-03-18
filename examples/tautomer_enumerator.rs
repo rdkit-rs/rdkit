@@ -6,9 +6,9 @@ fn main() {
     let enumerator_result = enumerator.enumerate(&mol);
 
     for t in enumerator_result {
-        println!("{}", t.as_smiles());
+        println!("{}", t.as_smiles().unwrap());
     }
 
     let canonical_mol = enumerator.canonicalize(&mol);
-    println!("{}", canonical_mol.as_smiles());
+    println!("{}", canonical_mol.as_smiles().unwrap());
 }

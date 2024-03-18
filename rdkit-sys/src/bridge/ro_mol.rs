@@ -41,7 +41,7 @@ pub mod ffi {
             sanitize: bool,
         );
 
-        pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> String;
+        pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> Result<String>;
 
         pub fn new_smiles_write_params() -> SharedPtr<SmilesWriteParams>;
 
