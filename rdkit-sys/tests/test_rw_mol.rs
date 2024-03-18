@@ -7,7 +7,7 @@ fn test_rw_mol_from_smarts() {
     let rwmol = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts).unwrap();
     let romol = rdkit_sys::rw_mol_ffi::rw_mol_to_ro_mol(rwmol);
 
-    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&romol);
+    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&romol).unwrap();
     assert_eq!(smiles, "*".to_string());
 }
 
@@ -190,7 +190,7 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
     let rw_mol = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(&mol_block, false, false, false);
     let ro_mol = unsafe { std::mem::transmute::<SharedPtr<RWMol>, SharedPtr<ROMol>>(rw_mol) };
 
-    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&ro_mol);
+    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&ro_mol).unwrap();
     assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &smiles);
 }
 

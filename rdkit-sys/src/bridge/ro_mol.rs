@@ -40,7 +40,7 @@ pub mod ffi {
             sanitize: bool,
         );
 
-        pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> String;
+        pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> Result<String>;
 
         pub fn detect_chemistry_problems(
             mol: &SharedPtr<ROMol>,
