@@ -1,7 +1,7 @@
 use rdkit::{
     detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
-    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters,
-    TautomerEnumerator, Uncharger,
+    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SmilesWriteParams,
+    SubstructMatchParameters, TautomerEnumerator, Uncharger,
 };
 
 #[test]
@@ -15,7 +15,7 @@ fn test_neutralize() {
     let romol = ROMol::from_smiles(smiles).unwrap();
     let uncharger = Uncharger::new(false);
     let uncharged_mol = uncharger.uncharge(&romol);
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smiles());
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smiles().unwrap());
 }
 
 #[test]
@@ -27,9 +27,9 @@ fn test_fragment_parent() {
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, true);
     assert_eq!(
         "Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1",
-        parent_rwmol.as_smiles()
+        parent_rwmol.as_smiles().unwrap()
     );
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles());
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles().unwrap());
 }
 
 #[test]
@@ -77,7 +77,7 @@ fn test_stdz() {
     let canon_taut = te.canonicalize(&uncharged_mol);
     assert_eq!(
         "[N]Cc1cncc2c(=O)c3cccc(CCC(=O)O)c3[nH]c12",
-        canon_taut.as_smiles()
+        canon_taut.as_smiles().unwrap()
     );
 }
 
@@ -256,7 +256,7 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
 "#;
 
     let rw_mol = RWMol::from_mol_block(mol_block, false, false, false).unwrap();
-    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smiles());
+    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smiles().unwrap());
 }
 
 #[test]
@@ -291,4 +291,61 @@ fn test_building_rwmol_from_smarts() {
     let result = substruct_match(&romol, &query_mol, &SubstructMatchParameters::default());
     // println!("{:?}", result);
     assert_eq!(result.len(), 1);
+}
+
+#[test]
+fn test_smiles_write_rooted_at_atom() {
+    let input_smi = "COc1cc(OC)c2c(c1)OC1(c3ccc(OC)c(OC)c3)C(c3ccccc3)CC(O)C21O";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+    let canonical_smi = ro_mol.as_smiles();
+
+    let mut params = SmilesWriteParams::default();
+    let another_can_smi = ro_mol.as_smiles_with_params(&params).unwrap();
+
+    assert_eq!(canonical_smi, another_can_smi);
+    params.rooted_at_atom(1);
+
+    let non_canonical_smi = ro_mol.as_smiles_with_params(&params).unwrap();
+    assert_ne!(canonical_smi, non_canonical_smi);
+}
+
+#[test]
+fn test_smiles_out_of_bounds_rooted_at_atom() {
+    let input_smi = "C";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+
+    let mut params = SmilesWriteParams::default();
+    params.rooted_at_atom(1);
+
+    let result = ro_mol.as_smiles_with_params(&params);
+    assert!(result.is_err())
+}
+
+#[test]
+fn test_smiles_write_do_random() {
+    use std::collections::HashSet;
+    let input_smi = "COc1cc(OC)c2c(c1)OC1(c3ccc(OC)c(OC)c3)C(c3ccccc3)CC(O)C21O";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+
+    let mut params = SmilesWriteParams::default();
+    params.do_random(true);
+
+    let mut smiles_set: HashSet<String> = HashSet::new();
+    for _ in 0..20 {
+        let rand_smi = ro_mol.as_smiles_with_params(&params).unwrap();
+        smiles_set.insert(rand_smi);
+    }
+    assert!(smiles_set.len() > 1);
+}
+
+#[test]
+fn test_as_random_smiles_vec() {
+    use std::collections::HashSet;
+    let input_smi = "COc1cc(OC)c2c(c1)OC1(c3ccc(OC)c(OC)c3)C(c3ccccc3)CC(O)C21O";
+    let ro_mol = ROMol::from_smiles(input_smi).unwrap();
+
+    let smiles_vec = ro_mol.as_random_smiles_vec(20);
+    let smiles_set: HashSet<&String> = HashSet::from_iter(smiles_vec.iter());
+
+    assert!(smiles_set.len() > 1);
 }

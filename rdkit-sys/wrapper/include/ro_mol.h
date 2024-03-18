@@ -11,8 +11,12 @@
 namespace RDKit {
     std::shared_ptr<ROMol> copy_mol(const std::shared_ptr<ROMol> &mol);
     std::shared_ptr<ROMol> smiles_to_mol(const std::string &smiles);
-    rust::String mol_to_smiles(const std::shared_ptr<ROMol> &mol);
 
+    std::shared_ptr<SmilesWriteParams> new_smiles_write_params();
+    void smiles_write_params_set_do_random(const std::shared_ptr<SmilesWriteParams> &params, bool do_random);
+    void smiles_write_params_set_rooted_at_atom(const std::shared_ptr<SmilesWriteParams> &params, int rooted_at_atom);
+    rust::String mol_to_smiles(const std::shared_ptr<ROMol> &mol);
+    rust::String mol_to_smiles_with_params(const std::shared_ptr<ROMol> &mol, const std::shared_ptr<SmilesWriteParams> &params);
     std::shared_ptr<ROMol> smiles_to_mol_with_params(const std::string &smiles, const std::shared_ptr<SmilesParserParams> &params);
     std::shared_ptr<SmilesParserParams> new_smiles_parser_params();
     void smiles_parser_params_set_sanitize(const std::shared_ptr<SmilesParserParams> &params, bool sanitize);

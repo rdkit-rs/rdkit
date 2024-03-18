@@ -28,7 +28,7 @@ impl RWMol {
         }
     }
 
-    pub fn as_smiles(&self) -> String {
+    pub fn as_smiles(&self) -> Result<String, cxx::Exception> {
         let cast_ptr = unsafe {
             std::mem::transmute::<
                 SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
