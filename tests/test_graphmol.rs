@@ -15,7 +15,7 @@ fn test_neutralize() {
     let romol = ROMol::from_smiles(smiles).unwrap();
     let uncharger = Uncharger::new(false);
     let uncharged_mol = uncharger.uncharge(&romol);
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smiles());
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smiles().unwrap());
 }
 
 #[test]
@@ -27,9 +27,9 @@ fn test_fragment_parent() {
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, true);
     assert_eq!(
         "Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1",
-        parent_rwmol.as_smiles()
+        parent_rwmol.as_smiles().unwrap()
     );
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles());
+    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles().unwrap());
 }
 
 #[test]
@@ -77,7 +77,7 @@ fn test_stdz() {
     let canon_taut = te.canonicalize(&uncharged_mol);
     assert_eq!(
         "[N]Cc1cncc2c(=O)c3cccc(CCC(=O)O)c3[nH]c12",
-        canon_taut.as_smiles()
+        canon_taut.as_smiles().unwrap()
     );
 }
 
@@ -256,7 +256,7 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
 "#;
 
     let rw_mol = RWMol::from_mol_block(mol_block, false, false, false).unwrap();
-    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smiles());
+    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smiles().unwrap());
 }
 
 #[test]
