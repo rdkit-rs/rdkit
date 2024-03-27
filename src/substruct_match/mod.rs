@@ -16,11 +16,10 @@ pub fn substruct_match(
     matches
         .into_iter()
         .map(|x| {
-            let things = rdkit_sys::substruct_match_ffi::substruct_matchvect_type_to_vec_substruct_match_item(x)
+            rdkit_sys::substruct_match_ffi::substruct_matchvect_type_to_vec_substruct_match_item(x)
                 .iter()
-                .map(|smi_ffi| SubstructMatchItem::from(smi_ffi))
-                .collect::<Vec<_>>();
-            things
+                .map(SubstructMatchItem::from)
+                .collect::<Vec<_>>()
         })
         .collect()
 }
