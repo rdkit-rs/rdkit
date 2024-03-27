@@ -8,7 +8,7 @@ fn test_mol_ops_substruct_match_as_bool() {
     let params = new_remove_hs_parameters();
 
     let mut new_mol = remove_hs_parameters(&mol, &params, true);
-    let new_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&new_mol);
+    let new_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&new_mol).unwrap();
 
     romol_set_hybridization(&mut new_mol);
 
@@ -22,6 +22,6 @@ fn test_mol_ops_cleanup() {
     let mut rw_mol = rdkit_sys::rw_mol_ffi::rw_mol_from_ro_mol(&ro_mol, true, 0);
     clean_up(&mut rw_mol);
     let new_ro_mol = rdkit_sys::rw_mol_ffi::rw_mol_to_ro_mol(rw_mol); // low-cost pointer swap
-    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&new_ro_mol);
+    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&new_ro_mol).unwrap();
     assert_eq!(smiles, "C");
 }

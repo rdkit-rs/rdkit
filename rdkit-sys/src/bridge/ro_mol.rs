@@ -41,7 +41,7 @@ pub mod ffi {
         );
         pub fn smiles_parser_params_get_sanitize(ptr: &SharedPtr<SmilesParserParams>) -> bool;
 
-        pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> String;
+        pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> Result<String>;
 
         pub fn detect_chemistry_problems(
             mol: &SharedPtr<ROMol>,
