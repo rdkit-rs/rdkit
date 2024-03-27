@@ -263,7 +263,7 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
 fn test_detect_chemistry_problems() {
     let smile = "N#[N]c1ccc(cc1)N(C)CN(C)(C)(C)";
     let mut parser_params = SmilesParserParams::default();
-    parser_params.sanitize(false);
+    parser_params.set_sanitize(false);
     let mut mol = ROMol::from_smiles_with_params(smile, &parser_params).unwrap();
 
     let problems = detect_chemistry_problems(&mol);
@@ -291,4 +291,17 @@ fn test_building_rwmol_from_smarts() {
     let result = substruct_match(&romol, &query_mol, &SubstructMatchParameters::default());
     // println!("{:?}", result);
     assert_eq!(result.len(), 1);
+}
+
+#[test]
+fn test_build_romol_from_really_bad_smiles() {
+    let smiles = "smiles";
+    let romol = ROMol::from_smiles(smiles);
+    assert!(romol.is_err());
+
+    let mut parser_params = SmilesParserParams::default();
+    parser_params.set_sanitize(false);
+
+    let romol = ROMol::from_smiles_with_params(smiles, &parser_params);
+    assert!(romol.is_err());
 }
