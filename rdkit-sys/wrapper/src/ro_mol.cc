@@ -37,6 +37,9 @@ namespace RDKit {
     void smiles_parser_params_set_sanitize(const std::shared_ptr<SmilesParserParams> &params, bool sanitize) {
         params->sanitize = sanitize;
     }
+    bool smiles_parser_params_get_sanitize(const std::shared_ptr<SmilesParserParams> &params) {
+        return params->sanitize;
+    }
 
 
 

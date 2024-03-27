@@ -16,6 +16,7 @@ namespace RDKit {
     std::shared_ptr<ROMol> smiles_to_mol_with_params(const std::string &smiles, const std::shared_ptr<SmilesParserParams> &params);
     std::shared_ptr<SmilesParserParams> new_smiles_parser_params();
     void smiles_parser_params_set_sanitize(const std::shared_ptr<SmilesParserParams> &params, bool sanitize);
+    bool smiles_parser_params_get_sanitize(const std::shared_ptr<SmilesParserParams> &params);
 
     using MolSanitizeExceptionUniquePtr = std::unique_ptr<MolSanitizeException>;
     std::unique_ptr<std::vector<MolSanitizeExceptionUniquePtr>> detect_chemistry_problems(const std::shared_ptr<ROMol> &mol);
