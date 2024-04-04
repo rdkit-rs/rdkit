@@ -18,13 +18,11 @@ fn test_atom() {
 }
 
 #[test]
-fn test_atom_update_property_cache() {
+fn test_atom_update_property_cache_exception() {
     let mut romol = rdkit::ROMol::from_smiles("C([H])([H])([H])([H])").unwrap();
     let mut carbon = romol.atom_with_idx(0);
     carbon.set_num_explicit_hs(5);
 
-    // This throws an error in c++ which is not captured in rust
-    // Note: the "strict" parameter checks the validity of the changes and errors out accordingly
     assert_eq!(
         carbon.update_property_cache(true).err().unwrap().what(),
         "Explicit valence for atom # 0 C, 5, is greater than permitted"
