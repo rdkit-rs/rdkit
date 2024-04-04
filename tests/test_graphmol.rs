@@ -5,7 +5,7 @@ use rdkit::{
 };
 
 #[test]
-fn test_rdmol() {
+fn test_romol() {
     let _ = ROMol::from_smiles("c1ccccc1C(=O)NC").unwrap();
 }
 
@@ -30,6 +30,17 @@ fn test_fragment_parent() {
         parent_rwmol.as_smiles()
     );
     assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles());
+}
+
+#[test]
+fn test_bad_canonicalization() {
+    let smiles = "C1=CC=C([N+]2=NOC([O-])=C2Br)C=C1";
+    let romol = ROMol::from_smiles(smiles).unwrap();
+    let rwmol = romol.as_rw_mol(false, 1);
+    let cleanup_params = CleanupParameters::default();
+    let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, false);
+    let te = TautomerEnumerator::new();
+    let _ = te.canonicalize(&parent_rwmol.to_ro_mol());
 }
 
 #[test]
