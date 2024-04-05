@@ -36,10 +36,23 @@ impl ROMol {
     pub fn from_smiles_with_params(
         smiles: &str,
         params: &SmilesParserParams,
-    ) -> Result<Self, cxx::Exception> {
+    ) -> Result<Self, String> {
         let_cxx_string!(smiles_cxx_string = smiles);
-        let ptr = ro_mol_ffi::smiles_to_mol_with_params(&smiles_cxx_string, &params.ptr)?;
-        Ok(Self { ptr })
+
+        // There is the risk that ptr is null, this is from rdkit c++
+        let ptr = ro_mol_ffi::smiles_to_mol_with_params(&smiles_cxx_string, &params.ptr)
+            .map_err(|except| except.what().to_owned())?;
+
+        if ptr.is_null() {
+            let informative_string = format!(
+                "smiles_to_mol_with_params failed on inputs SMILES: `{}`, SmilesParserParams<sanitize={}, other properties unsupported>",
+                smiles,
+                params.get_sanitize()
+            );
+            Err(informative_string)
+        } else {
+            Ok(Self { ptr })
+        }
     }
 
     pub fn as_smiles(&self) -> Result<String, cxx::Exception> {
@@ -90,8 +103,12 @@ pub struct SmilesParserParams {
 }
 
 impl SmilesParserParams {
-    pub fn sanitize(&mut self, value: bool) {
+    pub fn set_sanitize(&mut self, value: bool) {
         ro_mol_ffi::smiles_parser_params_set_sanitize(&self.ptr, value);
+    }
+
+    pub fn get_sanitize(&self) -> bool {
+        ro_mol_ffi::smiles_parser_params_get_sanitize(&self.ptr)
     }
 }
 

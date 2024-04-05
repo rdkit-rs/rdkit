@@ -39,6 +39,7 @@ pub mod ffi {
             ptr: &SharedPtr<SmilesParserParams>,
             sanitize: bool,
         );
+        pub fn smiles_parser_params_get_sanitize(ptr: &SharedPtr<SmilesParserParams>) -> bool;
 
         pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> Result<String>;
 
