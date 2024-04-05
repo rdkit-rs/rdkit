@@ -28,7 +28,7 @@ pub mod ffi {
         pub fn tautomer_enumerator_canonicalize(
             tautomer_enumerator: &SharedPtr<TautomerEnumerator>,
             mol: &SharedPtr<ROMol>,
-        ) -> SharedPtr<ROMol>;
+        ) -> Result<SharedPtr<ROMol>>;
 
         pub fn default_cleanup_parameters() -> SharedPtr<CleanupParameters>;
 

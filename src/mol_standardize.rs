@@ -45,14 +45,14 @@ impl TautomerEnumerator {
         }
     }
 
-    pub fn canonicalize(&self, ro_mol: &crate::ROMol) -> crate::ROMol {
+    pub fn canonicalize(&self, ro_mol: &crate::ROMol) -> Result<crate::ROMol, cxx::Exception> {
         let canonical_mol_ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(
             &self.ptr,
             &ro_mol.ptr,
         );
-        crate::ROMol {
-            ptr: canonical_mol_ptr,
-        }
+        Ok(crate::ROMol {
+            ptr: canonical_mol_ptr?,
+        })
     }
 }
 

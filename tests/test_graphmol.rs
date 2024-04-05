@@ -40,7 +40,8 @@ fn test_bad_canonicalization() {
     let cleanup_params = CleanupParameters::default();
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, false);
     let te = TautomerEnumerator::new();
-    let _ = te.canonicalize(&parent_rwmol.to_ro_mol());
+    let canon_taut = te.canonicalize(&parent_rwmol.to_ro_mol());
+    assert_eq!(canon_taut.err().unwrap().what(), "Can't kekulize mol.  Unkekulized atoms: 5 9");
 }
 
 #[test]
@@ -85,7 +86,7 @@ fn test_stdz() {
     let uncharged_mol = uncharger.uncharge(&parent_rwmol.to_ro_mol());
 
     let te = TautomerEnumerator::new();
-    let canon_taut = te.canonicalize(&uncharged_mol);
+    let canon_taut = te.canonicalize(&uncharged_mol).unwrap();
     assert_eq!(
         "[N]Cc1cncc2c(=O)c3cccc(CCC(=O)O)c3[nH]c12",
         canon_taut.as_smiles()
