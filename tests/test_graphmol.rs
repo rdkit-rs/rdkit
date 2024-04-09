@@ -41,7 +41,10 @@ fn test_bad_canonicalization() {
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, false);
     let te = TautomerEnumerator::new();
     let canon_taut = te.canonicalize(&parent_rwmol.to_ro_mol());
-    assert_eq!(canon_taut.err().unwrap().what(), "Can't kekulize mol.  Unkekulized atoms: 5 9");
+    assert_eq!(
+        canon_taut.err().unwrap().what(),
+        "Can't kekulize mol.  Unkekulized atoms: 5 9"
+    );
 }
 
 #[test]
