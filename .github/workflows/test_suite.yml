@@ -50,7 +50,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cargo Test
-        run: CONDA_PREFIX=/usr/share/miniconda/envs/rdkit RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
+        run: CONDA_PREFIX=/usr/share/miniconda/envs/rdkit-rs RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
 
   convention_checker:
     env:
@@ -94,14 +94,14 @@ jobs:
 
       - name: Rust Format Check
         run: |
-          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit-rs RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
           pushd rdkit-sys
-          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit-rs RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
           popd
 
       - name: Clippy Check
         run: |
-          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit RUST_WRAPPER=$SCCACHE_PATH cargo clippy
+          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit-rs RUST_WRAPPER=$SCCACHE_PATH cargo clippy
           pushd rdkit-sys
-          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit RUST_WRAPPER=$SCCACHE_PATH cargo clippy
+          CONDA_PREFIX=/usr/share/miniconda/envs/rdkit-rs RUST_WRAPPER=$SCCACHE_PATH cargo clippy
           popd
