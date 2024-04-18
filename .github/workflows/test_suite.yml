@@ -49,6 +49,9 @@ jobs:
           override: true
           components: rustfmt, clippy
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Cargo Test
         run: CONDA_PREFIX=/usr/share/miniconda/envs/rdkit-rs RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
 
