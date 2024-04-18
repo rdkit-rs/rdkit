@@ -6,6 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   REPO_LOWER: rdkit-rs/cheminee
+  CARGO_FEATURE_DYNAMIC_LINKING_FROM_CONDA: yes
 
 jobs:
   test_suite:
