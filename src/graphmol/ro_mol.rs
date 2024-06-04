@@ -55,7 +55,7 @@ impl ROMol {
         }
     }
 
-    pub fn as_smiles(&self) -> String {
+    pub fn as_smiles(&self) -> Result<String, cxx::Exception> {
         ro_mol_ffi::mol_to_smiles(&self.ptr)
     }
 

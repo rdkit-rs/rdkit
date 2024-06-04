@@ -1,3 +1,5 @@
+use rdkit_sys::ro_mol_ffi::mol_to_smiles;
+
 #[test]
 fn test_ro_mol() {
     cxx::let_cxx_string!(smiles = "c1ccccc1CCCCCCCC");
@@ -62,4 +64,14 @@ fn parse_without_sanitize_test() {
         })
         .collect::<Vec<_>>();
     assert_eq!(atoms, &["N", "N"]);
+}
+
+#[test]
+fn mol_to_smiles_failure_test() {
+    // This failing case was replicated on:
+    // - python 3.11.5, version 2022.09.1
+    // - debian bookworm, librdkit-dev 202209.3-1
+    cxx::let_cxx_string!(smiles = r"CCOC(=O)/C=S(/c1ccc(C(F)(F)F)cc1)=C1/C=C(\C)CCC1=O");
+    let romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    assert!(mol_to_smiles(&romol).is_err())
 }
