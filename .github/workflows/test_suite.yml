@@ -26,7 +26,6 @@ jobs:
           apt-get install -y git nodejs sudo curl
           usermod -aG sudo root
           git config --global --add safe.directory /__w/rdkit-debian/rdkit-debian
-          sudo echo "hi"
 
       - name: Git checkout
         uses: actions/checkout@v2

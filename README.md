@@ -4,7 +4,7 @@ RDKit
 A high-level library for performing common RDKit tasks such as SMILES parsing, molecule normalization, etc. Uses
 the C++ API via bindings from [rdkit-sys](https://crates.io/crate/rdkit-sys).
 
-Notice: Requires rdkit 2023.09.1 or higher
+Notice: Requires rdkit 2023.09.1 or higher (like Ubuntu Noble 24.04)
 
 Prerequisites
 ---
