@@ -12,6 +12,7 @@ jobs:
     runs-on: buildjet-16vcpu-ubuntu-2204
     env:
       ARCH: amd64
+      DEBIAN_FRONTEND: noninteractive
     container:
       image: ubuntu:24.04
       # options: --user 1001 # https://github.com/actions/runner/issues/2033#issuecomment-1598547465
