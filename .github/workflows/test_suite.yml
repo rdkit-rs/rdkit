@@ -1,7 +1,7 @@
 name: Tests, Clippy, and Format
 
 on:
-  pull_request: {}
+  pull_request: { }
 
 env:
   REGISTRY: ghcr.io
@@ -9,13 +9,24 @@ env:
 
 jobs:
   test_suite:
+    runs-on: buildjet-16vcpu-ubuntu-2204
     env:
       ARCH: amd64
-    runs-on: buildjet-16vcpu-ubuntu-2204
+    container:
+      image: ubuntu:24.04
+      # options: --user 1001 # https://github.com/actions/runner/issues/2033#issuecomment-1598547465
     permissions:
       contents: read
       packages: write
     steps:
+      - name: Reinstall tools missing from base docker image
+        run: |
+          apt-get update > /dev/null
+          apt-get install -y git nodejs sudo
+          usermod -aG sudo root
+          git config --global --add safe.directory /__w/rdkit-debian/rdkit-debian
+          sudo echo "hi"
+
       - name: Git checkout
         uses: actions/checkout@v2
 
@@ -30,7 +41,6 @@ jobs:
 
       - name: Install rdkit
         run: |
-          sudo bash -c "echo 'deb [trusted=yes] https://rdkit-rs-debian.s3.amazonaws.com jammy main' > /etc/apt/sources.list.d/rdkit-rs.list"
           sudo apt-get update
           sudo apt-get install -y build-essential librdkit-dev libssl-dev libboost1.74-dev libboost-serialization1.74-dev pkg-config
 
