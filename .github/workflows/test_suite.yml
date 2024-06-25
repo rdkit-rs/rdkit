@@ -56,7 +56,8 @@ jobs:
           fi
           cp -r /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
           cp /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/local/lib/
-          export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+          echo 'export LD_LIBRARY_PATH="/path/to/your/library:$LD_LIBRARY_PATH"' > ~/.bashrc
+          source ~/.bashrc
 
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
@@ -67,7 +68,6 @@ jobs:
 
       - name: Cargo test
         run: |
-          /bin/bash
           RUST_WRAPPER=$SCCACHE_PATH cargo clean
           RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
 
