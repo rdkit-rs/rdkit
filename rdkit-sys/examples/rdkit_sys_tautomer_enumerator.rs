@@ -28,7 +28,7 @@ fn main() {
     let canonical_mol = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(
         &tautomer_enumerator,
         &mol,
-    );
+    ).unwrap();
     let canonical_smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&canonical_mol);
     println!("canonical: {}", canonical_smiles);
 }
