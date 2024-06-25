@@ -55,9 +55,7 @@ jobs:
             tar xf rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
           fi
           cp -r /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
-          cp /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/local/lib/
-          echo 'export LD_LIBRARY_PATH="/path/to/your/library:$LD_LIBRARY_PATH"' > ~/.bashrc
-          . ~/.bashrc
+          cp /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/lib/
 
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
