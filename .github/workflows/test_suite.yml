@@ -47,7 +47,7 @@ jobs:
       - name: Install RDKit
         run: |
           cd /tmp
-          if [[ "$(dpkg --print-architecture)" == "amd64" ]]; then
+          if [ $(dpkg --print-architecture) = "amd64" ]; then
             curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
             tar xf rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
           else
