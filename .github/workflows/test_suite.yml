@@ -68,7 +68,7 @@ jobs:
 
       - name: Cargo test
         run: |
-          RUST_WRAPPER=$SCCACHE_PATH cargo clean --workspace
+          RUST_WRAPPER=$SCCACHE_PATH cargo clean
           RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
 
 #  convention_checker:
