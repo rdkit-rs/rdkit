@@ -14,7 +14,7 @@ jobs:
       ARCH: amd64
       DEBIAN_FRONTEND: noninteractive
     container:
-      image: ubuntu:24.04
+      image: ubuntu:22.04
       # options: --user 1001 # https://github.com/actions/runner/issues/2033#issuecomment-1598547465
     permissions:
       contents: read
@@ -39,10 +39,25 @@ jobs:
         shell: bash
         run: ${SCCACHE_PATH} --show-stats
 
-      - name: Install rdkit
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential librdkit-dev libssl-dev libboost1.74-dev libboost-serialization1.74-dev pkg-config
+          sudo apt-get install -y build-essential libssl-dev libboost-iostreams-dev libboost-serialization-dev pkg-config curl tar
+
+      - name: Install RDKit
+        run: |
+          cd /tmp
+          if [ $(dpkg --print-architecture) = "amd64" ]; then
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
+            tar xf rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
+          else
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+            tar xf rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+          fi
+          cp -r /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
+          cp /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/local/lib/
+          export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+          /bin/bash
 
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
@@ -51,8 +66,10 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - name: Cargo Test
-        run: RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
+      - name: Cargo test
+        run: |
+          RUST_WRAPPER=$SCCACHE_PATH cargo clean --workspace
+          RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
 
 #  convention_checker:
 #    env:
