@@ -63,3 +63,11 @@ fn parse_without_sanitize_test() {
         .collect::<Vec<_>>();
     assert_eq!(atoms, &["N", "N"]);
 }
+
+#[test]
+fn mol_to_molblock_test() {
+    cxx::let_cxx_string!(smiles = "CC");
+    let romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let molblock = rdkit_sys::ro_mol_ffi::mol_to_molblock(&romol);
+    assert_eq!(molblock, "\n     RDKit          2D\n\n  2  1  0  0  0  0  0  0  0  0999 V2000\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2990    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\nM  END\n");
+}

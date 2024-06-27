@@ -4,6 +4,7 @@
 #include <GraphMol/GraphMol.h>
 #include <GraphMol/SmilesParse/SmilesParse.h>
 #include <GraphMol/SmilesParse/SmilesWrite.h>
+#include <GraphMol/FileParsers/FileWriters.h>
 #include <DataStructs/ExplicitBitVect.h>
 #include <GraphMol/Fingerprints/Fingerprints.h>
 #include <GraphMol/MolStandardize/Tautomer.h>
@@ -12,6 +13,7 @@ namespace RDKit {
     std::shared_ptr<ROMol> copy_mol(const std::shared_ptr<ROMol> &mol);
     std::shared_ptr<ROMol> smiles_to_mol(const std::string &smiles);
     rust::String mol_to_smiles(const std::shared_ptr<ROMol> &mol);
+    rust::String mol_to_molblock(const std::shared_ptr<ROMol> &mol);
 
     std::shared_ptr<ROMol> smiles_to_mol_with_params(const std::string &smiles, const std::shared_ptr<SmilesParserParams> &params);
     std::shared_ptr<SmilesParserParams> new_smiles_parser_params();
