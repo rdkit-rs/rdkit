@@ -13,9 +13,6 @@ jobs:
     env:
       ARCH: amd64
       DEBIAN_FRONTEND: noninteractive
-    container:
-      image: ubuntu:22.04
-      # options: --user 1001 # https://github.com/actions/runner/issues/2033#issuecomment-1598547465
     permissions:
       contents: read
       packages: write
@@ -69,49 +66,61 @@ jobs:
           RUST_WRAPPER=$SCCACHE_PATH cargo clean
           RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
 
-#  convention_checker:
-#    env:
-#      ARCH: amd64
-#    runs-on: buildjet-16vcpu-ubuntu-2204
-#    permissions:
-#      contents: read
-#      packages: write
-#    steps:
-#      - name: Git checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Run sccache-cache
-#        uses: mozilla/sccache-action@eaed7fb9f8fb32adea8bd40d7f276f312de9beaf
-#        with:
-#          version: "v0.4.0-pre.10"
-#
-#      - name: Run sccache stat for check
-#        shell: bash
-#        run: ${SCCACHE_PATH} --show-stats
-#
-#      - name: Install rdkit
-#        run: |
-#          sudo bash -c "echo 'deb [trusted=yes] https://rdkit-rs-debian.s3.amazonaws.com jammy main' > /etc/apt/sources.list.d/rdkit-rs.list"
-#          sudo apt-get update
-#          sudo apt-get install -y build-essential librdkit-dev libssl-dev libboost1.74-dev libboost-serialization1.74-dev pkg-config
-#
-#      - name: Install latest stable
-#        uses: actions-rs/toolchain@v1
-#        with:
-#          toolchain: stable
-#          override: true
-#          components: rustfmt, clippy
-#
-#      - name: Rust Format Check
-#        run: |
-#          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
-#          pushd rdkit-sys
-#          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
-#          popd
-#
-#      - name: Clippy Check
-#        run: |
-#          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
-#          pushd rdkit-sys
-#          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
-#          popd
+  convention_checker:
+    env:
+      ARCH: amd64
+    runs-on: buildjet-16vcpu-ubuntu-2204
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Run sccache-cache
+        uses: mozilla/sccache-action@eaed7fb9f8fb32adea8bd40d7f276f312de9beaf
+        with:
+          version: "v0.4.0-pre.10"
+
+      - name: Run sccache stat for check
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libssl-dev libboost-iostreams-dev libboost-serialization-dev pkg-config curl tar
+
+      - name: Install RDKit
+        run: |
+          cd /tmp
+          if [ $(dpkg --print-architecture) = "amd64" ]; then
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
+            tar xf rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
+          else
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+            tar xf rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+          fi
+          mv /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
+          mv /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/lib/
+
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name: Rust Format Check
+        run: |
+          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+          pushd rdkit-sys
+          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
+          popd
+
+      - name: Clippy Check
+        run: |
+          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
+          pushd rdkit-sys
+          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
+          popd
