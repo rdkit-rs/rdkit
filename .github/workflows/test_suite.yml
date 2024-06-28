@@ -39,13 +39,13 @@ jobs:
           cd /tmp
           if [ $(dpkg --print-architecture) = "amd64" ]; then
             curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
-            tar xf rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
+            sudo tar xf rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
           else
             curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
-            tar xf rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+            sudo tar xf rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
           fi
-          mv /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
-          mv /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/lib/
+          sudo mv /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
+          sudo mv /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/lib/
 
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
