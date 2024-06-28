@@ -59,7 +59,9 @@ impl ROMol {
         ro_mol_ffi::mol_to_smiles(&self.ptr)
     }
 
-    pub fn to_molblock(&self) -> String { ro_mol_ffi::mol_to_molblock(&self.ptr) }
+    pub fn to_molblock(&self) -> String {
+        ro_mol_ffi::mol_to_molblock(&self.ptr)
+    }
 
     pub fn as_rw_mol(&self, quick_copy: bool, conf_id: i32) -> RWMol {
         let ptr = rw_mol_ffi::rw_mol_from_ro_mol(&self.ptr, quick_copy, conf_id);

@@ -11,8 +11,8 @@ fn test_atom() {
     assert_eq!(atom.get_total_num_hs(), 4);
     assert_eq!(atom.get_total_valence(), 4);
 
-    // TODO: these three need to be wrapped in a Result since it can throw an exception
-    // assert_eq!(atoms[0].get_formal_charge(), 0);
+    // TODO: these three need to be wrapped in a Result since it can throw an
+    // exception assert_eq!(atoms[0].get_formal_charge(), 0);
     // assert_eq!(atoms[0].get_total_num_hs(), 100);
     // assert_eq!(atoms[0].get_total_valence(), 100);
 }
