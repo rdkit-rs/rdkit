@@ -43,6 +43,8 @@ pub mod ffi {
 
         pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> String;
 
+        pub fn mol_to_molblock(mol: &SharedPtr<ROMol>) -> String;
+
         pub fn detect_chemistry_problems(
             mol: &SharedPtr<ROMol>,
         ) -> UniquePtr<CxxVector<MolSanitizeExceptionUniquePtr>>;

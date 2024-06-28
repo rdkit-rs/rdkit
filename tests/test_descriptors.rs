@@ -69,7 +69,10 @@ fn test_computing_properties() {
         .iter()
         .map(|(k, v)| (k.to_string(), format!("{:.3}", *v)))
         .collect::<Vec<_>>();
-    let mut computed = computed.into_iter().map(|(k, v)| (k.to_string(), format!("{:.3}", v))).collect::<Vec<_>>();
+    let mut computed = computed
+        .into_iter()
+        .map(|(k, v)| (k.to_string(), format!("{:.3}", v)))
+        .collect::<Vec<_>>();
 
     expected.sort_by(|(k1, _), (k2, _)| k1.cmp(k2));
     computed.sort_by(|(k1, _), (k2, _)| k1.cmp(k2));
