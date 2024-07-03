@@ -1,21 +1,5 @@
 use rdkit::{add_hs, clean_up, remove_hs, set_hybridization, ROMol, RemoveHsParameters};
 
-// # Create mol and check for chemistry problems
-//        mol = Chem.MolFromSmiles(smiles, sanitize=False)
-//        mol = fix_chem_problems(mol)
-//
-//        # Sanitize
-//        Chem.SanitizeMol(mol)
-//
-//        # Track heavy hydrogens
-//        heavy_hydrogen = False
-//        if '[2H]' in smiles or '[3H]' in smiles:
-//            heavy_hydrogen = True
-//            remove_hs_params = Chem.RemoveHsParameters()
-//            remove_hs_params.removeAndTrackIsotopes = True
-//            remove_hs_params.removeDefiningBondStereo = True
-//            mol = Chem.RemoveHs(mol, remove_hs_params)
-
 #[test]
 fn test_remove_hs() {
     let ro_mol = ROMol::from_smiles("[2H]C").unwrap();

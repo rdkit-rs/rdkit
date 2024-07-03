@@ -43,6 +43,8 @@ pub mod ffi {
 
         pub fn mol_to_smiles(mol: &SharedPtr<ROMol>) -> String;
 
+        pub fn mol_to_molblock(mol: &SharedPtr<ROMol>) -> String;
+
         pub fn detect_chemistry_problems(
             mol: &SharedPtr<ROMol>,
         ) -> UniquePtr<CxxVector<MolSanitizeExceptionUniquePtr>>;
@@ -65,7 +67,7 @@ pub mod ffi {
         pub fn get_total_valence(atom: Pin<&Atom>) -> u32;
         pub fn set_formal_charge(atom: Pin<&mut Atom>, what: i32);
         pub fn set_num_explicit_hs(atom: Pin<&mut Atom>, what: i32);
-        pub fn atom_update_property_cache(atom: Pin<&mut Atom>, strict: bool);
+        pub fn atom_update_property_cache(atom: Pin<&mut Atom>, strict: bool) -> Result<()>;
         pub fn atom_set_hybridization(atom: Pin<&mut Atom>, what: HybridizationType);
         pub fn atom_get_hybridization(atom: Pin<&Atom>) -> HybridizationType;
 

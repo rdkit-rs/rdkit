@@ -5,7 +5,7 @@ use rdkit::{
 };
 
 #[test]
-fn test_rdmol() {
+fn test_romol() {
     let _ = ROMol::from_smiles("c1ccccc1C(=O)NC").unwrap();
 }
 
@@ -30,6 +30,21 @@ fn test_fragment_parent() {
         parent_rwmol.as_smiles()
     );
     assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles());
+}
+
+#[test]
+fn test_bad_canonicalization() {
+    let smiles = "C1=CC=C([N+]2=NOC([O-])=C2Br)C=C1";
+    let romol = ROMol::from_smiles(smiles).unwrap();
+    let rwmol = romol.as_rw_mol(false, 1);
+    let cleanup_params = CleanupParameters::default();
+    let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, false);
+    let te = TautomerEnumerator::new();
+    let canon_taut = te.canonicalize(&parent_rwmol.to_ro_mol());
+    assert_eq!(
+        canon_taut.err().unwrap().what(),
+        "Can't kekulize mol.  Unkekulized atoms: 5 9"
+    );
 }
 
 #[test]
@@ -74,7 +89,7 @@ fn test_stdz() {
     let uncharged_mol = uncharger.uncharge(&parent_rwmol.to_ro_mol());
 
     let te = TautomerEnumerator::new();
-    let canon_taut = te.canonicalize(&uncharged_mol);
+    let canon_taut = te.canonicalize(&uncharged_mol).unwrap();
     assert_eq!(
         "[N]Cc1cncc2c(=O)c3cccc(CCC(=O)O)c3[nH]c12",
         canon_taut.as_smiles()
@@ -304,4 +319,12 @@ fn test_build_romol_from_really_bad_smiles() {
 
     let romol = ROMol::from_smiles_with_params(smiles, &parser_params);
     assert!(romol.is_err());
+}
+
+#[test]
+fn mol_to_molblock_test() {
+    let smiles = "CC";
+    let romol = ROMol::from_smiles(&smiles).unwrap();
+    let molblock = romol.to_molblock();
+    assert_eq!(molblock, "\n     RDKit          2D\n\n  2  1  0  0  0  0  0  0  0  0999 V2000\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2990    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\nM  END\n");
 }
