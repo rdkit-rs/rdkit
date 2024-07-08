@@ -9,6 +9,8 @@ pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
 }
 
+unsafe impl Send for ROMol {}
+
 #[derive(Debug, PartialEq, thiserror::Error)]
 pub enum ROMolError {
     #[error("could not convert smiles to romol (nullptr)")]
