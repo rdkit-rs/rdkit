@@ -30,7 +30,7 @@ fn test_atom_update_property_cache_exception() {
 }
 
 #[test]
-fn test_set_properties() {
+fn test_set_and_get_properties() {
     let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
     {
         let mut carbon = romol.atom_with_idx(0);
