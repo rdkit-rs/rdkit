@@ -72,5 +72,14 @@ pub mod ffi {
         pub fn atom_get_hybridization(atom: Pin<&Atom>) -> HybridizationType;
 
         pub fn ro_mol_update_property_cache(atom: &mut SharedPtr<ROMol>, strict: bool);
+
+        pub fn set_int_prop(atom: Pin<&mut Atom>, key: &CxxString, value: i32);
+        pub fn get_int_prop(atom: Pin<&mut Atom>, key: &CxxString) -> Result<i32>;
+        pub fn set_float_prop(atom: Pin<&mut Atom>, key: &CxxString, value: f64);
+        pub fn get_float_prop(atom: Pin<&mut Atom>, key: &CxxString) -> Result<f64>;
+        pub fn set_bool_prop(atom: Pin<&mut Atom>, key: &CxxString, value: bool);
+        pub fn get_bool_prop(atom: Pin<&mut Atom>, key: &CxxString) -> Result<bool>;
+        pub fn set_prop(atom: Pin<&mut Atom>, key: &CxxString, value: &CxxString);
+        pub fn get_prop(atom: Pin<&mut Atom>, key: &CxxString) -> Result<String>;
     }
 }
