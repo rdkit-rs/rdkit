@@ -81,5 +81,6 @@ pub mod ffi {
         pub fn get_bool_prop(atom: Pin<&Atom>, key: &CxxString) -> Result<bool>;
         pub fn set_prop(atom: Pin<&mut Atom>, key: &CxxString, value: &CxxString);
         pub fn get_prop(atom: Pin<&Atom>, key: &CxxString) -> Result<String>;
+        pub fn get_num_radical_electrons(atom: Pin<&Atom>) -> u32;
     }
 }

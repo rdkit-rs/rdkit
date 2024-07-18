@@ -98,6 +98,10 @@ impl<'a> Atom<'a> {
         cxx::let_cxx_string!(key = key);
         ro_mol_ffi::get_prop(self.ptr.as_ref(), &key)
     }
+
+    pub fn get_num_radical_electrons(&self) -> u32 {
+        ro_mol_ffi::get_num_radical_electrons(self.ptr.as_ref())
+    }
 }
 
 pub trait SetPropValue {
