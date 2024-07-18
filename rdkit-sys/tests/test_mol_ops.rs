@@ -25,3 +25,16 @@ fn test_mol_ops_cleanup() {
     let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&new_ro_mol);
     assert_eq!(smiles, "C");
 }
+
+#[test]
+fn test_number_of_fragments() {
+    cxx::let_cxx_string!(smiles = "CC");
+    let ro_mol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let num_frags = rdkit_sys::mol_ops_ffi::get_number_of_fragments(&ro_mol);
+    assert_eq!(num_frags, 1);
+
+    cxx::let_cxx_string!(smiles = "CC(=O)[O-].[NH3+]C");
+    let ro_mol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let num_frags = rdkit_sys::mol_ops_ffi::get_number_of_fragments(&ro_mol);
+    assert_eq!(num_frags, 2);
+}

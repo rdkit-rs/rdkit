@@ -4,7 +4,7 @@ pub use substruct_match_item::*;
 mod substruct_match_parameters;
 pub use substruct_match_parameters::*;
 
-use crate::ROMol;
+use crate::graphmol::ro_mol::ROMol;
 
 pub fn substruct_match(
     mol: &ROMol,

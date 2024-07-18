@@ -1,4 +1,8 @@
-use rdkit::{add_hs, clean_up, remove_hs, set_hybridization, ROMol, RemoveHsParameters};
+use rdkit::graphmol::mol_ops::RemoveHsParameters;
+use rdkit::graphmol::mol_ops::{
+    add_hs, clean_up, get_number_of_fragments, remove_hs, set_hybridization,
+};
+use rdkit::graphmol::ro_mol::ROMol;
 
 #[test]
 fn test_remove_hs() {
@@ -31,4 +35,15 @@ fn test_mol_ops_clean_up() {
     let new_ro_mol = rw_mol.to_ro_mol();
     let smiles = new_ro_mol.as_smiles();
     assert_eq!(smiles, "C");
+}
+
+#[test]
+fn test_number_of_fragments() {
+    let ro_mol = ROMol::from_smiles("CC").unwrap();
+    let num_frags = get_number_of_fragments(&ro_mol);
+    assert_eq!(num_frags, 1);
+
+    let ro_mol = ROMol::from_smiles("CC(=O)[O-].[NH3+]C").unwrap();
+    let num_frags = get_number_of_fragments(&ro_mol);
+    assert_eq!(num_frags, 2);
 }
