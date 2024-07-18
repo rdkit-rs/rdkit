@@ -65,6 +65,7 @@ impl<'a> Atom<'a> {
         ro_mol_ffi::atom_set_hybridization(self.ptr.as_mut(), what);
     }
 
+    /// Returns the atom’s hybridization.
     pub fn get_hybridization_type(&self) -> HybridizationType {
         ro_mol_ffi::atom_get_hybridization(self.ptr.as_ref())
     }
@@ -99,8 +100,18 @@ impl<'a> Atom<'a> {
         ro_mol_ffi::get_prop(self.ptr.as_ref(), &key)
     }
 
+    /// Returns the number of radical electrons on the atom.
     pub fn get_num_radical_electrons(&self) -> u32 {
         ro_mol_ffi::get_num_radical_electrons(self.ptr.as_ref())
+    }
+
+    /// Returns the degree of the atom in the molecule.
+    /// The degree of an atom is defined to be its number
+    /// of directly-bonded neighbors. The degree is
+    /// independent of bond orders, but is dependent
+    /// on whether or not Hs are explicit in the graph.
+    pub fn get_degree(&self) -> u32 {
+        ro_mol_ffi::get_degree(self.ptr.as_ref())
     }
 }
 

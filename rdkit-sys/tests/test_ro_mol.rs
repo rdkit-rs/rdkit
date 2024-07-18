@@ -118,3 +118,12 @@ fn get_num_radical_electrons_test() {
     let num_radical_electrons = rdkit_sys::ro_mol_ffi::get_num_radical_electrons(atom.as_ref());
     assert_eq!(num_radical_electrons, 0);
 }
+
+#[test]
+fn get_degree_test() {
+    cxx::let_cxx_string!(smiles = "CC");
+    let mut romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    let degree = rdkit_sys::ro_mol_ffi::get_degree(atom.as_ref());
+    assert_eq!(degree, 1);
+}
