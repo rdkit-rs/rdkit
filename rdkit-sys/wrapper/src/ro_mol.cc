@@ -95,4 +95,6 @@ void set_bool_prop(Atom &atom, const std::string &key, bool value) { atom.setPro
 bool get_bool_prop(const Atom &atom, const std::string &key) { return atom.getProp<bool>(key); }
 void set_prop(Atom &atom, const std::string &key, const std::string &value) { atom.setProp(key, value); }
 rust::String get_prop(const Atom &atom, const std::string &key) { return atom.getProp<std::string>(key); }
+
+unsigned int get_num_radical_electrons(const Atom &atom) { return atom.getNumRadicalElectrons(); }
 } // namespace RDKit

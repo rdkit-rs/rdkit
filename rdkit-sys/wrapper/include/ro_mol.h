@@ -53,4 +53,6 @@ void set_bool_prop(Atom &atom, const std::string &key, bool val);
 bool get_bool_prop(const Atom &atom, const std::string &key);
 void set_prop(Atom &atom, const std::string &key, const std::string &val);
 rust::String get_prop(const Atom &atom, const std::string &key);
+
+unsigned int get_num_radical_electrons(const Atom &atom);
 } // namespace RDKit

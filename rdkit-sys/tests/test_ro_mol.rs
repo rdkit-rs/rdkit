@@ -109,3 +109,12 @@ fn set_and_get_int_property_test() {
     let error_value = rdkit_sys::ro_mol_ffi::get_int_prop(atom_2.as_ref(), &error_key);
     assert!(error_value.is_err());
 }
+
+#[test]
+fn get_num_radical_electrons_test() {
+    cxx::let_cxx_string!(smiles = "CC");
+    let mut romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    let num_radical_electrons = rdkit_sys::ro_mol_ffi::get_num_radical_electrons(atom.as_ref());
+    assert_eq!(num_radical_electrons, 0);
+}
