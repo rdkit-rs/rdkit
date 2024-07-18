@@ -67,3 +67,10 @@ fn test_number_of_radical_electrons() {
     let carbon = romol.atom_with_idx(0);
     assert_eq!(carbon.get_num_radical_electrons(), 0);
 }
+
+#[test]
+fn test_degree() {
+    let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
+    let carbon = romol.atom_with_idx(0);
+    assert_eq!(carbon.get_degree(), 1);
+}

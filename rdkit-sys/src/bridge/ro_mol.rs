@@ -82,5 +82,8 @@ pub mod ffi {
         pub fn set_prop(atom: Pin<&mut Atom>, key: &CxxString, value: &CxxString);
         pub fn get_prop(atom: Pin<&Atom>, key: &CxxString) -> Result<String>;
         pub fn get_num_radical_electrons(atom: Pin<&Atom>) -> u32;
+
+        //Returns the degree of the atom in the molecule.
+        pub fn get_degree(atom: Pin<&Atom>) -> u32;
     }
 }

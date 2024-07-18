@@ -97,4 +97,5 @@ void set_prop(Atom &atom, const std::string &key, const std::string &value) { at
 rust::String get_prop(const Atom &atom, const std::string &key) { return atom.getProp<std::string>(key); }
 
 unsigned int get_num_radical_electrons(const Atom &atom) { return atom.getNumRadicalElectrons(); }
+unsigned int get_degree(const Atom &atom) { return atom.getDegree(); }
 } // namespace RDKit
