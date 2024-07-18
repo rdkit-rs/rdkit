@@ -2,7 +2,7 @@
 #![feature(test)]
 extern crate test;
 
-use rdkit::ROMol;
+use rdkit::graphmol::ro_mol::ROMol;
 
 #[bench]
 fn bench_molecules(bencher: &mut test::bench::Bencher) {

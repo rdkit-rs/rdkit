@@ -6,7 +6,7 @@ use std::{
 
 use flate2::bufread::GzDecoder;
 
-use crate::RWMol;
+use crate::graphmol::rw_mol::RWMol;
 
 pub struct MolBlockIter<R: BufRead> {
     buf_read: R,

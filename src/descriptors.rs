@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use cxx::SharedPtr;
 
-use crate::ROMol;
+use crate::graphmol::ro_mol::ROMol;
 
 pub struct Properties {
     ptr: SharedPtr<rdkit_sys::descriptors_ffi::Properties>,
