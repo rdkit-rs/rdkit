@@ -46,11 +46,11 @@ HybridizationType atom_get_hybridization(const Atom &atom);
 void ro_mol_update_property_cache(std::shared_ptr<ROMol> &mol, bool strict);
 
 void set_int_prop(Atom &atom, const std::string &key, int val);
-int get_int_prop(Atom &atom, const std::string &key);
+int get_int_prop(const Atom &atom, const std::string &key);
 void set_float_prop(Atom &atom, const std::string &key, double val);
-double get_float_prop(Atom &atom, const std::string &key);
+double get_float_prop(const Atom &atom, const std::string &key);
 void set_bool_prop(Atom &atom, const std::string &key, bool val);
-bool get_bool_prop(Atom &atom, const std::string &key);
+bool get_bool_prop(const Atom &atom, const std::string &key);
 void set_prop(Atom &atom, const std::string &key, const std::string &val);
-rust::String get_prop(Atom &atom, const std::string &key);
+rust::String get_prop(const Atom &atom, const std::string &key);
 } // namespace RDKit

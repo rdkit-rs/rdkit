@@ -83,7 +83,7 @@ fn set_and_get_bool_property_test() {
     // now we create an other variable that is the same atom.
     // if it works, it should
     let atom_2 = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
-    let value = rdkit_sys::ro_mol_ffi::get_bool_prop(atom_2, &key);
+    let value = rdkit_sys::ro_mol_ffi::get_bool_prop(atom_2.as_ref(), &key);
     assert!(value.is_ok());
     assert_eq!(value.unwrap(), true);
 }
@@ -99,13 +99,13 @@ fn set_and_get_int_property_test() {
     // now we create an other variable that is the same atom.
     // if it works, it should
     let atom_2 = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
-    let value = rdkit_sys::ro_mol_ffi::get_int_prop(atom_2, &key);
+    let value = rdkit_sys::ro_mol_ffi::get_int_prop(atom_2.as_ref(), &key);
     assert!(value.is_ok());
     assert_eq!(value.unwrap(), 42);
 
     // get the "bar" property that does not exist, should return an error
     cxx::let_cxx_string!(error_key = "bar");
     let atom_2 = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
-    let error_value = rdkit_sys::ro_mol_ffi::get_int_prop(atom_2, &error_key);
+    let error_value = rdkit_sys::ro_mol_ffi::get_int_prop(atom_2.as_ref(), &error_key);
     assert!(error_value.is_err());
 }

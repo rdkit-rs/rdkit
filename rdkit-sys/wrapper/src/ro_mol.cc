@@ -88,11 +88,11 @@ void ro_mol_update_property_cache(std::shared_ptr<ROMol> &mol, bool strict) { mo
 
 // We add the different properties of and an atom to the Atom struct
 void set_int_prop(Atom &atom, const std::string &key, int value) { atom.setProp(key, value); }
-int get_int_prop(Atom &atom, const std::string &key) { return atom.getProp<int>(key); }
+int get_int_prop(const Atom &atom, const std::string &key) { return atom.getProp<int>(key); }
 void set_float_prop(Atom &atom, const std::string &key, double value) { atom.setProp(key, value); }
-double get_float_prop(Atom &atom, const std::string &key) { return atom.getProp<double>(key); }
+double get_float_prop(const Atom &atom, const std::string &key) { return atom.getProp<double>(key); }
 void set_bool_prop(Atom &atom, const std::string &key, bool value) { atom.setProp(key, value); }
-bool get_bool_prop(Atom &atom, const std::string &key) { return atom.getProp<bool>(key); }
+bool get_bool_prop(const Atom &atom, const std::string &key) { return atom.getProp<bool>(key); }
 void set_prop(Atom &atom, const std::string &key, const std::string &value) { atom.setProp(key, value); }
-rust::String get_prop(Atom &atom, const std::string &key) { return atom.getProp<std::string>(key); }
+rust::String get_prop(const Atom &atom, const std::string &key) { return atom.getProp<std::string>(key); }
 } // namespace RDKit

@@ -81,22 +81,22 @@ impl<'a> Atom<'a> {
 
     pub fn get_int_prop(&mut self, key: &str) -> Result<i32, cxx::Exception> {
         cxx::let_cxx_string!(key = key);
-        ro_mol_ffi::get_int_prop(self.ptr.as_mut(), &key)
+        ro_mol_ffi::get_int_prop(self.ptr.as_ref(), &key)
     }
 
     pub fn get_float_prop(&mut self, key: &str) -> Result<f64, cxx::Exception> {
         cxx::let_cxx_string!(key = key);
-        ro_mol_ffi::get_float_prop(self.ptr.as_mut(), &key)
+        ro_mol_ffi::get_float_prop(self.ptr.as_ref(), &key)
     }
 
     pub fn get_bool_prop(&mut self, key: &str) -> Result<bool, cxx::Exception> {
         cxx::let_cxx_string!(key = key);
-        ro_mol_ffi::get_bool_prop(self.ptr.as_mut(), &key)
+        ro_mol_ffi::get_bool_prop(self.ptr.as_ref(), &key)
     }
 
     pub fn get_prop(&mut self, key: &str) -> Result<String, cxx::Exception> {
         cxx::let_cxx_string!(key = key);
-        ro_mol_ffi::get_prop(self.ptr.as_mut(), &key)
+        ro_mol_ffi::get_prop(self.ptr.as_ref(), &key)
     }
 }
 
