@@ -32,3 +32,11 @@ Managing multiple crates in a single repository:
     rdkit % cargo publish
     rdkit % cd rdkit-sys
     rdkit-sys % cargo publish
+
+
+## Formatting
+### C++ formatting
+Clang formatting should be automatically applied when saving files in VSCode if you have the `clangd` extension installed. If you don't have it installed, you can install it from the marketplace. Else by right-clicking on the file and selecting `Format Document` should do the work. 
+
+### Rust formatting
+Rust formatting should be automatically applied when saving files in VSCode if you have the `rust-analyzer` extension installed. Else by running `cargo fmt` in the root directory the entire project will be formatted.
