@@ -1,6 +1,6 @@
-use rdkit::descriptors::Properties;
-use rdkit::graphmol::ro_mol::ROMol;
 use std::collections::HashMap;
+
+use rdkit::{descriptors::Properties, graphmol::ro_mol::ROMol};
 
 #[test]
 fn test_a_thing() {

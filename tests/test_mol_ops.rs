@@ -1,8 +1,9 @@
-use rdkit::graphmol::mol_ops::RemoveHsParameters;
-use rdkit::graphmol::mol_ops::{
-    add_hs, clean_up, get_number_of_fragments, remove_hs, set_hybridization,
+use rdkit::graphmol::{
+    mol_ops::{
+        add_hs, clean_up, get_number_of_fragments, remove_hs, set_hybridization, RemoveHsParameters,
+    },
+    ro_mol::ROMol,
 };
-use rdkit::graphmol::ro_mol::ROMol;
 
 #[test]
 fn test_remove_hs() {

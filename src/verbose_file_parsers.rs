@@ -1,8 +1,8 @@
 use std::{io::BufRead, path::Path};
 
-use crate::file_parsers::GzBufReader;
-use crate::graphmol::rw_mol::RWMol;
 use flate2::bufread::GzDecoder;
+
+use crate::{file_parsers::GzBufReader, graphmol::rw_mol::RWMol};
 
 pub struct VerboseMolBlockIter<R: BufRead> {
     buf_read: R,

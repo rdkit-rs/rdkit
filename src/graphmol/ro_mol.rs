@@ -1,10 +1,12 @@
 use std::fmt::{Debug, Formatter};
 
-use crate::fingerprint::Fingerprint;
-use crate::graphmol::atom::Atom;
-use crate::graphmol::rw_mol::RWMol;
 use cxx::let_cxx_string;
 use rdkit_sys::*;
+
+use crate::{
+    fingerprint::Fingerprint,
+    graphmol::{atom::Atom, rw_mol::RWMol},
+};
 
 pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,

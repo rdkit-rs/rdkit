@@ -1,5 +1,7 @@
-use rdkit::graphmol::ro_mol::ROMol;
-use rdkit::substruct_match::{substruct_match, SubstructMatchItem, SubstructMatchParameters};
+use rdkit::{
+    graphmol::ro_mol::ROMol,
+    substruct_match::{substruct_match, SubstructMatchItem, SubstructMatchParameters},
+};
 
 #[test]
 fn test_substruct_match() {

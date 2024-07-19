@@ -1,7 +1,6 @@
 use cxx::SharedPtr;
 
-use crate::graphmol::ro_mol::ROMol;
-use crate::graphmol::rw_mol::RWMol;
+use crate::graphmol::{ro_mol::ROMol, rw_mol::RWMol};
 
 pub struct CleanupParameters {
     pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::CleanupParameters>,

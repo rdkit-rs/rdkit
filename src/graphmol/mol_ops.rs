@@ -1,7 +1,7 @@
-use crate::graphmol::ro_mol::ROMol;
-use crate::graphmol::rw_mol::RWMol;
 use cxx::SharedPtr;
 use rdkit_sys::ro_mol_ffi as ro_mol;
+
+use crate::graphmol::{ro_mol::ROMol, rw_mol::RWMol};
 
 #[derive(Debug, PartialEq)]
 pub enum MolSanitizeException {

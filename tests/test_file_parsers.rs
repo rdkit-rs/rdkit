@@ -1,5 +1,6 @@
-use rdkit::file_parsers::MolBlockIter;
 use std::path::PathBuf;
+
+use rdkit::file_parsers::MolBlockIter;
 #[test]
 fn test_mol_block() {
     let root = std::env::var("CARGO_MANIFEST_DIR").unwrap();
