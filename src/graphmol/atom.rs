@@ -1,5 +1,6 @@
-use rdkit_sys::ro_mol_ffi;
 use std::{fmt::Formatter, pin::Pin};
+
+use rdkit_sys::ro_mol_ffi;
 
 pub struct Atom<'a> {
     ptr: Pin<&'a mut ro_mol_ffi::Atom>,
@@ -71,8 +72,9 @@ impl<'a> Atom<'a> {
     }
 
     // We create a generic function set_prop that can set any property type.
-    // if the property type is an integer, we call set_int_prop, if it is a float, we call set_float_prop,
-    // if it is a boolean, we call set_bool_prop and if it is a string, we call set_prop.
+    // if the property type is an integer, we call set_int_prop, if it is a float,
+    // we call set_float_prop, if it is a boolean, we call set_bool_prop and if
+    // it is a string, we call set_prop.
     pub fn set_prop<T>(&mut self, key: &str, value: T)
     where
         T: SetPropValue,

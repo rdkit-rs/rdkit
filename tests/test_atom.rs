@@ -1,5 +1,4 @@
-use rdkit::graphmol::atom::HybridizationType;
-use rdkit::graphmol::ro_mol::ROMol;
+use rdkit::graphmol::{atom::HybridizationType, ro_mol::ROMol};
 #[test]
 fn test_atom() {
     let mut romol = ROMol::from_smiles("[NH4+]").unwrap();

@@ -1,8 +1,12 @@
-use rdkit::graphmol::mol_ops::{detect_chemistry_problems, MolSanitizeException};
-use rdkit::graphmol::ro_mol::{ROMol, ROMolError, SmilesParserParams};
-use rdkit::graphmol::rw_mol::RWMol;
-use rdkit::mol_standardize::{fragment_parent, CleanupParameters, TautomerEnumerator, Uncharger};
-use rdkit::substruct_match::{substruct_match, SubstructMatchParameters};
+use rdkit::{
+    graphmol::{
+        mol_ops::{detect_chemistry_problems, MolSanitizeException},
+        ro_mol::{ROMol, ROMolError, SmilesParserParams},
+        rw_mol::RWMol,
+    },
+    mol_standardize::{fragment_parent, CleanupParameters, TautomerEnumerator, Uncharger},
+    substruct_match::{substruct_match, SubstructMatchParameters},
+};
 
 #[test]
 fn test_romol() {
