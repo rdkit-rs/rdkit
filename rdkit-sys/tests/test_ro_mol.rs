@@ -71,3 +71,59 @@ fn mol_to_molblock_test() {
     let molblock = rdkit_sys::ro_mol_ffi::mol_to_molblock(&romol);
     assert_eq!(molblock, "\n     RDKit          2D\n\n  2  1  0  0  0  0  0  0  0  0999 V2000\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2990    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\nM  END\n");
 }
+
+#[test]
+fn set_and_get_bool_property_test() {
+    cxx::let_cxx_string!(smiles = "CC");
+    cxx::let_cxx_string!(key = "foo");
+    let mut romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    rdkit_sys::ro_mol_ffi::set_bool_prop(atom, &key, true);
+
+    // now we create an other variable that is the same atom.
+    // if it works, it should
+    let atom_2 = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    let value = rdkit_sys::ro_mol_ffi::get_bool_prop(atom_2.as_ref(), &key);
+    assert!(value.is_ok());
+    assert_eq!(value.unwrap(), true);
+}
+
+#[test]
+fn set_and_get_int_property_test() {
+    cxx::let_cxx_string!(smiles = "CC");
+    cxx::let_cxx_string!(key = "foo");
+    let mut romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    rdkit_sys::ro_mol_ffi::set_int_prop(atom, &key, 42);
+
+    // now we create an other variable that is the same atom.
+    // if it works, it should
+    let atom_2 = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    let value = rdkit_sys::ro_mol_ffi::get_int_prop(atom_2.as_ref(), &key);
+    assert!(value.is_ok());
+    assert_eq!(value.unwrap(), 42);
+
+    // get the "bar" property that does not exist, should return an error
+    cxx::let_cxx_string!(error_key = "bar");
+    let atom_2 = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    let error_value = rdkit_sys::ro_mol_ffi::get_int_prop(atom_2.as_ref(), &error_key);
+    assert!(error_value.is_err());
+}
+
+#[test]
+fn get_num_radical_electrons_test() {
+    cxx::let_cxx_string!(smiles = "CC");
+    let mut romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    let num_radical_electrons = rdkit_sys::ro_mol_ffi::get_num_radical_electrons(atom.as_ref());
+    assert_eq!(num_radical_electrons, 0);
+}
+
+#[test]
+fn get_degree_test() {
+    cxx::let_cxx_string!(smiles = "CC");
+    let mut romol = rdkit_sys::ro_mol_ffi::smiles_to_mol(&smiles).unwrap();
+    let atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 0);
+    let degree = rdkit_sys::ro_mol_ffi::get_degree(atom.as_ref());
+    assert_eq!(degree, 1);
+}

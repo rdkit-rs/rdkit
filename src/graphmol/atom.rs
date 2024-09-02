@@ -66,7 +66,86 @@ impl<'a> Atom<'a> {
         ro_mol_ffi::atom_set_hybridization(self.ptr.as_mut(), what);
     }
 
+    /// Returns the atom’s hybridization.
     pub fn get_hybridization_type(&self) -> HybridizationType {
         ro_mol_ffi::atom_get_hybridization(self.ptr.as_ref())
+    }
+
+    // We create a generic function set_prop that can set any property type.
+    // if the property type is an integer, we call set_int_prop, if it is a float,
+    // we call set_float_prop, if it is a boolean, we call set_bool_prop and if
+    // it is a string, we call set_prop.
+    pub fn set_prop<T>(&mut self, key: &str, value: T)
+    where
+        T: SetPropValue,
+    {
+        value.set_prop(self.ptr.as_mut(), key);
+    }
+
+    pub fn get_int_prop(&self, key: &str) -> Result<i32, cxx::Exception> {
+        cxx::let_cxx_string!(key = key);
+        ro_mol_ffi::get_int_prop(self.ptr.as_ref(), &key)
+    }
+
+    pub fn get_float_prop(&self, key: &str) -> Result<f64, cxx::Exception> {
+        cxx::let_cxx_string!(key = key);
+        ro_mol_ffi::get_float_prop(self.ptr.as_ref(), &key)
+    }
+
+    pub fn get_bool_prop(&self, key: &str) -> Result<bool, cxx::Exception> {
+        cxx::let_cxx_string!(key = key);
+        ro_mol_ffi::get_bool_prop(self.ptr.as_ref(), &key)
+    }
+
+    pub fn get_prop(&self, key: &str) -> Result<String, cxx::Exception> {
+        cxx::let_cxx_string!(key = key);
+        ro_mol_ffi::get_prop(self.ptr.as_ref(), &key)
+    }
+
+    /// Returns the number of radical electrons on the atom.
+    pub fn get_num_radical_electrons(&self) -> u32 {
+        ro_mol_ffi::get_num_radical_electrons(self.ptr.as_ref())
+    }
+
+    /// Returns the degree of the atom in the molecule.
+    /// The degree of an atom is defined to be its number
+    /// of directly-bonded neighbors. The degree is
+    /// independent of bond orders, but is dependent
+    /// on whether or not Hs are explicit in the graph.
+    pub fn get_degree(&self) -> u32 {
+        ro_mol_ffi::get_degree(self.ptr.as_ref())
+    }
+}
+
+pub trait SetPropValue {
+    fn set_prop(self, ptr: Pin<&mut ro_mol_ffi::Atom>, key: &str);
+}
+
+impl SetPropValue for i32 {
+    fn set_prop(self, ptr: Pin<&mut ro_mol_ffi::Atom>, key: &str) {
+        cxx::let_cxx_string!(key = key);
+        ro_mol_ffi::set_int_prop(ptr, &key, self);
+    }
+}
+
+impl SetPropValue for f64 {
+    fn set_prop(self, ptr: Pin<&mut ro_mol_ffi::Atom>, key: &str) {
+        cxx::let_cxx_string!(key = key);
+        ro_mol_ffi::set_float_prop(ptr, &key, self);
+    }
+}
+
+impl SetPropValue for bool {
+    fn set_prop(self, ptr: Pin<&mut ro_mol_ffi::Atom>, key: &str) {
+        cxx::let_cxx_string!(key = key);
+        ro_mol_ffi::set_bool_prop(ptr, &key, self);
+    }
+}
+
+impl SetPropValue for &str {
+    fn set_prop(self, ptr: Pin<&mut ro_mol_ffi::Atom>, key: &str) {
+        cxx::let_cxx_string!(key = key);
+        cxx::let_cxx_string!(value = self);
+        ro_mol_ffi::set_prop(ptr, &key, &value);
     }
 }
