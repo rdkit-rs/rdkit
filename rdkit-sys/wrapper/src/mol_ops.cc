@@ -106,9 +106,4 @@ std::shared_ptr<ROMol> add_hs(const std::shared_ptr<ROMol> &mol, bool explicit_o
 void romol_set_hybridization(std::shared_ptr<ROMol> &mol) { MolOps::setHybridization(*mol); }
 
 void clean_up(std::shared_ptr<RWMol> &rw_mol) { MolOps::cleanUp(*rw_mol); }
-
-unsigned int get_number_of_fragments(const std::shared_ptr<ROMol> &romol) {
-	std::vector<int> mapping;
-	return RDKit::MolOps::getMolFrags(*romol, mapping);
-}
 } // namespace RDKit

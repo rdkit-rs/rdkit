@@ -3,7 +3,6 @@
 #include "rust/cxx.h"
 #include <GraphMol/GraphMol.h>
 #include <GraphMol/MolOps.h>
-#include <vector>
 
 namespace RDKit {
 //  pub fn new_remove_hs_parameters() -> SharedPtr<RemoveHsParameters>;
@@ -68,9 +67,4 @@ void romol_set_hybridization(std::shared_ptr<ROMol> &mol);
 
 // pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>)
 void clean_up(std::shared_ptr<RWMol> &rw_mol);
-
-// get molecule fragments  RETURNS: a tuple of tuples with IDs for the atoms
-// in each fragment or a tuple of molecules.
-unsigned int get_number_of_fragments(const std::shared_ptr<ROMol> &romol);
-
 } // namespace RDKit
