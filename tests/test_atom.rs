@@ -70,3 +70,11 @@ fn test_degree() {
     let carbon = romol.atom_with_idx(0);
     assert_eq!(carbon.get_degree(), 1);
 }
+
+#[test]
+fn test_set_no_implicit() {
+    let mut romol = ROMol::from_smiles("CC").unwrap();
+    let mut carbon = romol.atom_with_idx(0);
+    carbon.set_no_implicit(true);
+    assert_eq!(carbon.get_total_num_hs(), 0);
+}
