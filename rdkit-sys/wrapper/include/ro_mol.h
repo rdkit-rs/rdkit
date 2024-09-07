@@ -37,6 +37,7 @@ unsigned int get_total_num_hs(const Atom &atom);
 unsigned int get_total_valence(const Atom &atom);
 void set_formal_charge(Atom &atom, int what);
 void set_num_explicit_hs(Atom &atom, int what);
+void set_no_implicit(Atom &atom, bool what);
 void atom_update_property_cache(Atom &atom, bool strict);
 
 using HybridizationType = Atom::HybridizationType;

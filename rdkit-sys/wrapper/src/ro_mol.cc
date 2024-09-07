@@ -78,6 +78,7 @@ unsigned int get_total_num_hs(const Atom &atom) { return atom.getTotalNumHs(); }
 unsigned int get_total_valence(const Atom &atom) { return atom.getTotalValence(); }
 void set_formal_charge(Atom &atom, int what) { atom.setFormalCharge(what); }
 void set_num_explicit_hs(Atom &atom, int what) { atom.setNumExplicitHs(what); }
+void set_no_implicit(Atom &atom, bool what) { atom.SetNoImplicit(what); }
 void atom_update_property_cache(Atom &atom, bool strict) { atom.updatePropertyCache(strict); }
 
 using HybridizationType = Atom::HybridizationType;

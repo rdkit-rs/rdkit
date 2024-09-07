@@ -58,6 +58,10 @@ impl<'a> Atom<'a> {
         ro_mol_ffi::set_num_explicit_hs(self.ptr.as_mut(), what)
     }
 
+    pub fn set_no_implicit(&mut self, what: bool) {
+        ro_mol_ffi::set_no_implicit(self.ptr.as_mut(), what)
+    }
+
     pub fn update_property_cache(&mut self, strict: bool) -> Result<(), cxx::Exception> {
         ro_mol_ffi::atom_update_property_cache(self.ptr.as_mut(), strict)
     }
