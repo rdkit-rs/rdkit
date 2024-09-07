@@ -32,7 +32,7 @@ fn test_atom_update_property_cache_exception() {
 
 #[test]
 fn test_set_and_get_properties() {
-    let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
+    let mut romol = ROMol::from_smiles("CC").unwrap();
     {
         let mut carbon = romol.atom_with_idx(0);
         carbon.set_prop("int", 42);
@@ -64,14 +64,14 @@ fn test_set_and_get_properties() {
 
 #[test]
 fn test_number_of_radical_electrons() {
-    let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
+    let mut romol = ROMol::from_smiles("CC").unwrap();
     let carbon = romol.atom_with_idx(0);
     assert_eq!(carbon.get_num_radical_electrons(), 0);
 }
 
 #[test]
 fn test_degree() {
-    let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
+    let mut romol = ROMol::from_smiles("CC").unwrap();
     let carbon = romol.atom_with_idx(0);
     assert_eq!(carbon.get_degree(), 1);
 }
