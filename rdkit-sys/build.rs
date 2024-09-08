@@ -1,7 +1,6 @@
-const CPP_VERSION_FLAG: &str = "-std=c++17";
+const CPP_VERSION_FLAG: &str = "c++17";
 
 fn main() {
-    println!("STARTING PROGRAM");
     dotenvy::dotenv().ok();
     if std::env::var("DOCS_RS").is_ok() {
         return;
@@ -18,7 +17,6 @@ fn main() {
             // prefer the prefix env var, if not, fall back to the base from the CLI
             match std::env::var("CONDA_PREFIX") {
                 Ok(prefix) => {
-                    println!("!!!! FOUND CONDA !!");
                     include_paths.push(format!("{prefix}/include"));
                     include_paths.push(format!("{prefix}/include/rdkit"));
                     lib_paths.push(format!("{prefix}/lib"));
@@ -108,7 +106,7 @@ fn main() {
         .files(wrapper_cc_paths)
         .includes(include_paths)
         .include(std::env::var("CARGO_MANIFEST_DIR").unwrap())
-        .flag(CPP_VERSION_FLAG)
+        .std(CPP_VERSION_FLAG)
         .warnings(false)
         // rdkit has warnings that blow up our build. we could enumerate all those warnings and tell
         // the compiler to allow them... .warnings_into_errors(true)
@@ -120,25 +118,26 @@ fn main() {
     // println!("cargo:rustc-link-lib=static=c++");
 
     for lib in &[
-        // "Catalogs",
-        // "ChemReactions",
-        // "ChemTransforms",
+        "Catalogs",
+        "ChemReactions",
+        "ChemTransforms",
         "DataStructs",
-        // "Depictor",
+        "Depictor",
         "Descriptors",
         "FileParsers",
         "Fingerprints",
-        // "GenericGroups",
+        "FragCatalog",
+        "GenericGroups",
         "GraphMol",
         "MolStandardize",
-        // "MolTransforms",
-        // "PartialCharges",
+        "MolTransforms",
+        "PartialCharges",
         "RDGeneral",
-        // "RDGeometryLib",
-        // "RingDecomposerLib",
+        "RDGeometryLib",
+        "RingDecomposerLib",
         "ScaffoldNetwork",
         "SmilesParse",
-        // "Subgraphs",
+        "Subgraphs",
         "SubstructMatch",
     ] {
         println!("cargo:rustc-link-lib=dylib=RDKit{}", lib);
