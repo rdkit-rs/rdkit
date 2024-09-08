@@ -24,3 +24,6 @@ pub use scaffold_network::ffi as scaffold_network_ffi;
 
 mod substruct_match;
 pub use substruct_match::ffi as substruct_match_ffi;
+
+mod frag_catalog;
+pub use frag_catalog::ffi as frag_catalog_ffi;

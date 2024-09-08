@@ -3,3 +3,6 @@
 .idea/
 tests/fixtures/*
 *.iml
+.vscode
+.env
+.DS_Store

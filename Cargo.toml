@@ -2,7 +2,10 @@
 name = "rdkit"
 version = "0.4.11"
 edition = "2021"
-authors = ["Xavier Lange <xrlange@gmail.com>", "Javier Pineda <javierjpineda13@gmail.com"]
+authors = [
+    "Xavier Lange <xrlange@gmail.com>",
+    "Javier Pineda <javierjpineda13@gmail.com",
+]
 license = "MIT"
 description = "High level RDKit functionality for rust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,6 +17,7 @@ members = ["rdkit-sys"]
 bitvec = "1"
 byteorder = "1.4.3"
 cxx = "1"
+dotenvy = "0.15.7"
 flate2 = "1"
 log = "0.4"
 rdkit-sys = { path = "rdkit-sys", version = "0.4.9" }

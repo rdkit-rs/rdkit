@@ -1,0 +1,34 @@
+name : Test for macOS
+on :
+  push
+
+env:
+  REGISTRY: ghcr.io
+  REPO_LOWER: rdkit-rs/cheminee
+
+jobs:
+  test_suite:
+    runs-on: macos-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Install RDKit
+        run: |
+          brew install rdkit
+
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name : Cargo check
+        run: |
+          cargo clean
+          cargo check --workspace
+      - name: Cargo test
+        run: |
+          cargo clean
+          cargo test --workspace

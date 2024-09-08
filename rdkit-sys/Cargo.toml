@@ -17,6 +17,7 @@ cxx = "1.0.109"
 env_logger = "0.10.0"
 cxx-build = "1.0.109"
 which = "4.4.2"
+dotenvy = "0.15.7"
 
 [features]
 default = []

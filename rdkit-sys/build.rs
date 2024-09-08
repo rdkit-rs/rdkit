@@ -1,10 +1,11 @@
 const CPP_VERSION_FLAG: &str = "-std=c++17";
 
 fn main() {
+    println!("STARTING PROGRAM");
+    dotenvy::dotenv().ok();
     if std::env::var("DOCS_RS").is_ok() {
         return;
     }
-
     env_logger::init();
 
     let use_conda = std::env::var("CARGO_FEATURE_DYNAMIC_LINKING_FROM_CONDA").is_ok();
@@ -17,6 +18,7 @@ fn main() {
             // prefer the prefix env var, if not, fall back to the base from the CLI
             match std::env::var("CONDA_PREFIX") {
                 Ok(prefix) => {
+                    println!("!!!! FOUND CONDA !!");
                     include_paths.push(format!("{prefix}/include"));
                     include_paths.push(format!("{prefix}/include/rdkit"));
                     lib_paths.push(format!("{prefix}/lib"));
