@@ -13,7 +13,7 @@ std::shared_ptr<ExplicitBitVect> pattern_fingerprint_mol(const std::shared_ptr<R
 }
 
 std::shared_ptr<ExplicitBitVect> morgan_fingerprint_mol(const std::shared_ptr<ROMol> &mol) {
-    return std::shared_ptr<ExplicitBitVect>(MorganFingerprints::getFingerprintAsBitVect(*mol, 3, 2048));
+	return std::shared_ptr<ExplicitBitVect>(MorganFingerprints::getFingerprintAsBitVect(*mol, 3, 2048));
 }
 
 std::shared_ptr<ExplicitBitVect> copy_explicit_bit_vect(const std::shared_ptr<ExplicitBitVect> &orig) {

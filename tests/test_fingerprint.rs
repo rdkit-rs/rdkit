@@ -163,7 +163,8 @@ fn test_pattern_fingerprint() {
 
 #[test]
 fn test_morgan_fingerprint() {
-    let smiles = "C[S+](CC[C@@H](C(=O)[O-])[NH3+])C[C@@H]1[C@H]([C@H]([C@@H](O1)N2C=NC3=C(N=CN=C32)N)O)O";
+    let smiles =
+        "C[S+](CC[C@@H](C(=O)[O-])[NH3+])C[C@@H]1[C@H]([C@H]([C@@H](O1)N2C=NC3=C(N=CN=C32)N)O)O";
     let mol = ROMol::from_smiles(smiles).unwrap();
     let fingerprint = mol.morgan_fingerprint();
     let expected = bitvec![
