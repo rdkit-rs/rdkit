@@ -6,7 +6,9 @@ pub mod ffi {
 
         pub type ROMol = crate::ro_mol_ffi::ROMol;
         pub type ExplicitBitVect;
-        pub fn fingerprint_mol(mol: &SharedPtr<ROMol>) -> SharedPtr<ExplicitBitVect>;
+        pub fn rdk_fingerprint_mol(mol: &SharedPtr<ROMol>) -> SharedPtr<ExplicitBitVect>;
+        pub fn pattern_fingerprint_mol(mol: &SharedPtr<ROMol>) -> SharedPtr<ExplicitBitVect>;
+        pub fn morgan_fingerprint_mol(mol: &SharedPtr<ROMol>) -> SharedPtr<ExplicitBitVect>;
 
         pub fn copy_explicit_bit_vect(
             fingerprint: &SharedPtr<ExplicitBitVect>,
