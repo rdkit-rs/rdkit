@@ -1,5 +1,5 @@
 use bitvec::prelude::*;
-use rdkit::ROMol;
+use rdkit::graphmol::ro_mol::ROMol;
 
 #[test]
 fn test_rdk_fingerprint() {

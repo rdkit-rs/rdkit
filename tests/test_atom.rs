@@ -1,12 +1,13 @@
+use rdkit::graphmol::{atom::HybridizationType, ro_mol::ROMol};
 #[test]
 fn test_atom() {
-    let mut romol = rdkit::ROMol::from_smiles("[NH4+]").unwrap();
+    let mut romol = ROMol::from_smiles("[NH4+]").unwrap();
     let atom = romol.atom_with_idx(0);
 
     assert_eq!(atom.symbol(), "N");
     assert!(!atom.get_is_aromatic());
     assert_eq!(atom.get_atomic_num(), 7);
-    assert_eq!(atom.get_hybridization_type(), rdkit::HybridizationType::SP3);
+    assert_eq!(atom.get_hybridization_type(), HybridizationType::SP3);
     assert_eq!(atom.get_formal_charge(), 1);
     assert_eq!(atom.get_total_num_hs(), 4);
     assert_eq!(atom.get_total_valence(), 4);
@@ -19,7 +20,7 @@ fn test_atom() {
 
 #[test]
 fn test_atom_update_property_cache_exception() {
-    let mut romol = rdkit::ROMol::from_smiles("C([H])([H])([H])([H])").unwrap();
+    let mut romol = ROMol::from_smiles("C([H])([H])([H])([H])").unwrap();
     let mut carbon = romol.atom_with_idx(0);
     carbon.set_num_explicit_hs(5);
 
@@ -31,7 +32,7 @@ fn test_atom_update_property_cache_exception() {
 
 #[test]
 fn test_set_and_get_properties() {
-    let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
+    let mut romol = ROMol::from_smiles("CC").unwrap();
     {
         let mut carbon = romol.atom_with_idx(0);
         carbon.set_prop("int", 42);
@@ -63,14 +64,14 @@ fn test_set_and_get_properties() {
 
 #[test]
 fn test_number_of_radical_electrons() {
-    let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
+    let mut romol = ROMol::from_smiles("CC").unwrap();
     let carbon = romol.atom_with_idx(0);
     assert_eq!(carbon.get_num_radical_electrons(), 0);
 }
 
 #[test]
 fn test_degree() {
-    let mut romol = rdkit::ROMol::from_smiles("CC").unwrap();
+    let mut romol = ROMol::from_smiles("CC").unwrap();
     let carbon = romol.atom_with_idx(0);
     assert_eq!(carbon.get_degree(), 1);
 }

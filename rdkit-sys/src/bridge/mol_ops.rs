@@ -83,5 +83,7 @@ pub mod ffi {
         pub fn romol_set_hybridization(mol: &mut SharedPtr<ROMol>);
 
         pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>);
+
+        pub fn get_number_of_fragments(mol: &SharedPtr<ROMol>) -> u32;
     }
 }

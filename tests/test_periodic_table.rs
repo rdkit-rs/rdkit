@@ -1,4 +1,4 @@
-use rdkit::PeriodicTable;
+use rdkit::periodic_table::PeriodicTable;
 
 #[test]
 fn test_valence_list() {

@@ -1,7 +1,7 @@
 use cxx::SharedPtr;
 use rdkit_sys::ro_mol_ffi as ro_mol;
 
-use crate::{ROMol, RWMol};
+use crate::graphmol::{ro_mol::ROMol, rw_mol::RWMol};
 
 #[derive(Debug, PartialEq)]
 pub enum MolSanitizeException {
@@ -208,4 +208,11 @@ pub fn set_hybridization(romol: &mut ROMol) {
 
 pub fn clean_up(rw_mol: &mut RWMol) {
     rdkit_sys::mol_ops_ffi::clean_up(&mut rw_mol.ptr);
+}
+
+/// Returns the number of fragments in the molecule.
+/// This could arguably be a method on ROMol. But to respect
+/// RDKit's design, it is a free function of the mol_ops module.
+pub fn get_number_of_fragments(ro_mol: &ROMol) -> u32 {
+    rdkit_sys::mol_ops_ffi::get_number_of_fragments(&ro_mol.ptr)
 }

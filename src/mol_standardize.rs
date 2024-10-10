@@ -1,6 +1,6 @@
 use cxx::SharedPtr;
 
-use crate::{ROMol, RWMol};
+use crate::graphmol::{ro_mol::ROMol, rw_mol::RWMol};
 
 pub struct CleanupParameters {
     pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::CleanupParameters>,
@@ -31,7 +31,7 @@ impl TautomerEnumerator {
         TautomerEnumerator { ptr }
     }
 
-    pub fn enumerate(&self, ro_mol: &crate::ROMol) -> TautomerEnumeratorResult {
+    pub fn enumerate(&self, ro_mol: &ROMol) -> TautomerEnumeratorResult {
         let t_enumerator_result =
             rdkit_sys::mol_standardize_ffi::tautomer_enumerate(&self.ptr, &ro_mol.ptr);
         let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(
@@ -45,12 +45,12 @@ impl TautomerEnumerator {
         }
     }
 
-    pub fn canonicalize(&self, ro_mol: &crate::ROMol) -> Result<crate::ROMol, cxx::Exception> {
+    pub fn canonicalize(&self, ro_mol: &ROMol) -> Result<ROMol, cxx::Exception> {
         let canonical_mol_ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(
             &self.ptr,
             &ro_mol.ptr,
         );
-        Ok(crate::ROMol {
+        Ok(ROMol {
             ptr: canonical_mol_ptr?,
         })
     }
@@ -65,7 +65,7 @@ pub struct TautomerEnumeratorResult {
 }
 
 impl Iterator for TautomerEnumeratorResult {
-    type Item = crate::ROMol;
+    type Item = ROMol;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.pos >= self.size {
@@ -83,7 +83,7 @@ impl Iterator for TautomerEnumeratorResult {
                 None
             } else {
                 self.pos += 1;
-                Some(crate::ROMol { ptr: next })
+                Some(ROMol { ptr: next })
             }
         }
     }

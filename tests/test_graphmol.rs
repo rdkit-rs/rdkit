@@ -1,7 +1,11 @@
 use rdkit::{
-    detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
-    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters,
-    TautomerEnumerator, Uncharger,
+    graphmol::{
+        mol_ops::{detect_chemistry_problems, MolSanitizeException},
+        ro_mol::{ROMol, ROMolError, SmilesParserParams},
+        rw_mol::RWMol,
+    },
+    mol_standardize::{fragment_parent, CleanupParameters, TautomerEnumerator, Uncharger},
+    substruct_match::{substruct_match, SubstructMatchParameters},
 };
 
 #[test]
