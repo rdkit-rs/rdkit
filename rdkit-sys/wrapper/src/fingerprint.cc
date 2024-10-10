@@ -1,10 +1,19 @@
 #include "rust/cxx.h"
 #include <DataStructs/ExplicitBitVect.h>
 #include <GraphMol/Fingerprints/Fingerprints.h>
+#include <GraphMol/Fingerprints/MorganFingerprints.h>
 
 namespace RDKit {
-std::shared_ptr<ExplicitBitVect> fingerprint_mol(const std::shared_ptr<ROMol> &mol) {
+std::shared_ptr<ExplicitBitVect> rdk_fingerprint_mol(const std::shared_ptr<ROMol> &mol) {
 	return std::shared_ptr<ExplicitBitVect>(RDKFingerprintMol(*mol));
+}
+
+std::shared_ptr<ExplicitBitVect> pattern_fingerprint_mol(const std::shared_ptr<ROMol> &mol) {
+	return std::shared_ptr<ExplicitBitVect>(PatternFingerprintMol(*mol));
+}
+
+std::shared_ptr<ExplicitBitVect> morgan_fingerprint_mol(const std::shared_ptr<ROMol> &mol) {
+	return std::shared_ptr<ExplicitBitVect>(MorganFingerprints::getFingerprintAsBitVect(*mol, 3, 2048));
 }
 
 std::shared_ptr<ExplicitBitVect> copy_explicit_bit_vect(const std::shared_ptr<ExplicitBitVect> &orig) {
