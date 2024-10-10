@@ -9,6 +9,7 @@ fn test_get_valence_list() {
 #[test]
 fn test_get_monoisotopic_mass() {
     let_cxx_string!(atom = "C");
-    let mass = rdkit_sys::periodic_table_ffi::get_most_common_isotope_mass(&atom);
+    let periodic_table = rdkit_sys::periodic_table_ffi::get_periodic_table();
+    let mass = periodic_table.getMostCommonIsotopeMass(&atom);
     assert_eq!(mass, 12.00);
 }
