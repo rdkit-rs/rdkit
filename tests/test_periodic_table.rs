@@ -65,3 +65,39 @@ fn test_outer_electrons() {
     let electrons = PeriodicTable::get_n_outer_elecs(6);
     assert_eq!(electrons, 4);
 }
+
+#[test]
+fn test_most_common_isotope() {
+    let isotope = PeriodicTable::get_most_common_isotope(6);
+    assert_eq!(isotope, 12);
+}
+
+#[test]
+fn test_get_row() {
+    let row = PeriodicTable::get_row(6);
+    assert_eq!(row, 2);
+}
+
+#[test]
+fn test_mass_for_isotope() {
+    let mass = PeriodicTable::get_mass_for_isotope(6, 13);
+    assert_eq!(mass, 13.00335484);
+}
+
+#[test]
+fn test_get_max_atomic_number() {
+    let max = PeriodicTable::get_max_atomic_number();
+    assert_eq!(max, 118);
+}
+
+#[test]
+fn get_abundance_for_isotope() {
+    let abundance = PeriodicTable::get_abundance_for_isotope(6, 12);
+    assert_eq!(abundance, 98.93);
+}
+
+#[test]
+fn more_electro_negative() {
+    let more_electro = PeriodicTable::more_electro_negative(6, 7);
+    assert_eq!(more_electro, false);
+}

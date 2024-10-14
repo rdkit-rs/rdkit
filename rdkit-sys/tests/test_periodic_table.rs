@@ -89,3 +89,38 @@ fn test_getMostCommonIsotope() {
     let isotope = periodic_table.getMostCommonIsotope(6);
     assert_eq!(isotope, 12);
 }
+
+#[test]
+fn test_getRow() {
+    let periodic_table = rdkit_sys::periodic_table_ffi::get_periodic_table();
+    let row = periodic_table.getRow(6);
+    assert_eq!(row, 2);
+}
+
+#[test]
+fn test_getMassForIsotope() {
+    let periodic_table = rdkit_sys::periodic_table_ffi::get_periodic_table();
+    let mass = periodic_table.getMassForIsotope(6, 13);
+    assert_eq!(mass, 13.00335484);
+}
+
+#[test]
+fn test_getMaxAtomicNumber() {
+    let periodic_table = rdkit_sys::periodic_table_ffi::get_periodic_table();
+    let max = periodic_table.getMaxAtomicNumber();
+    assert_eq!(max, 118);
+}
+
+#[test]
+fn test_getAbundanceForIsotope() {
+    let periodic_table = rdkit_sys::periodic_table_ffi::get_periodic_table();
+    let abundance = periodic_table.getAbundanceForIsotope(6, 13);
+    assert_eq!(abundance, 1.07);
+}
+
+#[test]
+fn test_moreElectroNegative() {
+    let periodic_table = rdkit_sys::periodic_table_ffi::get_periodic_table();
+    let more_electro = periodic_table.moreElectroNegative(6, 7);
+    assert_eq!(more_electro, false);
+}

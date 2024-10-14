@@ -90,4 +90,43 @@ impl PeriodicTable {
     pub fn get_most_common_isotope(atomic_number: u32) -> i32 {
         rdkit_sys::periodic_table_ffi::get_periodic_table().getMostCommonIsotope(atomic_number)
     }
+
+    /// Returns the mass of the isotope
+    /// # Arguments
+    /// * `atomic_number` - The atomic number of the element    
+    /// * `isotope` - The isotope number
+    pub fn get_mass_for_isotope(atomic_number: u32, isotope: u32) -> f64 {
+        rdkit_sys::periodic_table_ffi::get_periodic_table()
+            .getMassForIsotope(atomic_number, isotope)
+    }
+
+    /// Returns the maximum recognized atomic number
+    pub fn get_max_atomic_number() -> u32 {
+        rdkit_sys::periodic_table_ffi::get_periodic_table().getMaxAtomicNumber()
+    }
+
+    /// Returns the abundance of the isotope
+    /// # Arguments
+    /// * `atomic_number` - The atomic number of the element
+    /// * `isotope` - The isotope number
+    pub fn get_abundance_for_isotope(atomic_number: u32, isotope: u32) -> f64 {
+        rdkit_sys::periodic_table_ffi::get_periodic_table()
+            .getAbundanceForIsotope(atomic_number, isotope)
+    }
+
+    /// Returns true if the first atom is more electronegative than the second
+    /// # Arguments
+    /// * `atomic_number1` - The atomic number of the first element
+    /// * `atomic_number2` - The atomic number of the second element
+    pub fn more_electro_negative(atomic_number1: u32, atomic_number2: u32) -> bool {
+        rdkit_sys::periodic_table_ffi::get_periodic_table()
+            .moreElectroNegative(atomic_number1, atomic_number2)
+    }
+
+    /// Returns the row of the periodic table
+    /// # Arguments
+    /// * `atomic_number` - The atomic number of the element
+    pub fn get_row(atomic_number: u32) -> u32 {
+        rdkit_sys::periodic_table_ffi::get_periodic_table().getRow(atomic_number)
+    }
 }

@@ -1,3 +1,6 @@
+// allow camel case
+#![allow(non_snake_case)]
+
 use cxx::{CxxVector, UniquePtr};
 use ffi::PeriodicTable;
 
@@ -19,6 +22,19 @@ pub mod ffi {
         pub fn getNouterElecs(self: &PeriodicTable, atomic_number: u32) -> i32;
         pub fn getMostCommonIsotope(self: &PeriodicTable, atomic_number: u32) -> i32;
         pub fn getMostCommonIsotopeMass(self: &PeriodicTable, atom: &CxxString) -> f64;
+        pub fn getMassForIsotope(self: &PeriodicTable, atomic_number: u32, isotope: u32) -> f64;
+        pub fn getMaxAtomicNumber(self: &PeriodicTable) -> u32;
+        pub fn getAbundanceForIsotope(
+            self: &PeriodicTable,
+            atomic_number: u32,
+            isotope: u32,
+        ) -> f64;
+        pub fn moreElectroNegative(
+            self: &PeriodicTable,
+            atomic_number1: u32,
+            atomic_number2: u32,
+        ) -> bool;
+        pub fn getRow(self: &PeriodicTable, atomic_number: u32) -> u32;
     }
 }
 
