@@ -93,7 +93,7 @@ impl PeriodicTable {
 
     /// Returns the mass of the isotope
     /// # Arguments
-    /// * `atomic_number` - The atomic number of the element    
+    /// * `atomic_number` - The atomic number of the element
     /// * `isotope` - The isotope number
     pub fn get_mass_for_isotope(atomic_number: u32, isotope: u32) -> f64 {
         rdkit_sys::periodic_table_ffi::get_periodic_table()
