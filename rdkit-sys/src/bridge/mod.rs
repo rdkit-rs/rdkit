@@ -11,7 +11,7 @@ mod mol_standardize;
 pub use mol_standardize::ffi as mol_standardize_ffi;
 
 mod periodic_table;
-pub use periodic_table::ffi as periodic_table_ffi;
+pub use periodic_table::{ffi as periodic_table_ffi, PeriodicTableOps};
 
 mod ro_mol;
 pub use ro_mol::ffi as ro_mol_ffi;
