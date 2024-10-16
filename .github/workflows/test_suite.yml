@@ -38,14 +38,14 @@ jobs:
         run: |
           cd /tmp
           if [ $(dpkg --print-architecture) = "amd64" ]; then
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
-            sudo tar xf rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
+            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
           else
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
-            sudo tar xf rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
+            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
           fi
-          sudo mv /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
-          sudo mv /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/lib/
+          sudo mv /tmp/rdkit-Release_2024_09_1/Code /usr/local/include/rdkit
+          sudo mv /tmp/rdkit-Release_2024_09_1/build/lib/* /usr/lib/
 
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
@@ -88,14 +88,14 @@ jobs:
         run: |
           cd /tmp
           if [ $(dpkg --print-architecture) = "amd64" ]; then
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
-            sudo tar xf rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
+            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
           else
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
-            sudo tar xf rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
+            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
           fi
-          sudo mv /tmp/rdkit-Release_2024_03_3/Code /usr/local/include/rdkit
-          sudo mv /tmp/rdkit-Release_2024_03_3/build/lib/* /usr/lib/
+          sudo mv /tmp/rdkit-Release_2024_09_1/Code /usr/local/include/rdkit
+          sudo mv /tmp/rdkit-Release_2024_09_1/build/lib/* /usr/lib/
 
       - name: Install latest stable
         uses: actions-rs/toolchain@v1

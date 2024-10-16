@@ -29,9 +29,10 @@ for simplicity's sake, making it easy to tell which crates are compatible.
 Managing multiple crates in a single repository:
 
     rdkit % cargo workspaces version patch
-    rdkit % cargo publish
     rdkit % cd rdkit-sys
     rdkit-sys % cargo publish
+    rdkit-sys % cd ..
+    rdkit % cargo publish
 
 
 ## Formatting
