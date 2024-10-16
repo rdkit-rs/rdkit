@@ -15,10 +15,10 @@ On a Mac:
 
 On Linux you will need a custom build of rdkit with static libraries. At the moment, we have some pre-compiled tar balls
 available for AMD64 and ARM64 for the latest RKDit which get the job done for our CI (Note: these have been compiled on
-Ubuntu 22.04, not 14.04...):
+Ubuntu 22.04):
 
-https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_amd64.tar.gz
-https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_03_3_ubuntu_14_04_arm64.tar.gz
+https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
+https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
 
 Release Both rdkit and rdkit-sys
 ---
