@@ -7,13 +7,24 @@ fn main() {
 
     env_logger::init();
 
+    let explicit_prefix = std::env::var("RDKIT_PREFIX").ok();
     let use_conda = std::env::var("CARGO_FEATURE_DYNAMIC_LINKING_FROM_CONDA").is_ok();
 
     let mut lib_paths = vec![];
     let mut include_paths = vec![];
 
-    match (std::env::consts::OS, std::env::consts::ARCH, use_conda) {
-        (_, _, true) => {
+    match (
+        std::env::consts::OS,
+        std::env::consts::ARCH,
+        explicit_prefix,
+        use_conda,
+    ) {
+        (_, _, Some(prefix), _) => {
+            include_paths.push(format!("{prefix}/include"));
+            include_paths.push(format!("{prefix}/include/rdkit"));
+            lib_paths.push(format!("{prefix}/lib"));
+        }
+        (_, _, _, true) => {
             // prefer the prefix env var, if not, fall back to the base from the CLI
             match std::env::var("CONDA_PREFIX") {
                 Ok(prefix) => {
@@ -38,24 +49,24 @@ fn main() {
                 }
             }
         }
-        ("macos", "x86_64", _) => {
+        ("macos", "x86_64", _, _) => {
             include_paths.push("/usr/local/include".to_string());
             include_paths.push("/usr/local/include/rdkit".to_string());
         }
-        ("macos", "aarch64", _) => {
+        ("macos", "aarch64", _, _) => {
             include_paths.push("/opt/homebrew/include".to_string());
             include_paths.push("/opt/homebrew/include/rdkit".to_string());
             lib_paths.push("/opt/homebrew/lib".to_string())
         }
-        ("linux", _, _) => {
+        ("linux", _, _, _) => {
             include_paths.push("/usr/local/include".to_string());
             include_paths.push("/usr/local/include/rdkit".to_string());
             include_paths.push("/usr/include".to_string());
             include_paths.push("/usr/include/rdkit".to_string());
         }
-        (unsupported_os, unsupported_arch, use_conda) => panic!(
-            "sorry, rdkit-sys doesn't support {}/{}/use_conda={} at this time",
-            unsupported_os, unsupported_arch, use_conda
+        (unsupported_os, unsupported_arch, explicit_prefix, use_conda) => panic!(
+            "sorry, rdkit-sys doesn't support {}/{}/explicit_prefix={:?}/use_conda={} at this time",
+            unsupported_os, unsupported_arch, explicit_prefix, use_conda
         ),
     };
 
