@@ -1,4 +1,4 @@
-use cxx::{let_cxx_string, SharedPtr};
+use cxx::{SharedPtr, let_cxx_string};
 use rdkit_sys::{ro_mol_ffi::ROMol, rw_mol_ffi::RWMol};
 
 #[test]
@@ -191,7 +191,10 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
     let ro_mol = unsafe { std::mem::transmute::<SharedPtr<RWMol>, SharedPtr<ROMol>>(rw_mol) };
 
     let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&ro_mol);
-    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &smiles);
+    assert_eq!(
+        "[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]",
+        &smiles
+    );
 }
 
 #[test]

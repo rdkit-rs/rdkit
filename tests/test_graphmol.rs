@@ -1,7 +1,7 @@
 use rdkit::{
-    detect_chemistry_problems, fragment_parent, substruct_match, CleanupParameters,
-    MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams, SubstructMatchParameters,
-    TautomerEnumerator, Uncharger,
+    CleanupParameters, MolSanitizeException, ROMol, ROMolError, RWMol, SmilesParserParams,
+    SubstructMatchParameters, TautomerEnumerator, Uncharger, detect_chemistry_problems,
+    fragment_parent, substruct_match,
 };
 
 #[test]
@@ -15,7 +15,10 @@ fn test_neutralize() {
     let romol = ROMol::from_smiles(smiles).unwrap();
     let uncharger = Uncharger::new(false);
     let uncharged_mol = uncharger.uncharge(&romol);
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smiles());
+    assert_eq!(
+        "CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1",
+        uncharged_mol.as_smiles()
+    );
 }
 
 #[test]
@@ -29,7 +32,10 @@ fn test_fragment_parent() {
         "Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1",
         parent_rwmol.as_smiles()
     );
-    assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", rwmol.as_smiles());
+    assert_eq!(
+        "CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1",
+        rwmol.as_smiles()
+    );
 }
 
 #[test]
@@ -271,7 +277,10 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
 "#;
 
     let rw_mol = RWMol::from_mol_block(mol_block, false, false, false).unwrap();
-    assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &rw_mol.as_smiles());
+    assert_eq!(
+        "[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]",
+        &rw_mol.as_smiles()
+    );
 }
 
 #[test]
@@ -326,5 +335,8 @@ fn mol_to_molblock_test() {
     let smiles = "CC";
     let romol = ROMol::from_smiles(&smiles).unwrap();
     let molblock = romol.to_molblock();
-    assert_eq!(molblock, "\n     RDKit          2D\n\n  2  1  0  0  0  0  0  0  0  0999 V2000\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2990    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\nM  END\n");
+    assert_eq!(
+        molblock,
+        "\n     RDKit          2D\n\n  2  1  0  0  0  0  0  0  0  0999 V2000\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2990    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\nM  END\n"
+    );
 }

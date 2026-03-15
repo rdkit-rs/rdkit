@@ -1,4 +1,4 @@
-use rdkit::{substruct_match, ROMol, SubstructMatchItem, SubstructMatchParameters};
+use rdkit::{ROMol, SubstructMatchItem, SubstructMatchParameters, substruct_match};
 
 #[test]
 fn test_substruct_match() {

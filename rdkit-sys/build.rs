@@ -1,4 +1,4 @@
-const CPP_VERSION_FLAG: &str = "-std=c++17";
+const CPP_VERSION_FLAG: &str = "-std=c++20";
 
 fn main() {
     if std::env::var("DOCS_RS").is_ok() {

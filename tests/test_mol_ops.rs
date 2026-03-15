@@ -1,4 +1,4 @@
-use rdkit::{add_hs, clean_up, remove_hs, set_hybridization, ROMol, RemoveHsParameters};
+use rdkit::{ROMol, RemoveHsParameters, add_hs, clean_up, remove_hs, set_hybridization};
 
 #[test]
 fn test_remove_hs() {
