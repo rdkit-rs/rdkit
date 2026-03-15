@@ -67,4 +67,6 @@ void romol_set_hybridization(std::shared_ptr<ROMol> &mol);
 
 // pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>)
 void clean_up(std::shared_ptr<RWMol> &rw_mol);
+void sanitize_mol(std::shared_ptr<RWMol> &mol);
+void kekulize_mol(std::shared_ptr<RWMol> &mol);
 } // namespace RDKit

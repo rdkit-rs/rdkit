@@ -29,4 +29,25 @@ std::shared_ptr<RWMol> rw_mol_from_rw_mol(const std::shared_ptr<RWMol> &mol) {
 std::shared_ptr<ROMol> rw_mol_to_ro_mol(std::shared_ptr<RWMol> mol) { return std::static_pointer_cast<ROMol>(mol); }
 
 std::shared_ptr<RWMol> smarts_to_mol(const std::string &smarts) { return std::shared_ptr<RWMol>(SmartsToMol(smarts)); }
+std::shared_ptr<RWMol> new_rw_mol() { return std::shared_ptr<RWMol>(new RWMol()); }
+
+unsigned int rw_mol_add_atom(std::shared_ptr<RWMol> &mol, unsigned int atomic_num) {
+	Atom *atom = new Atom(atomic_num);
+	return mol->addAtom(atom, true, true);
+}
+
+unsigned int rw_mol_add_bond(std::shared_ptr<RWMol> &mol, unsigned int begin_idx, unsigned int end_idx,
+                             int bond_order) {
+	return mol->addBond(begin_idx, end_idx, static_cast<Bond::BondType>(bond_order));
+}
+
+void rw_mol_remove_atom(std::shared_ptr<RWMol> &mol, unsigned int idx) { mol->removeAtom(idx); }
+
+void rw_mol_remove_bond(std::shared_ptr<RWMol> &mol, unsigned int begin_idx, unsigned int end_idx) {
+	mol->removeBond(begin_idx, end_idx);
+}
+
+unsigned int rw_mol_get_num_atoms(const std::shared_ptr<RWMol> &mol, bool only_explicit) {
+	return mol->getNumAtoms(only_explicit);
+}
 } // namespace RDKit

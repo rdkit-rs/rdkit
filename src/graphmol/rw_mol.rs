@@ -1,15 +1,21 @@
 use std::fmt::Formatter;
 
-use cxx::{let_cxx_string, SharedPtr};
+use cxx::{SharedPtr, let_cxx_string};
 use rdkit_sys::*;
 
-use crate::ROMol;
+use crate::{BondType, ROMol};
 
 pub struct RWMol {
     pub(crate) ptr: SharedPtr<rdkit_sys::rw_mol_ffi::RWMol>,
 }
 
 impl RWMol {
+    pub fn new() -> Self {
+        RWMol {
+            ptr: rw_mol_ffi::new_rw_mol(),
+        }
+    }
+
     pub fn from_mol_block(
         mol_block: &str,
         sanitize: bool,
@@ -54,6 +60,26 @@ impl RWMol {
         let ptr = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts)?;
         Ok(RWMol { ptr })
     }
+
+    pub fn add_atom(&mut self, atomic_num: u32) -> u32 {
+        rw_mol_ffi::rw_mol_add_atom(&mut self.ptr, atomic_num)
+    }
+
+    pub fn add_bond(&mut self, begin: u32, end: u32, order: BondType) -> u32 {
+        rw_mol_ffi::rw_mol_add_bond(&mut self.ptr, begin, end, order.repr)
+    }
+
+    pub fn remove_atom(&mut self, idx: u32) {
+        rw_mol_ffi::rw_mol_remove_atom(&mut self.ptr, idx)
+    }
+
+    pub fn remove_bond(&mut self, begin: u32, end: u32) {
+        rw_mol_ffi::rw_mol_remove_bond(&mut self.ptr, begin, end)
+    }
+
+    pub fn num_atoms(&self, only_explicit: bool) -> u32 {
+        rw_mol_ffi::rw_mol_get_num_atoms(&self.ptr, only_explicit)
+    }
 }
 
 impl Clone for RWMol {
@@ -67,5 +93,11 @@ impl std::fmt::Debug for RWMol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let smiles = self.as_smiles();
         f.debug_tuple("RWMol").field(&smiles).finish()
+    }
+}
+
+impl Default for RWMol {
+    fn default() -> Self {
+        Self::new()
     }
 }

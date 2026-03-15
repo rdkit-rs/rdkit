@@ -83,5 +83,8 @@ pub mod ffi {
         pub fn romol_set_hybridization(mol: &mut SharedPtr<ROMol>);
 
         pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>);
+
+        pub fn sanitize_mol(mol: &mut SharedPtr<RWMol>) -> Result<()>;
+        pub fn kekulize_mol(mol: &mut SharedPtr<RWMol>) -> Result<()>;
     }
 }

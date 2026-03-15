@@ -209,3 +209,11 @@ pub fn set_hybridization(romol: &mut ROMol) {
 pub fn clean_up(rw_mol: &mut RWMol) {
     rdkit_sys::mol_ops_ffi::clean_up(&mut rw_mol.ptr);
 }
+
+pub fn sanitize_mol(rw_mol: &mut RWMol) -> Result<(), cxx::Exception> {
+    rdkit_sys::mol_ops_ffi::sanitize_mol(&mut rw_mol.ptr)
+}
+
+pub fn kekulize_mol(rw_mol: &mut RWMol) -> Result<(), cxx::Exception> {
+    rdkit_sys::mol_ops_ffi::kekulize_mol(&mut rw_mol.ptr)
+}

@@ -106,4 +106,7 @@ std::shared_ptr<ROMol> add_hs(const std::shared_ptr<ROMol> &mol, bool explicit_o
 void romol_set_hybridization(std::shared_ptr<ROMol> &mol) { MolOps::setHybridization(*mol); }
 
 void clean_up(std::shared_ptr<RWMol> &rw_mol) { MolOps::cleanUp(*rw_mol); }
+void sanitize_mol(std::shared_ptr<RWMol> &mol) { MolOps::sanitizeMol(*mol); }
+
+void kekulize_mol(std::shared_ptr<RWMol> &mol) { MolOps::Kekulize(*mol); }
 } // namespace RDKit

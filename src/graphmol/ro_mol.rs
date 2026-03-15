@@ -3,7 +3,7 @@ use std::fmt::{Debug, Formatter};
 use cxx::let_cxx_string;
 use rdkit_sys::*;
 
-use crate::{Atom, Fingerprint, RWMol};
+use crate::{Atom, AtomRef, Bond, Fingerprint, RWMol};
 
 pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
@@ -89,9 +89,37 @@ impl ROMol {
         ro_mol_ffi::get_num_atoms(&self.ptr, only_explicit)
     }
 
-    pub fn atom_with_idx(&mut self, idx: u32) -> Atom {
+    pub fn atom_with_idx(&mut self, idx: u32) -> Atom<'_> {
         let ptr = ro_mol_ffi::get_atom_with_idx(&mut self.ptr, idx);
         Atom::from_ptr(ptr)
+    }
+
+    /// Returns a read-only reference to the atom at `idx`.
+    ///
+    /// Unlike [`atom_with_idx`](Self::atom_with_idx), this takes `&self`,
+    /// so no mutable borrow (or clone) is needed for read-only access.
+    pub fn atom_ref(&self, idx: u32) -> AtomRef<'_> {
+        let ptr = ro_mol_ffi::get_atom_with_idx_const(&self.ptr, idx);
+        AtomRef::from_ptr(ptr)
+    }
+
+    pub fn num_bonds(&self, only_heavy: bool) -> u32 {
+        rdkit_sys::bond_ffi::get_num_bonds(&self.ptr, only_heavy)
+    }
+
+    pub fn bond_with_idx(&mut self, idx: u32) -> Bond<'_> {
+        let ptr = rdkit_sys::bond_ffi::get_bond_with_idx(&mut self.ptr, idx);
+        Bond::from_ptr(ptr)
+    }
+
+    pub fn bond_between_atoms(&mut self, begin: u32, end: u32) -> Option<Bond<'_>> {
+        let idx = rdkit_sys::bond_ffi::get_bond_idx_between_atoms(&self.ptr, begin, end);
+        if idx < 0 {
+            None
+        } else {
+            let ptr = rdkit_sys::bond_ffi::get_bond_with_idx(&mut self.ptr, idx as u32);
+            Some(Bond::from_ptr(ptr))
+        }
     }
 
     pub fn update_property_cache(&mut self, strict: bool) {

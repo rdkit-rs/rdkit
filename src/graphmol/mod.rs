@@ -1,6 +1,12 @@
 mod atom;
 pub use atom::*;
 
+mod atom_ref;
+pub use atom_ref::*;
+
+mod bond;
+pub use bond::*;
+
 mod mol_ops;
 pub use mol_ops::*;
 

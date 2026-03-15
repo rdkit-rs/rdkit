@@ -69,6 +69,10 @@ unsigned int get_num_atoms(const std::shared_ptr<ROMol> &mol, bool only_explicit
 
 Atom &get_atom_with_idx(std::shared_ptr<ROMol> &mol, unsigned int idx) { return *mol->getAtomWithIdx(idx); }
 
+const Atom &get_atom_with_idx_const(const std::shared_ptr<ROMol> &mol, unsigned int idx) {
+	return *mol->getAtomWithIdx(idx);
+}
+
 rust::String get_symbol(const Atom &atom) { return atom.getSymbol(); }
 
 bool get_is_aromatic(const Atom &atom) { return atom.getIsAromatic(); }
