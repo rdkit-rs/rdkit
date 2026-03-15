@@ -209,3 +209,26 @@ pub fn set_hybridization(romol: &mut ROMol) {
 pub fn clean_up(rw_mol: &mut RWMol) {
     rdkit_sys::mol_ops_ffi::clean_up(&mut rw_mol.ptr);
 }
+
+pub fn set_aromaticity(rw_mol: &mut RWMol) {
+    rdkit_sys::mol_ops_ffi::set_aromaticity(&mut rw_mol.ptr);
+}
+
+pub fn assign_stereochemistry(romol: &mut ROMol) {
+    rdkit_sys::mol_ops_ffi::assign_stereochemistry(&mut romol.ptr);
+}
+
+pub fn get_formal_charge(romol: &ROMol) -> i32 {
+    rdkit_sys::mol_ops_ffi::mol_get_formal_charge(&romol.ptr)
+}
+
+pub fn get_mol_frags(romol: &ROMol) -> Vec<ROMol> {
+    let container = rdkit_sys::mol_ops_ffi::get_mol_frags(&romol.ptr);
+    let size = rdkit_sys::mol_ops_ffi::romol_vec_size(&container);
+    (0..size)
+        .map(|i| {
+            let ptr = rdkit_sys::mol_ops_ffi::romol_vec_get(&container, i);
+            ROMol { ptr }
+        })
+        .collect()
+}

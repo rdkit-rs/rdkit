@@ -83,5 +83,14 @@ pub mod ffi {
         pub fn romol_set_hybridization(mol: &mut SharedPtr<ROMol>);
 
         pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>);
+
+        pub fn set_aromaticity(mol: &mut SharedPtr<RWMol>);
+        pub fn assign_stereochemistry(mol: &mut SharedPtr<ROMol>);
+        pub fn mol_get_formal_charge(mol: &SharedPtr<ROMol>) -> i32;
+
+        pub type ROMolVec;
+        pub fn get_mol_frags(mol: &SharedPtr<ROMol>) -> SharedPtr<ROMolVec>;
+        pub fn romol_vec_size(vec: &SharedPtr<ROMolVec>) -> u32;
+        pub fn romol_vec_get(vec: &SharedPtr<ROMolVec>, idx: u32) -> SharedPtr<ROMol>;
     }
 }

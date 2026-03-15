@@ -43,7 +43,7 @@ pub trait PeriodicTableOps {
     fn getElementName(self, atomic_number: u32) -> String;
     fn getValenceList(self, atomic_number: u32) -> &'static CxxVector<i32>;
 }
-impl<'a> PeriodicTableOps for UniquePtr<PeriodicTable> {
+impl PeriodicTableOps for UniquePtr<PeriodicTable> {
     fn getElementSymbol(self, atomic_number: u32) -> String {
         ffi::getElementSymbol(atomic_number)
     }

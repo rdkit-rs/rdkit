@@ -67,4 +67,13 @@ void romol_set_hybridization(std::shared_ptr<ROMol> &mol);
 
 // pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>)
 void clean_up(std::shared_ptr<RWMol> &rw_mol);
+
+void set_aromaticity(std::shared_ptr<RWMol> &mol);
+void assign_stereochemistry(std::shared_ptr<ROMol> &mol);
+int mol_get_formal_charge(const std::shared_ptr<ROMol> &mol);
+
+struct ROMolVec;
+std::shared_ptr<ROMolVec> get_mol_frags(const std::shared_ptr<ROMol> &mol);
+unsigned int romol_vec_size(const std::shared_ptr<ROMolVec> &vec);
+std::shared_ptr<ROMol> romol_vec_get(const std::shared_ptr<ROMolVec> &vec, unsigned int idx);
 } // namespace RDKit

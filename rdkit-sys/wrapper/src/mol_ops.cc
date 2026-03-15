@@ -106,4 +106,27 @@ std::shared_ptr<ROMol> add_hs(const std::shared_ptr<ROMol> &mol, bool explicit_o
 void romol_set_hybridization(std::shared_ptr<ROMol> &mol) { MolOps::setHybridization(*mol); }
 
 void clean_up(std::shared_ptr<RWMol> &rw_mol) { MolOps::cleanUp(*rw_mol); }
+
+void set_aromaticity(std::shared_ptr<RWMol> &mol) { MolOps::setAromaticity(*mol); }
+
+void assign_stereochemistry(std::shared_ptr<ROMol> &mol) { MolOps::assignStereochemistry(*mol, true, true, true); }
+
+int mol_get_formal_charge(const std::shared_ptr<ROMol> &mol) { return MolOps::getFormalCharge(*mol); }
+
+struct ROMolVec {
+	std::vector<std::shared_ptr<ROMol>> mols;
+};
+
+std::shared_ptr<ROMolVec> get_mol_frags(const std::shared_ptr<ROMol> &mol) {
+	auto container = std::make_shared<ROMolVec>();
+	auto frags     = MolOps::getMolFrags(*mol);
+	for (auto &frag : frags) { container->mols.push_back(std::shared_ptr<ROMol>(new ROMol(*frag))); }
+	return container;
+}
+
+unsigned int romol_vec_size(const std::shared_ptr<ROMolVec> &vec) { return vec->mols.size(); }
+
+std::shared_ptr<ROMol> romol_vec_get(const std::shared_ptr<ROMolVec> &vec, unsigned int idx) {
+	return vec->mols.at(idx);
+}
 } // namespace RDKit
