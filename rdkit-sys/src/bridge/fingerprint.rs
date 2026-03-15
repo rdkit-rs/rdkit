@@ -17,5 +17,24 @@ pub mod ffi {
         pub fn explicit_bit_vect_to_u64_vec(
             bitvect: &SharedPtr<ExplicitBitVect>,
         ) -> UniquePtr<CxxVector<u64>>;
+
+        // Configurable fingerprints
+        pub fn morgan_fingerprint_mol_with_params(
+            mol: &SharedPtr<ROMol>,
+            radius: u32,
+            n_bits: u32,
+        ) -> SharedPtr<ExplicitBitVect>;
+        pub fn rdk_fingerprint_mol_with_params(
+            mol: &SharedPtr<ROMol>,
+            min_path: u32,
+            max_path: u32,
+            fp_size: u32,
+        ) -> SharedPtr<ExplicitBitVect>;
+        pub fn pattern_fingerprint_mol_with_params(
+            mol: &SharedPtr<ROMol>,
+            fp_size: u32,
+        ) -> SharedPtr<ExplicitBitVect>;
+        pub fn maccs_fingerprint_mol(mol: &SharedPtr<ROMol>) -> SharedPtr<ExplicitBitVect>;
+        pub fn explicit_bit_vect_num_bits(bitvect: &SharedPtr<ExplicitBitVect>) -> u32;
     }
 }

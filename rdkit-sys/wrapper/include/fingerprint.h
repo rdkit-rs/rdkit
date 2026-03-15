@@ -11,4 +11,15 @@ std::shared_ptr<ExplicitBitVect> copy_explicit_bit_vect(const std::shared_ptr<Ex
 unsigned int get_num_on_bits(const std::shared_ptr<ExplicitBitVect> &bitvect);
 
 std::unique_ptr<std::vector<uint64_t>> explicit_bit_vect_to_u64_vec(const std::shared_ptr<ExplicitBitVect> &bitvect);
+
+// Configurable fingerprints
+std::shared_ptr<ExplicitBitVect> morgan_fingerprint_mol_with_params(const std::shared_ptr<ROMol> &mol,
+                                                                    unsigned int radius, unsigned int n_bits);
+std::shared_ptr<ExplicitBitVect> rdk_fingerprint_mol_with_params(const std::shared_ptr<ROMol> &mol,
+                                                                 unsigned int min_path, unsigned int max_path,
+                                                                 unsigned int fp_size);
+std::shared_ptr<ExplicitBitVect> pattern_fingerprint_mol_with_params(const std::shared_ptr<ROMol> &mol,
+                                                                     unsigned int fp_size);
+std::shared_ptr<ExplicitBitVect> maccs_fingerprint_mol(const std::shared_ptr<ROMol> &mol);
+unsigned int explicit_bit_vect_num_bits(const std::shared_ptr<ExplicitBitVect> &bitvect);
 } // namespace RDKit

@@ -6,14 +6,24 @@ pub struct Fingerprint(pub BitVec<u8, bitvec::order::Lsb0>);
 
 impl Fingerprint {
     pub fn new(ptr: SharedPtr<rdkit_sys::fingerprint_ffi::ExplicitBitVect>) -> Self {
+        let num_bits = rdkit_sys::fingerprint_ffi::explicit_bit_vect_num_bits(&ptr) as usize;
         let unique_ptr_bytes = rdkit_sys::fingerprint_ffi::explicit_bit_vect_to_u64_vec(&ptr);
         let rdkit_fingerprint_bytes: Vec<u64> = unique_ptr_bytes.into_iter().copied().collect();
         let mut bitvec_u64 = bitvec::vec::BitVec::<u64, Lsb0>::from_vec(rdkit_fingerprint_bytes);
+        bitvec_u64.truncate(num_bits);
 
         let mut idiomatic_bitvec_u8 = bitvec::vec::BitVec::<u8, Lsb0>::new();
         idiomatic_bitvec_u8.append(&mut bitvec_u64);
 
         Fingerprint(idiomatic_bitvec_u8)
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 
     pub fn tanimoto_distance(&self, other: &Fingerprint) -> f32 {

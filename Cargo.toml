@@ -1,7 +1,7 @@
 [package]
 name = "rdkit"
 version = "0.4.12"
-edition = "2021"
+edition = "2024"
 authors = ["Xavier Lange <xrlange@gmail.com>", "Javier Pineda <javierjpineda13@gmail.com"]
 license = "MIT"
 description = "High level RDKit functionality for rust"
@@ -17,7 +17,7 @@ cxx = "1"
 flate2 = "1"
 log = "0.4"
 rdkit-sys = { path = "rdkit-sys", version = "0.4.9" }
-thiserror = "1"
+thiserror = "2"
 
 [dev-dependencies]
-env_logger = "0.9.0"
+env_logger = "0.11"

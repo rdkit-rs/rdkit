@@ -3,7 +3,7 @@ use std::fmt::{Debug, Formatter};
 use cxx::let_cxx_string;
 use rdkit_sys::*;
 
-use crate::{Atom, Fingerprint, RWMol};
+use crate::{Atom, AtomRef, Fingerprint, RWMol};
 
 pub struct ROMol {
     pub(crate) ptr: cxx::SharedPtr<ro_mol_ffi::ROMol>,
@@ -85,13 +85,49 @@ impl ROMol {
         Fingerprint::new(ptr)
     }
 
+    pub fn morgan_fingerprint_with_params(&self, radius: u32, n_bits: u32) -> Fingerprint {
+        let ptr = fingerprint_ffi::morgan_fingerprint_mol_with_params(&self.ptr, radius, n_bits);
+        Fingerprint::new(ptr)
+    }
+
+    pub fn rdk_fingerprint_with_params(
+        &self,
+        min_path: u32,
+        max_path: u32,
+        fp_size: u32,
+    ) -> Fingerprint {
+        let ptr = fingerprint_ffi::rdk_fingerprint_mol_with_params(
+            &self.ptr, min_path, max_path, fp_size,
+        );
+        Fingerprint::new(ptr)
+    }
+
+    pub fn pattern_fingerprint_with_params(&self, fp_size: u32) -> Fingerprint {
+        let ptr = fingerprint_ffi::pattern_fingerprint_mol_with_params(&self.ptr, fp_size);
+        Fingerprint::new(ptr)
+    }
+
+    pub fn maccs_fingerprint(&self) -> Fingerprint {
+        let ptr = fingerprint_ffi::maccs_fingerprint_mol(&self.ptr);
+        Fingerprint::new(ptr)
+    }
+
     pub fn num_atoms(&self, only_explicit: bool) -> u32 {
         ro_mol_ffi::get_num_atoms(&self.ptr, only_explicit)
     }
 
-    pub fn atom_with_idx(&mut self, idx: u32) -> Atom {
+    pub fn atom_with_idx(&mut self, idx: u32) -> Atom<'_> {
         let ptr = ro_mol_ffi::get_atom_with_idx(&mut self.ptr, idx);
         Atom::from_ptr(ptr)
+    }
+
+    /// Returns a read-only reference to the atom at `idx`.
+    ///
+    /// Unlike [`atom_with_idx`](Self::atom_with_idx), this takes `&self`,
+    /// so no mutable borrow (or clone) is needed for read-only access.
+    pub fn atom_ref(&self, idx: u32) -> AtomRef<'_> {
+        let ptr = ro_mol_ffi::get_atom_with_idx_const(&self.ptr, idx);
+        AtomRef::from_ptr(ptr)
     }
 
     pub fn update_property_cache(&mut self, strict: bool) {

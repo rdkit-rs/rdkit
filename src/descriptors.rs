@@ -25,7 +25,7 @@ impl Properties {
         let names = rdkit_sys::descriptors_ffi::get_property_names(&self.ptr);
         let computed = rdkit_sys::descriptors_ffi::compute_properties(&self.ptr, &ro_mol.ptr);
 
-        assert!(names.len() != 0);
+        assert!(!names.is_empty());
         assert!(computed.len() == names.len());
 
         names
