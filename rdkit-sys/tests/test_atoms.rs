@@ -17,7 +17,9 @@ fn test_atoms() {
 
     assert_eq!(
         &atoms,
-        &["C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C"]
+        &[
+            "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C"
+        ]
     );
 
     let mut atom = rdkit_sys::ro_mol_ffi::get_atom_with_idx(&mut romol, 2);

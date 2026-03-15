@@ -29,6 +29,8 @@ unsigned int atom_sanitize_exception_get_atom_idx(const MolSanitizeExceptionUniq
 
 unsigned int get_num_atoms(const std::shared_ptr<ROMol> &mol, bool only_explicit);
 Atom &get_atom_with_idx(std::shared_ptr<ROMol> &mol, unsigned int idx);
+const Atom &get_atom_with_idx_const(const std::shared_ptr<ROMol> &mol,
+                                    unsigned int idx);
 rust::String get_symbol(const Atom &atom);
 bool get_is_aromatic(const Atom &atom);
 int get_atomic_num(const Atom &atom);

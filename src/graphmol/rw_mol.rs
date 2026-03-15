@@ -1,6 +1,6 @@
 use std::fmt::Formatter;
 
-use cxx::{let_cxx_string, SharedPtr};
+use cxx::{SharedPtr, let_cxx_string};
 use rdkit_sys::*;
 
 use crate::ROMol;

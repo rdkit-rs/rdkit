@@ -1,4 +1,4 @@
-use cxx::{let_cxx_string, CxxVector};
+use cxx::{CxxVector, let_cxx_string};
 use rdkit_sys::PeriodicTableOps;
 
 pub struct PeriodicTable {}
@@ -18,8 +18,8 @@ impl PeriodicTable {
     /// * `atom` - The symbol of the element
     pub fn get_most_common_isotope_mass(atom: &str) -> f64 {
         let_cxx_string!(atom_cxx_string = atom);
-        rdkit_sys::periodic_table_ffi::get_periodic_table()
-            .getMostCommonIsotopeMass(&atom_cxx_string)
+        let pt = rdkit_sys::periodic_table_ffi::get_periodic_table();
+        pt.getMostCommonIsotopeMass(&atom_cxx_string)
     }
 
     /// Returns the atomic weight of the atom
@@ -32,7 +32,8 @@ impl PeriodicTable {
     /// * `atom` - The symbol of the element
     pub fn get_atomic_number(atom: &str) -> i32 {
         let_cxx_string!(atom_cxx_string = atom);
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getAtomicNumber(&atom_cxx_string)
+        let pt = rdkit_sys::periodic_table_ffi::get_periodic_table();
+        pt.getAtomicNumber(&atom_cxx_string)
     }
 
     /// Returns the symbol of the element

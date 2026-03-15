@@ -59,6 +59,7 @@ pub mod ffi {
 
         pub fn get_num_atoms(mol: &SharedPtr<ROMol>, onlyExplicit: bool) -> u32;
         pub fn get_atom_with_idx(mol: &mut SharedPtr<ROMol>, idx: u32) -> Pin<&mut Atom>;
+        pub fn get_atom_with_idx_const(mol: &SharedPtr<ROMol>, idx: u32) -> Pin<&Atom>;
         pub fn get_symbol(atom: Pin<&Atom>) -> String;
         pub fn get_is_aromatic(atom: Pin<&Atom>) -> bool;
         pub fn get_atomic_num(atom: Pin<&Atom>) -> i32;
