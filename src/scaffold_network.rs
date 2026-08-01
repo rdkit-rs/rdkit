@@ -1,3 +1,14 @@
+//! RDKit's scaffold network (`rdScaffoldNetwork`): the hierarchy of scaffolds a
+//! molecule reduces to, built by iteratively breaking its non-ring bonds.
+//!
+//! Prior art for this class of hierarchy, though not the algorithm implemented
+//! here: Wilkens, Janes & Su, "HierS: hierarchical scaffold clustering using
+//! topological chemical graphs", J. Med. Chem. 2005, 48(9), 3182-93,
+//! doi:10.1021/jm049032d. HierS enumerates ring-delimited substructures
+//! directly, where RDKit applies a bond breaking reaction and also emits
+//! generic and attachment point scaffolds that HierS has no equivalent of.
+//! RDKit's own sources cite no paper for the module.
+
 use cxx::SharedPtr;
 use rdkit_sys::scaffold_network_ffi;
 
