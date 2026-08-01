@@ -1,3 +1,10 @@
+0.4.13
+---
+
+ * Scaffold network generation: `create_scaffold_network`/`update_scaffold_network`, plus
+   accessors that return the nodes, counts, molCounts and edges as plain data
+ * `rdkit` gains a safe `scaffold_network_for_mol`/`scaffold_network_for_mols` wrapper
+
 0.4.0
 ---
 

@@ -62,4 +62,79 @@ std::shared_ptr<ScaffoldNetworkClass> default_scaffold_network() {
 	return std::shared_ptr<ScaffoldNetworkClass>(scaffold_network);
 }
 
+std::shared_ptr<ScaffoldNetworkClass> create_scaffold_network(const std::shared_ptr<ROMol> &mol,
+                                                              const std::shared_ptr<ScaffoldNetworkParams> &params) {
+	std::vector<std::shared_ptr<ROMol>> mols{mol};
+	ScaffoldNetworkClass *scaffold_network =
+	    new ScaffoldNetworkClass(ScaffoldNetwork::createScaffoldNetwork(mols, *params));
+	return std::shared_ptr<ScaffoldNetworkClass>(scaffold_network);
+}
+
+void update_scaffold_network(std::shared_ptr<ScaffoldNetworkClass> &network, const std::shared_ptr<ROMol> &mol,
+                             const std::shared_ptr<ScaffoldNetworkParams> &params) {
+	std::vector<std::shared_ptr<ROMol>> mols{mol};
+	ScaffoldNetwork::updateScaffoldNetwork(mols, *network, *params);
+}
+
+rust::Vec<rust::String> scaffold_network_nodes(const std::shared_ptr<ScaffoldNetworkClass> &network) {
+	rust::Vec<rust::String> nodes;
+	nodes.reserve(network->nodes.size());
+
+	for (const auto &node : network->nodes) { nodes.push_back(rust::String(node)); }
+
+	return nodes;
+}
+
+rust::Vec<std::uint32_t> scaffold_network_counts(const std::shared_ptr<ScaffoldNetworkClass> &network) {
+	rust::Vec<std::uint32_t> counts;
+	counts.reserve(network->counts.size());
+
+	for (const auto count : network->counts) { counts.push_back(count); }
+
+	return counts;
+}
+
+rust::Vec<std::uint32_t> scaffold_network_mol_counts(const std::shared_ptr<ScaffoldNetworkClass> &network) {
+	rust::Vec<std::uint32_t> mol_counts;
+	mol_counts.reserve(network->molCounts.size());
+
+	for (const auto mol_count : network->molCounts) { mol_counts.push_back(mol_count); }
+
+	return mol_counts;
+}
+
+rust::Vec<std::size_t> scaffold_network_edge_begin_indices(const std::shared_ptr<ScaffoldNetworkClass> &network) {
+	rust::Vec<std::size_t> begin_indices;
+	begin_indices.reserve(network->edges.size());
+
+	for (const auto &edge : network->edges) { begin_indices.push_back(edge.beginIdx); }
+
+	return begin_indices;
+}
+
+rust::Vec<std::size_t> scaffold_network_edge_end_indices(const std::shared_ptr<ScaffoldNetworkClass> &network) {
+	rust::Vec<std::size_t> end_indices;
+	end_indices.reserve(network->edges.size());
+
+	for (const auto &edge : network->edges) { end_indices.push_back(edge.endIdx); }
+
+	return end_indices;
+}
+
+rust::Vec<rust::String> scaffold_network_edge_types(const std::shared_ptr<ScaffoldNetworkClass> &network) {
+	rust::Vec<rust::String> types;
+	types.reserve(network->edges.size());
+
+	// RDKit ships an operator<< for EdgeType; going through it keeps these strings in step with
+	// upstream rather than duplicating the enum names on our side.
+	std::ostringstream type_name;
+	for (const auto &edge : network->edges) {
+		type_name.str("");
+		type_name << edge.type;
+		types.push_back(rust::String(type_name.str()));
+	}
+
+	return types;
+}
+
 } // namespace RDKit
