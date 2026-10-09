@@ -26,7 +26,7 @@ std::unique_ptr<ExplicitBitVect> copy_explicit_bit_vect(const ExplicitBitVect &o
 
 std::unique_ptr<std::vector<uint64_t>> explicit_bit_vect_to_u64_vec(const ExplicitBitVect &bitvect) {
 	const auto num_bits = bitvect.getNumBits();
-	auto words = std::make_unique<std::vector<uint64_t>>(num_bits / 64u + (num_bits % 64u != 0), 0);
+	auto words          = std::make_unique<std::vector<uint64_t>>(num_bits / 64u + (num_bits % 64u != 0), 0);
 	for (unsigned int i = 0; i < num_bits; ++i) {
 		if (bitvect.getBit(i)) { (*words)[i / 64u] |= uint64_t{1} << (i % 64u); }
 	}
