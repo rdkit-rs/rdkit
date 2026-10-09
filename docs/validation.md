@@ -64,6 +64,8 @@ RDKit 2026 corrects the registered `chi2n`/`chi2v` descriptors, which returned t
 
 Initial development runs also exposed the old nightly-only benchmark, missing compile-fail snapshots, and Clippy failures. The benchmark now uses stable timing/black-box operations, the six diagnostics are checked in, and the lint failures were corrected. Final results above supersede those development failures.
 
+The first expanded CI run failed before compilation because Docker Hub returned rate-limit errors and authentication timeouts. CI now pulls the identical pinned Ubuntu images through Docker's public ECR mirror.
+
 ## Not run or not established
 
 macOS, Windows, a real Conda environment, Miri, and sanitizer-instrumented RDKit/Rust builds were not run. Arm64 coverage is limited to the reference-package CI job; local checks and sanitizer jobs run on amd64. Miri alone cannot validate these native C++ algorithms. No fuzzing campaign, whole-upstream API coverage or general memory-safety proof is claimed.

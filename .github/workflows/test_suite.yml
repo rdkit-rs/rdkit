@@ -20,25 +20,25 @@ jobs:
             arch: amd64
             runner: ubuntu-24.04
             install: install-deps.sh
-            image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+            image: public.ecr.aws/docker/library/ubuntu@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
           - ubuntu: '24.04'
             rdkit: '2023.09.3'
             arch: amd64
             runner: ubuntu-24.04
             install: install-deps.sh
-            image: ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+            image: public.ecr.aws/docker/library/ubuntu@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
           - ubuntu: '26.04'
             rdkit: '2026.09.1 reference'
             arch: amd64
             runner: ubuntu-24.04
             install: install-reference-deps.sh
-            image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+            image: public.ecr.aws/docker/library/ubuntu@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
           - ubuntu: '26.04'
             rdkit: '2026.09.1 reference'
             arch: arm64
             runner: ubuntu-24.04-arm
             install: install-reference-deps.sh
-            image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+            image: public.ecr.aws/docker/library/ubuntu@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
     container:
       image: ${{ matrix.image }}
     defaults:
@@ -73,7 +73,7 @@ jobs:
           - rdkit: '2026.09.1 reference'
             install: install-reference-deps.sh
     container:
-      image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+      image: public.ecr.aws/docker/library/ubuntu@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
     defaults:
       run:
         shell: bash

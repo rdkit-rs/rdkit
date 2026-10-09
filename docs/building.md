@@ -34,7 +34,7 @@ cargo test --workspace --locked
 
 The script installs the exact RDKit package above plus a C++ compiler, Boost development headers and serialization library, and Eigen headers. Rustup honors the pinned Rust 1.99.0 toolchain in `rust-toolchain.toml`. CI uses the committed Cargo lockfile. These are tested toolchain versions, not a claim that all older Rust compilers fail.
 
-The Ubuntu CI jobs run on a Linux x86_64 host inside digest-pinned Ubuntu containers. Package versions are explicit; other apt dependencies receive the distribution's current updates. This reproduces the RDKit/API baseline, not a bit-for-bit frozen operating system. If a pinned package leaves the active archive, use the corresponding Ubuntu snapshot and record that change rather than silently taking a different RDKit release.
+The Ubuntu distro CI jobs run on a Linux x86_64 host inside digest-pinned Ubuntu containers. CI pulls Docker's official Ubuntu images through its public ECR mirror using the same image digests, avoiding Docker Hub's unauthenticated pull limits. Package versions are explicit; other apt dependencies receive the distribution's current updates. This reproduces the RDKit/API baseline, not a bit-for-bit frozen operating system. If a pinned package leaves the active archive, use the corresponding Ubuntu snapshot and record that change rather than silently taking a different RDKit release.
 
 Install `clang-format-18` for C++ formatting. Standard Rust formatting works without nightly.
 
