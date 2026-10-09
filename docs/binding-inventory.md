@@ -19,6 +19,8 @@ Baseline commit: `79a26ead54b2dbec2bedfc82976136b6c19017a6`. Names below are cal
 
 ## bond
 
+The bond enums are bridge-owned values, not aliases for the native C++ enums. Checked mappings support the differing native enum widths in RDKit 2023/2025 and 2026; atom hybridization follows the same contract in `ro_mol`. The callable names and counts are unchanged.
+
 [Bridge](../rdkit-sys/src/bridge/bond.rs) · [C++ shim](../rdkit-sys/wrapper/src/bond.cc)
 
 Baseline reviewed: new module.
@@ -60,6 +62,8 @@ Baseline reviewed: `new_remove_hs_parameters`, `get_remove_degree_zero`, `set_re
 Baseline reviewed: `tautomer_enumerator`, `tautomer_enumerate`, `tautomer_enumerator_result_tautomers_size`, `tautomer_enumerator_result_tautomers_at`, `tautomer_enumerator_canonicalize`, `default_cleanup_parameters`, `new_uncharger`, `uncharger_uncharge`, `fragment_parent`, `normalize`.
 
 ## periodic_table
+
+The Rust `PeriodicTable` opaque type names the owned C++ `RustPeriodicTable` facade. Its methods query the native singleton without exposing or owning it; this avoids relying on a native copy constructor, which RDKit 2026.09 deletes. Public Rust callable signatures and counts are unchanged.
 
 [Bridge](../rdkit-sys/src/bridge/periodic_table.rs) · [C++ shim](../rdkit-sys/wrapper/src/periodic_table.cc)
 

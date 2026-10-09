@@ -1,3 +1,4 @@
+#include "rdkit-sys/src/bridge/ro_mol.rs.h"
 #include "rust/cxx.h"
 #include "wrapper/include/owned.h"
 #include <DataStructs/ExplicitBitVect.h>
@@ -79,12 +80,34 @@ void set_num_explicit_hs(Atom &atom, int what) {
 }
 void atom_update_property_cache(Atom &atom, bool strict) { atom.updatePropertyCache(strict); }
 
-using HybridizationType = Atom::HybridizationType;
 void atom_set_hybridization(Atom &atom, int what) {
-	if (what < Atom::UNSPECIFIED || what > Atom::OTHER) { throw std::invalid_argument("invalid hybridization"); }
-	atom.setHybridization(static_cast<HybridizationType>(what));
+	switch (what) {
+	case static_cast<int>(HybridizationType::UNSPECIFIED): atom.setHybridization(Atom::UNSPECIFIED); return;
+	case static_cast<int>(HybridizationType::S): atom.setHybridization(Atom::S); return;
+	case static_cast<int>(HybridizationType::SP): atom.setHybridization(Atom::SP); return;
+	case static_cast<int>(HybridizationType::SP2): atom.setHybridization(Atom::SP2); return;
+	case static_cast<int>(HybridizationType::SP3): atom.setHybridization(Atom::SP3); return;
+	case static_cast<int>(HybridizationType::SP2D): atom.setHybridization(Atom::SP2D); return;
+	case static_cast<int>(HybridizationType::SP3D): atom.setHybridization(Atom::SP3D); return;
+	case static_cast<int>(HybridizationType::SP3D2): atom.setHybridization(Atom::SP3D2); return;
+	case static_cast<int>(HybridizationType::OTHER): atom.setHybridization(Atom::OTHER); return;
+	default: throw std::invalid_argument("invalid hybridization");
+	}
 }
-HybridizationType atom_get_hybridization(const Atom &atom) { return atom.getHybridization(); }
+HybridizationType atom_get_hybridization(const Atom &atom) {
+	switch (atom.getHybridization()) {
+	case Atom::UNSPECIFIED: return HybridizationType::UNSPECIFIED;
+	case Atom::S: return HybridizationType::S;
+	case Atom::SP: return HybridizationType::SP;
+	case Atom::SP2: return HybridizationType::SP2;
+	case Atom::SP3: return HybridizationType::SP3;
+	case Atom::SP2D: return HybridizationType::SP2D;
+	case Atom::SP3D: return HybridizationType::SP3D;
+	case Atom::SP3D2: return HybridizationType::SP3D2;
+	case Atom::OTHER: return HybridizationType::OTHER;
+	default: throw std::invalid_argument("unsupported native hybridization");
+	}
+}
 
 void ro_mol_update_property_cache(ROMol &mol, bool strict) { mol.updatePropertyCache(strict); }
 

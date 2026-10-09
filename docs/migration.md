@@ -36,7 +36,7 @@ Potentially throwing native calls return `Result` at the bridge. High-level `try
 
 `Uncharger::uncharge` and `try_uncharge` require `&mut self`, matching the native non-const method. Declare an uncharger binding mutable before calling them. Public raw owner fields have been hidden where they could invalidate the wrapper's invariants.
 
-Periodic-table valence lists now return an owned `Vec<i32>` at the high level and an owned C++ vector at the bridge. Callers can keep using `.as_slice()`; code explicitly naming `&'static CxxVector<i32>` must change its type. This removes the assumption that RDKit's singleton storage outlives every Rust reference.
+Periodic-table valence lists now return an owned `Vec<i32>` at the high level and an owned C++ vector at the bridge. Callers can keep using `.as_slice()`; code explicitly naming `&'static CxxVector<i32>` must change its type. This removes the assumption that RDKit's singleton storage outlives every Rust reference. The opaque low-level table handle owns a stateless C++ facade that queries the native singleton for each call; it does not copy or destroy that singleton. Existing Rust table methods retain their signatures.
 
 SDF iterators keep their existing item shapes. An I/O failure is returned once, followed by exhaustion. Invalid UTF-8 returns an error for that record; later delimiter-separated records can still be read. Records end at a complete `$$$$` line, and a missing final delimiter is accepted. Embedded dollar characters and an empty molecule title are preserved.
 
@@ -58,4 +58,4 @@ Borrowed native outputs cannot outlive their inputs. Cloning a smart pointer to 
 
 For native installation, prefix overrides and the supported platform matrix, see [building](building.md). The matching native libraries must be present at runtime; this branch uses dynamic linking.
 
-Supported native releases can legitimately return different chemistry results. One canonicalization regression yields a valid, reparsable molecule on 2023.09 and a kekulization error on 2025.03. The carbon covalent-radius table entry is 0.68 in the older package and 0.76 in the newer ones. Tests explicitly cover those observed outcomes; the wrappers preserve the selected native library's behavior.
+Supported native releases can legitimately return different chemistry results. One canonicalization regression yields a valid, reparsable molecule on 2023.09 and a kekulization error on 2025.03. The carbon covalent-radius table entry is 0.68 in the older package and 0.76 in the newer ones. The registered `chi2n`/`chi2v` descriptors also change in 2026.09: they agree with direct chi2 calculations, while the older tested registries return chi3 values under those names. Tests explicitly cover those observed outcomes; the wrappers preserve the selected native library's behavior.

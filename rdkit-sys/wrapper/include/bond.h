@@ -2,12 +2,14 @@
 
 #include "rust/cxx.h"
 #include <GraphMol/GraphMol.h>
+#include <cstdint>
 
 namespace RDKit {
 
-using BondType   = Bond::BondType;
-using BondStereo = Bond::BondStereo;
-using BondDir    = Bond::BondDir;
+enum class BondType : std::int32_t;
+enum class BondStereo : std::int32_t;
+enum class BondDir : std::int32_t;
+Bond::BondType native_bond_type(int value);
 
 unsigned int get_num_bonds(const ROMol &mol, bool only_heavy);
 const Bond &get_bond_with_idx(const ROMol &mol, unsigned int idx);

@@ -8,6 +8,7 @@
 #include <GraphMol/MolStandardize/Tautomer.h>
 #include <GraphMol/SmilesParse/SmilesParse.h>
 #include <GraphMol/SmilesParse/SmilesWrite.h>
+#include <cstdint>
 
 namespace RDKit {
 std::unique_ptr<ROMol> copy_mol(const ROMol &mol);
@@ -38,7 +39,7 @@ void set_formal_charge(Atom &atom, int what);
 void set_num_explicit_hs(Atom &atom, int what);
 void atom_update_property_cache(Atom &atom, bool strict);
 
-using HybridizationType = Atom::HybridizationType;
+enum class HybridizationType : std::int32_t;
 void atom_set_hybridization(Atom &atom, int what);
 HybridizationType atom_get_hybridization(const Atom &atom);
 

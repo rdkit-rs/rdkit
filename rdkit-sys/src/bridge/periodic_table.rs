@@ -7,6 +7,7 @@ use ffi::PeriodicTable;
 #[cxx::bridge(namespace = "RDKit")]
 pub mod ffi {
     unsafe extern "C++" {
+        #[cxx_name = "RustPeriodicTable"]
         type PeriodicTable;
         include!("wrapper/include/periodic_table.h");
         pub fn get_periodic_table() -> Result<UniquePtr<PeriodicTable>>;

@@ -1,4 +1,4 @@
-#include "rust/cxx.h"
+#include "wrapper/include/periodic_table.h"
 #include <GraphMol/PeriodicTable.h>
 #include <algorithm>
 #include <array>
@@ -23,17 +23,15 @@ template<typename Table> unsigned int table_row(const Table &table, unsigned int
 	}
 }
 
-unsigned int periodic_table_max_atomic_number(const PeriodicTable &table) { return table_max_atomic_number(table); }
-unsigned int periodic_table_row(const PeriodicTable &table, unsigned int atomic_number) {
-	return table_row(table, atomic_number);
+unsigned int native_periodic_table_max_atomic_number() { return table_max_atomic_number(*PeriodicTable::getTable()); }
+unsigned int periodic_table_max_atomic_number(const RustPeriodicTable &) {
+	return native_periodic_table_max_atomic_number();
+}
+unsigned int periodic_table_row(const RustPeriodicTable &, unsigned int atomic_number) {
+	return table_row(*PeriodicTable::getTable(), atomic_number);
 }
 
-std::unique_ptr<PeriodicTable> get_periodic_table() {
-	// in rdkit we have the following:
-	// PeriodicTable::getTable() return : const PeriodicTable*
-	// so we need to take into account that it is a const pointer
-	return std::make_unique<PeriodicTable>(*PeriodicTable::getTable());
-}
+std::unique_ptr<RustPeriodicTable> get_periodic_table() { return std::make_unique<RustPeriodicTable>(); }
 rust::String getElementSymbol(unsigned int atomic_number) {
 	PeriodicTable *pt = RDKit::PeriodicTable::getTable();
 	return pt->getElementSymbol(atomic_number);

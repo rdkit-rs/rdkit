@@ -21,7 +21,6 @@ pub mod ffi {
         pub type ExplicitBitVect = crate::fingerprint_ffi::ExplicitBitVect;
         pub type SmilesParserParams;
         pub type Atom;
-        pub type HybridizationType;
 
         pub type MolSanitizeException;
         pub type MolSanitizeExceptionUniquePtr; //  = UniquePtr<MolSanitizeException>;

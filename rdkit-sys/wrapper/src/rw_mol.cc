@@ -1,4 +1,5 @@
 #include "rust/cxx.h"
+#include "wrapper/include/bond.h"
 #include "wrapper/include/owned.h"
 #include "wrapper/include/periodic_table.h"
 #include <GraphMol/FileParsers/FileParsers.h>
@@ -38,7 +39,7 @@ std::unique_ptr<RWMol> smarts_to_mol(const std::string &smarts) {
 std::unique_ptr<RWMol> new_rw_mol() { return std::make_unique<RWMol>(); }
 ROMol &rw_mol_as_ro_mol_mut(RWMol &mol) { return mol; }
 unsigned int rw_mol_add_atom(RWMol &mol, unsigned int atomic_num) {
-	if (atomic_num > periodic_table_max_atomic_number(*PeriodicTable::getTable())) {
+	if (atomic_num > native_periodic_table_max_atomic_number()) {
 		throw std::invalid_argument("atomic number out of range");
 	}
 	Atom atom(atomic_num);
@@ -48,8 +49,7 @@ unsigned int rw_mol_add_bond(RWMol &mol, unsigned int begin, unsigned int end, i
 	if (begin >= mol.getNumAtoms() || end >= mol.getNumAtoms()) { throw std::out_of_range("bond atom index"); }
 	if (begin == end) { throw std::invalid_argument("self bond"); }
 	if (mol.getBondBetweenAtoms(begin, end)) { throw std::invalid_argument("bond already exists"); }
-	if (order < Bond::UNSPECIFIED || order > Bond::ZERO) { throw std::invalid_argument("invalid bond type"); }
-	mol.addBond(begin, end, static_cast<Bond::BondType>(order));
+	mol.addBond(begin, end, native_bond_type(order));
 	return mol.getNumBonds() - 1;
 }
 void rw_mol_remove_atom(RWMol &mol, unsigned int idx) {

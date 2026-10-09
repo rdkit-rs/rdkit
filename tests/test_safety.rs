@@ -306,13 +306,97 @@ fn low_level_smiles_null_remains_explicitly_checkable() {
 #[test]
 fn periodic_valence_lists_own_their_storage() {
     use rdkit_sys::PeriodicTableOps;
+    let surviving_table = rdkit_sys::periodic_table_ffi::get_periodic_table().unwrap();
     let list = {
         let table = rdkit_sys::periodic_table_ffi::get_periodic_table().unwrap();
+        assert_eq!(table.getDefaultValence(6).unwrap(), 4);
         table.getValenceList(6).unwrap()
     };
     assert_eq!(list.as_slice(), &[4]);
+    assert_eq!(surviving_table.getDefaultValence(6).unwrap(), 4);
+    drop(surviving_table);
+    assert_eq!(PeriodicTable::get_default_valence(6), 4);
     let mut first = PeriodicTable::get_valence_list(6);
     let second = PeriodicTable::get_valence_list(6);
     first.push(99);
     assert_eq!(second, vec![4]);
+}
+
+#[test]
+fn bond_types_round_trip_through_native_graph_edits() {
+    for kind in [
+        BondType::UNSPECIFIED,
+        BondType::SINGLE,
+        BondType::DOUBLE,
+        BondType::TRIPLE,
+        BondType::QUADRUPLE,
+        BondType::QUINTUPLE,
+        BondType::HEXTUPLE,
+        BondType::ONEANDAHALF,
+        BondType::TWOANDAHALF,
+        BondType::THREEANDAHALF,
+        BondType::FOURANDAHALF,
+        BondType::FIVEANDAHALF,
+        BondType::AROMATIC,
+        BondType::IONIC,
+        BondType::HYDROGEN,
+        BondType::THREECENTER,
+        BondType::DATIVEONE,
+        BondType::DATIVE,
+        BondType::DATIVEL,
+        BondType::DATIVER,
+        BondType::OTHER,
+        BondType::ZERO,
+    ] {
+        let mut mol = RWMol::new();
+        mol.add_atom(6).unwrap();
+        mol.add_atom(6).unwrap();
+        let idx = mol.add_bond(0, 1, kind).unwrap();
+        assert_eq!(mol.bond(idx).unwrap().bond_type(), kind);
+    }
+    for invalid in [-1, 22, 256, i32::MAX] {
+        let mut mol = RWMol::new();
+        mol.add_atom(6).unwrap();
+        mol.add_atom(6).unwrap();
+        assert!(mol.add_bond(0, 1, BondType { repr: invalid }).is_err());
+        assert_eq!(mol.num_bonds(), 0);
+    }
+}
+
+#[test]
+fn hybridization_round_trips_without_native_enum_layout_assumptions() {
+    let mut mol = ROMol::from_smiles("C").unwrap();
+    let mut atom = mol.atom_with_idx(0);
+    for hybridization in [
+        HybridizationType::UNSPECIFIED,
+        HybridizationType::S,
+        HybridizationType::SP,
+        HybridizationType::SP2,
+        HybridizationType::SP3,
+        HybridizationType::SP2D,
+        HybridizationType::SP3D,
+        HybridizationType::SP3D2,
+        HybridizationType::OTHER,
+    ] {
+        atom.try_set_hybridization_type(hybridization).unwrap();
+        assert_eq!(atom.try_get_hybridization_type().unwrap(), hybridization);
+    }
+    for invalid in [-1, 9, 256, i32::MAX] {
+        assert!(atom
+            .try_set_hybridization_type(HybridizationType { repr: invalid })
+            .is_err());
+        assert_eq!(atom.get_hybridization_type(), HybridizationType::OTHER);
+    }
+}
+
+#[test]
+fn parsed_bond_stereo_and_directions_cross_native_enum_layouts() {
+    let trans = ROMol::from_smiles("F/C=C/F").unwrap();
+    let cis = ROMol::from_smiles("F/C=C\\F").unwrap();
+    assert_eq!(trans.bond(1).unwrap().stereo(), BondStereo::STEREOE);
+    assert_eq!(cis.bond(1).unwrap().stereo(), BondStereo::STEREOZ);
+    assert_eq!(trans.bond(0).unwrap().bond_dir(), BondDir::ENDUPRIGHT);
+    assert_eq!(cis.bond(2).unwrap().bond_dir(), BondDir::ENDDOWNRIGHT);
+    assert_eq!(trans.bond(0).unwrap().stereo(), BondStereo::STEREONONE);
+    assert_eq!(trans.bond(1).unwrap().bond_dir(), BondDir::NONE);
 }

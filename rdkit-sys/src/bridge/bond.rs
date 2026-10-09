@@ -36,6 +36,8 @@ pub mod ffi {
         STEREOE,
         STEREOCIS,
         STEREOTRANS,
+        STEREOATROPCW,
+        STEREOATROPCCW,
     }
 
     #[repr(i32)]
@@ -55,9 +57,6 @@ pub mod ffi {
 
         pub type ROMol = crate::ro_mol_ffi::ROMol;
         pub type Bond;
-        pub type BondType;
-        pub type BondStereo;
-        pub type BondDir;
 
         pub fn get_num_bonds(mol: &ROMol, only_heavy: bool) -> Result<u32>;
         pub fn get_bond_with_idx(mol: &ROMol, idx: u32) -> Result<&Bond>;
