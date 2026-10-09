@@ -9,18 +9,36 @@ permissions:
 
 jobs:
   test:
-    name: Ubuntu ${{ matrix.ubuntu }} / RDKit ${{ matrix.rdkit }}
-    runs-on: ubuntu-24.04
+    name: Ubuntu ${{ matrix.ubuntu }} / RDKit ${{ matrix.rdkit }} / ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - ubuntu: '26.04'
             rdkit: '2025.03.6'
+            arch: amd64
+            runner: ubuntu-24.04
+            install: install-deps.sh
             image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
           - ubuntu: '24.04'
             rdkit: '2023.09.3'
+            arch: amd64
+            runner: ubuntu-24.04
+            install: install-deps.sh
             image: ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+          - ubuntu: '26.04'
+            rdkit: '2026.09.1 reference'
+            arch: amd64
+            runner: ubuntu-24.04
+            install: install-reference-deps.sh
+            image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+          - ubuntu: '26.04'
+            rdkit: '2026.09.1 reference'
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            install: install-reference-deps.sh
+            image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
     container:
       image: ${{ matrix.image }}
     defaults:
@@ -28,7 +46,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - run: bash ci/install-deps.sh
+      - run: bash ci/${{ matrix.install }}
       - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
           toolchain: '1.99.0'
@@ -44,8 +62,16 @@ jobs:
           CONDA_PREFIX: /usr
 
   sanitizers:
-    name: C++ ASan and UBSan / Ubuntu 26.04
+    name: C++ ASan and UBSan / Ubuntu 26.04 / ${{ matrix.rdkit }}
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rdkit: '2025.03.6'
+            install: install-deps.sh
+          - rdkit: '2026.09.1 reference'
+            install: install-reference-deps.sh
     container:
       image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
     defaults:
@@ -53,7 +79,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - run: bash ci/install-deps.sh
+      - run: bash ci/${{ matrix.install }}
       - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
           toolchain: '1.99.0'

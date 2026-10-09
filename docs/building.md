@@ -14,14 +14,14 @@
 | Ubuntu 22.04 LTS | 2021.09.2 / `202109.2-1build1` | Too old for this binding surface |
 | Ubuntu 25.10 | 2025.03.1 / `202503.1-4` | Interim release; not a CI target |
 | Ubuntu 26.10 prerelease | 2025.03.6 / `202503.6-4` | No advantage over released 26.04 for this work |
-| Upstream 2026.09.1 | Separate Ubuntu 26.04 reference package | Additional compatibility lane pending the package artifact |
-| macOS, Windows, Linux arm64 | Varies | Not validated by this PR |
+| Ubuntu 26.04 LTS amd64 and arm64 | Upstream 2026.09.1 / `2026.09.1+ds1-1~ubuntu26.04` | Additional reference-package CI targets |
+| macOS, Windows | Varies | Not validated by this PR |
 
 Sources: [Ubuntu package versions](https://packages.ubuntu.com/librdkit-dev), [26.04 package](https://packages.ubuntu.com/resolute/librdkit-dev), [Debian 13 package](https://packages.debian.org/trixie/librdkit-dev). Both Ubuntu package pins were also checked against their actual apt repositories in clean containers.
 
 The LTS package supplies a matched native RDKit, Boost dependency set, and development headers through ordinary package management. The baseline can be installed without a custom binary distribution. Selecting it does not imply that it contains every fix or feature from newer upstream releases, or that Ubuntu Universe has the same support guarantees as Ubuntu Main.
 
-The project's [Debian packaging tutorial](https://github.com/rdkit-rs/rdkit-rs.github.io/blob/1d3778e/content/tutorials/forking-a-debian-package.md) explains the earlier need for newer upstream packages, isolated native builds and CI-produced artifacts. A separate reference-package effort carries that goal forward for current upstream on Ubuntu 26.04. Its artifact should be tested as an additional lane with an exact version and checksum, while keeping the distro installation path working.
+The project's [Debian packaging tutorial](https://github.com/rdkit-rs/rdkit-rs.github.io/blob/1d3778e/content/tutorials/forking-a-debian-package.md) explains the earlier need for newer upstream packages, isolated native builds and CI-produced artifacts. The separate reference package below carries that goal forward for current upstream on Ubuntu 26.04. The distro installation path remains the default.
 
 ## Native installation
 
@@ -37,6 +37,31 @@ The script installs the exact RDKit package above plus a C++ compiler, Boost dev
 The Ubuntu CI jobs run on a Linux x86_64 host inside digest-pinned Ubuntu containers. Package versions are explicit; other apt dependencies receive the distribution's current updates. This reproduces the RDKit/API baseline, not a bit-for-bit frozen operating system. If a pinned package leaves the active archive, use the corresponding Ubuntu snapshot and record that change rather than silently taking a different RDKit release.
 
 Install `clang-format-18` for C++ formatting. Standard Rust formatting works without nightly.
+
+## Current-upstream reference package
+
+The [Ubuntu 26.04 reference release](https://github.com/rdkit-rs/rdkit-debian/releases/tag/ubuntu-26.04-rdkit-2026.09.1-1) contains runtime, development and data packages at `2026.09.1+ds1-1~ubuntu26.04`. It was built from packaging commit `0656aade78d3709900552193cee0506c19f96223` and upstream commit `fece8caa860bdf6c9c82bdb9253f22a0cf87150c` (`Release_2026_09_1`). The `+ds1` source repack excludes the optional Amadeus font; the bundle includes source, packaging patches, provenance and license notices.
+
+On a fresh Ubuntu 26.04 amd64 or arm64 environment:
+
+```sh
+sudo bash ci/install-reference-deps.sh
+cargo test --workspace --locked
+```
+
+The installer downloads the architecture's complete release bundle, verifies the pinned hash, the published `SHA256SUMS`, and all internal checksums, then installs the local `.deb` files using `apt-get install`. This resolves their Ubuntu dependencies. It tests installation from GitHub release artifacts; it does not add or validate the project's S3 APT repository. The development package conflicts with Ubuntu's `librdkit-dev`, so use a separate environment when retaining the distro baseline.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Published `SHA256SUMS` | `1f3e0c00d63638a829a54e17dbb5561fb4cbc3381f2193098260692c241b9f57` |
+| `rdkit-2026.09.1-ubuntu26.04-amd64.tar.xz` | `70899595de95f2e094c4398fe0e7ff41980d6d8fb3ede9936b643fadb3235783` |
+| `rdkit-2026.09.1-ubuntu26.04-arm64.tar.xz` | `3e4c8a47f3fd73ffc24ec380d24d8ccdc60081fb0bcbd8be1259de4c4eebd740` |
+
+The bundles preserve the original Debian filenames containing `~`; GitHub's individual `.deb` asset names use `.` in its place. CI uses the bundles directly. Headers and linker symlinks install under `/usr`; the runtime SONAME is `.so.2026.09`. `pkg-config --modversion rdkit` reports `2026.09.1`. No prefix or loader override is needed. This project's tests use built-in chemistry defaults and repository fixtures; consumers needing the packaged data can set `RDBASE` using `pkg-config --variable=rdbase rdkit`.
+
+Reference-package jobs use native amd64 and arm64 runners, with the same pinned Ubuntu 26.04 container as the distro job. C++ ASan/UBSan jobs cover both the distro and reference packages on amd64. The reference packages' own [native build/install checks](https://github.com/rdkit-rs/rdkit-debian/actions/runs/37990535727) are separate from this workspace's binding tests. Neither project claims byte-for-byte package reproducibility; Ubuntu dependency versions are not snapshot-pinned.
+
+The packaging project's later [APT publication verification](https://github.com/rdkit-rs/rdkit-debian/actions/runs/37992678461) passed clean installs and native smoke tests on both architectures. That is separate evidence for its APT repository, not the installation method used by this workspace's release-artifact CI.
 
 ## Prefixes and runtime linking
 

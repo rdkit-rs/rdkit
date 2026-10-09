@@ -13,6 +13,8 @@ cargo test --workspace --locked
 
 The checkout pins Rust 1.99.0 and commits `Cargo.lock` for repeatable validation. See [building](docs/building.md) for exact package versions, containers, custom installations, Conda, and the target matrix.
 
+Current-upstream RDKit 2026.09.1 also has a separate Ubuntu 26.04 reference-package lane on amd64 and arm64. Its [installer](ci/install-reference-deps.sh) verifies the GitHub release bundle before installing it; this does not require the project's APT repository. Use a fresh environment because its development headers conflict with Ubuntu's RDKit development package.
+
 Use the crate named `rdkit`, with `use rdkit::ROMol`. The unrelated `rdkit-rs` crate is not this workspace.
 
 ```rust
