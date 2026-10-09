@@ -2,7 +2,7 @@
 
 #include "rust/cxx.h"
 #include <DataStructs/ExplicitBitVect.h>
-#include <GraphMol/FileParsers/FileWriters.h>
+#include <GraphMol/FileParsers/FileParsers.h>
 #include <GraphMol/Fingerprints/Fingerprints.h>
 #include <GraphMol/GraphMol.h>
 #include <GraphMol/MolStandardize/Tautomer.h>
@@ -10,25 +10,24 @@
 #include <GraphMol/SmilesParse/SmilesWrite.h>
 
 namespace RDKit {
-std::shared_ptr<ROMol> copy_mol(const std::shared_ptr<ROMol> &mol);
-std::shared_ptr<ROMol> smiles_to_mol(const std::string &smiles);
-rust::String mol_to_smiles(const std::shared_ptr<ROMol> &mol);
-rust::String mol_to_molblock(const std::shared_ptr<ROMol> &mol);
+std::unique_ptr<ROMol> copy_mol(const ROMol &mol);
+std::unique_ptr<ROMol> smiles_to_mol(const std::string &smiles);
+rust::String mol_to_smiles(const ROMol &mol);
+rust::String mol_to_molblock(const ROMol &mol);
 
-std::shared_ptr<ROMol> smiles_to_mol_with_params(const std::string &smiles,
-                                                 const std::shared_ptr<SmilesParserParams> &params);
-std::shared_ptr<SmilesParserParams> new_smiles_parser_params();
-void smiles_parser_params_set_sanitize(const std::shared_ptr<SmilesParserParams> &params, bool sanitize);
-bool smiles_parser_params_get_sanitize(const std::shared_ptr<SmilesParserParams> &params);
+std::unique_ptr<ROMol> smiles_to_mol_with_params(const std::string &smiles, const SmilesParserParams &params);
+std::unique_ptr<SmilesParserParams> new_smiles_parser_params();
+void smiles_parser_params_set_sanitize(SmilesParserParams &params, bool sanitize);
+bool smiles_parser_params_get_sanitize(const SmilesParserParams &params);
 
 using MolSanitizeExceptionUniquePtr = std::unique_ptr<MolSanitizeException>;
-std::unique_ptr<std::vector<MolSanitizeExceptionUniquePtr>>
-detect_chemistry_problems(const std::shared_ptr<ROMol> &mol);
+std::unique_ptr<std::vector<MolSanitizeExceptionUniquePtr>> detect_chemistry_problems(const ROMol &mol);
 rust::String mol_sanitize_exception_type(const MolSanitizeExceptionUniquePtr &mol_except);
 unsigned int atom_sanitize_exception_get_atom_idx(const MolSanitizeExceptionUniquePtr &mol_except);
 
-unsigned int get_num_atoms(const std::shared_ptr<ROMol> &mol, bool only_explicit);
-Atom &get_atom_with_idx(std::shared_ptr<ROMol> &mol, unsigned int idx);
+unsigned int get_num_atoms(const ROMol &mol, bool only_explicit);
+const Atom &get_atom_ref(const ROMol &mol, unsigned int idx);
+Atom &get_atom_with_idx(ROMol &mol, unsigned int idx);
 rust::String get_symbol(const Atom &atom);
 bool get_is_aromatic(const Atom &atom);
 int get_atomic_num(const Atom &atom);
@@ -40,10 +39,10 @@ void set_num_explicit_hs(Atom &atom, int what);
 void atom_update_property_cache(Atom &atom, bool strict);
 
 using HybridizationType = Atom::HybridizationType;
-void atom_set_hybridization(Atom &atom, HybridizationType what);
+void atom_set_hybridization(Atom &atom, int what);
 HybridizationType atom_get_hybridization(const Atom &atom);
 
-void ro_mol_update_property_cache(std::shared_ptr<ROMol> &mol, bool strict);
+void ro_mol_update_property_cache(ROMol &mol, bool strict);
 
 void set_int_prop(Atom &atom, const std::string &key, int val);
 int get_int_prop(const Atom &atom, const std::string &key);

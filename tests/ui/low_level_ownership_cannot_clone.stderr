@@ -1,0 +1,5 @@
+error[E0599]: no method named `clone` found for struct `UniquePtr<ROMol>` in the current scope
+ --> tests/ui/low_level_ownership_cannot_clone.rs:5:21
+  |
+5 |     let alias = mol.clone();
+  |                     ^^^^^ method not found in `UniquePtr<ROMol>`

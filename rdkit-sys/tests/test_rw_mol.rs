@@ -1,13 +1,12 @@
-use cxx::{let_cxx_string, SharedPtr};
-use rdkit_sys::{ro_mol_ffi::ROMol, rw_mol_ffi::RWMol};
+use cxx::let_cxx_string;
 
 #[test]
 fn test_rw_mol_from_smarts() {
     cxx::let_cxx_string!(smarts = "[+1!h0!$([*]~[-1,-2,-3,-4]),-1!$([*]~[+1,+2,+3,+4])]");
     let rwmol = rdkit_sys::rw_mol_ffi::smarts_to_mol(&smarts).unwrap();
-    let romol = rdkit_sys::rw_mol_ffi::rw_mol_to_ro_mol(rwmol);
+    let romol = rdkit_sys::rw_mol_ffi::rw_mol_to_ro_mol(rwmol).expect("RDKit operation failed");
 
-    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&romol);
+    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&romol).expect("RDKit operation failed");
     assert_eq!(smiles, "*".to_string());
 }
 
@@ -187,10 +186,11 @@ CC(=O)OC(CC(=O)[O-])C[N+](C)(C)C
 
     let_cxx_string!(mol_block = mol_block);
 
-    let rw_mol = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(&mol_block, false, false, false);
-    let ro_mol = unsafe { std::mem::transmute::<SharedPtr<RWMol>, SharedPtr<ROMol>>(rw_mol) };
+    let rw_mol = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(&mol_block, false, false, false)
+        .expect("RDKit operation failed");
+    let ro_mol = rdkit_sys::rw_mol_ffi::rw_mol_to_ro_mol(rw_mol).unwrap();
 
-    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&ro_mol);
+    let smiles = rdkit_sys::ro_mol_ffi::mol_to_smiles(&ro_mol).expect("RDKit operation failed");
     assert_eq!("[H]C([H])([H])C(=O)OC([H])(C([H])([H])C(=O)[O-])C([H])([H])[N+](C([H])([H])[H])(C([H])([H])[H])C([H])([H])[H]", &smiles);
 }
 
@@ -314,13 +314,7 @@ O=Cl(=O)(=O)F
 $"#;
     let_cxx_string!(bad = bad);
 
-    let mol = {
-        let mut mol = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(&bad, true, false, false);
-        if mol.is_null() {
-            mol = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(&bad, false, false, false);
-        }
-        mol
-    };
+    assert!(rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(&bad, true, false, false).is_err());
+    let mol = rdkit_sys::rw_mol_ffi::rw_mol_from_mol_block(&bad, false, false, false).unwrap();
     assert!(!mol.is_null());
-    // println!("{}", mol.as_smile());
 }

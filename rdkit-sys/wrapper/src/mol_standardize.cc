@@ -1,3 +1,4 @@
+#include "wrapper/include/owned.h"
 #include <vector>
 
 #include "rust/cxx.h"
@@ -14,59 +15,56 @@ using TautomerEnumeratorResult = MolStandardize::TautomerEnumeratorResult;
 using CleanupParameters        = MolStandardize::CleanupParameters;
 using Uncharger                = MolStandardize::Uncharger;
 
-std::shared_ptr<TautomerEnumerator> tautomer_enumerator() {
+std::unique_ptr<TautomerEnumerator> tautomer_enumerator() {
 	TautomerEnumerator *enumerator = new MolStandardize::TautomerEnumerator();
-	return std::shared_ptr<TautomerEnumerator>(enumerator);
+	return std::unique_ptr<TautomerEnumerator>(enumerator);
 }
 
-std::shared_ptr<TautomerEnumeratorResult> tautomer_enumerate(const std::shared_ptr<TautomerEnumerator> &enumerator,
-                                                             const std::shared_ptr<ROMol> &mol) {
-	TautomerEnumeratorResult stacked_enumerator = enumerator->enumerate(*mol);
+std::unique_ptr<TautomerEnumeratorResult> tautomer_enumerate(const TautomerEnumerator &enumerator, const ROMol &mol) {
+	TautomerEnumeratorResult stacked_enumerator = enumerator.enumerate(mol);
 	TautomerEnumeratorResult *heaped_enumerator = new TautomerEnumeratorResult(stacked_enumerator);
-	return std::shared_ptr<TautomerEnumeratorResult>(heaped_enumerator);
+	return std::unique_ptr<TautomerEnumeratorResult>(heaped_enumerator);
 }
 
-std::shared_ptr<ROMol> tautomer_enumerator_canonicalize(const std::shared_ptr<TautomerEnumerator> &enumerator,
-                                                        const std::shared_ptr<ROMol> &mol) {
-	ROMol *canonical_mol = enumerator->canonicalize(*mol);
-	return std::shared_ptr<ROMol>(canonical_mol);
+std::unique_ptr<ROMol> tautomer_enumerator_canonicalize(const TautomerEnumerator &enumerator, const ROMol &mol) {
+	ROMol *canonical_mol = enumerator.canonicalize(mol);
+	return checked_owned<ROMol>(canonical_mol);
 }
 
-int tautomer_enumerator_result_tautomers_size(const std::shared_ptr<TautomerEnumeratorResult> &enumerator_result) {
-	return enumerator_result->size();
+size_t tautomer_enumerator_result_tautomers_size(const TautomerEnumeratorResult &enumerator_result) {
+	return enumerator_result.size();
 }
 
-std::shared_ptr<ROMol>
-tautomer_enumerator_result_tautomers_at(const std::shared_ptr<TautomerEnumeratorResult> &enumerator_result, size_t at) {
-	RDKit::ROMOL_SPTR sptr = enumerator_result->at(at);
-	return std::shared_ptr<ROMol>(new ROMol(*sptr));
+std::unique_ptr<ROMol> tautomer_enumerator_result_tautomers_at(const TautomerEnumeratorResult &enumerator_result,
+                                                               size_t at) {
+	if (at >= enumerator_result.size()) { throw std::out_of_range("tautomer index"); }
+	RDKit::ROMOL_SPTR sptr = enumerator_result.at(at);
+	if (!sptr) { throw std::runtime_error("missing tautomer"); }
+	return checked_owned<ROMol>(new ROMol(*sptr));
 }
 
-std::shared_ptr<CleanupParameters> default_cleanup_parameters() {
+std::unique_ptr<CleanupParameters> default_cleanup_parameters() {
 	CleanupParameters *heap_cp = new CleanupParameters(MolStandardize::defaultCleanupParameters);
-	return std::shared_ptr<CleanupParameters>(heap_cp);
+	return std::unique_ptr<CleanupParameters>(heap_cp);
 }
 
-std::shared_ptr<Uncharger> new_uncharger(bool canonical) {
-	return std::shared_ptr<Uncharger>(new Uncharger(canonical));
+std::unique_ptr<Uncharger> new_uncharger(bool canonical) {
+	return std::unique_ptr<Uncharger>(new Uncharger(canonical));
 }
 
-std::shared_ptr<ROMol> uncharger_uncharge(const std::shared_ptr<Uncharger> &uncharger,
-                                          const std::shared_ptr<ROMol> &mol) {
-	ROMol *return_mol = uncharger->uncharge(*mol);
-	return std::shared_ptr<ROMol>(return_mol);
+std::unique_ptr<ROMol> uncharger_uncharge(Uncharger &uncharger, const ROMol &mol) {
+	ROMol *return_mol = uncharger.uncharge(mol);
+	return checked_owned<ROMol>(return_mol);
 }
 
-std::shared_ptr<RWMol> fragment_parent(const std::shared_ptr<RWMol> &rw_mol,
-                                       const std::shared_ptr<CleanupParameters> &cleanup_params,
+std::unique_ptr<RWMol> fragment_parent(const RWMol &rw_mol, const CleanupParameters &cleanup_params,
                                        bool skip_standardize) {
-	RWMol *parent = RDKit::MolStandardize::fragmentParent(*rw_mol, *cleanup_params, skip_standardize);
-	return std::shared_ptr<RWMol>(parent);
+	RWMol *parent = RDKit::MolStandardize::fragmentParent(rw_mol, cleanup_params, skip_standardize);
+	return checked_owned<RWMol>(parent);
 }
 
-std::shared_ptr<RWMol> normalize(const std::shared_ptr<RWMol> &mol,
-                                 const std::shared_ptr<CleanupParameters> &cleanup_params) {
-	RWMol *normalized = RDKit::MolStandardize::normalize(&*mol, *cleanup_params);
-	return std::shared_ptr<RWMol>(normalized);
+std::unique_ptr<RWMol> normalize(const RWMol &mol, const CleanupParameters &cleanup_params) {
+	RWMol *normalized = RDKit::MolStandardize::normalize(&mol, cleanup_params);
+	return checked_owned<RWMol>(normalized);
 }
 } // namespace RDKit

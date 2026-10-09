@@ -4,23 +4,71 @@ use std::{
     path::Path,
 };
 
+use crate::RWMol;
 use flate2::bufread::GzDecoder;
 
-use crate::RWMol;
+pub(crate) struct SdfRecords<R> {
+    reader: R,
+    done: bool,
+}
+
+impl<R: BufRead> SdfRecords<R> {
+    pub(crate) fn new(reader: R) -> Self {
+        Self {
+            reader,
+            done: false,
+        }
+    }
+
+    pub(crate) fn next_record(&mut self) -> Option<Result<String, String>> {
+        if self.done {
+            return None;
+        }
+        let mut record = Vec::new();
+        let mut line = Vec::new();
+        loop {
+            line.clear();
+            match self.reader.read_until(b'\n', &mut line) {
+                Ok(0) => {
+                    self.done = true;
+                    if record.iter().all(u8::is_ascii_whitespace) {
+                        return None;
+                    }
+                    break;
+                }
+                Ok(_) => {
+                    let delimiter = line.strip_suffix(b"\n").unwrap_or(&line);
+                    let delimiter = delimiter.strip_suffix(b"\r").unwrap_or(delimiter);
+                    if delimiter == b"$$$$" {
+                        if record.iter().all(u8::is_ascii_whitespace) {
+                            record.clear();
+                            continue;
+                        }
+                        break;
+                    }
+                    record.extend_from_slice(&line);
+                }
+                Err(error) => {
+                    self.done = true;
+                    return Some(Err(format!("SDF read failed: {error}")));
+                }
+            }
+        }
+        Some(String::from_utf8(record).map_err(|e| format!("SDF record is not UTF-8: {e}")))
+    }
+}
 
 pub struct MolBlockIter<R: BufRead> {
-    buf_read: R,
-    buf: Vec<u8>,
+    records: SdfRecords<R>,
     sanitize: bool,
     remove_hs: bool,
     strict_parsing: bool,
 }
 
 impl<R: BufRead> MolBlockIter<R> {
-    pub fn new(buf_read: R, sanitize: bool, remove_hs: bool, strict_parsing: bool) -> Self {
-        MolBlockIter {
-            buf_read,
-            buf: Vec::with_capacity(1024),
+    pub fn new(reader: R, sanitize: bool, remove_hs: bool, strict_parsing: bool) -> Self {
+        Self {
+            records: SdfRecords::new(reader),
             sanitize,
             remove_hs,
             strict_parsing,
@@ -28,25 +76,23 @@ impl<R: BufRead> MolBlockIter<R> {
     }
 }
 
-pub type GzBufReader = BufReader<flate2::bufread::GzDecoder<BufReader<File>>>;
+pub type GzBufReader = BufReader<GzDecoder<BufReader<File>>>;
+
+pub(crate) fn open_gz(path: impl AsRef<Path>) -> std::io::Result<GzBufReader> {
+    Ok(BufReader::new(GzDecoder::new(BufReader::new(File::open(
+        path,
+    )?))))
+}
 
 impl MolBlockIter<GzBufReader> {
     pub fn from_gz_file(
-        p: impl AsRef<Path>,
+        path: impl AsRef<Path>,
         sanitize: bool,
         remove_hs: bool,
         strict_parsing: bool,
     ) -> Result<Self, Box<dyn std::error::Error>> {
-        let path = p.as_ref().to_owned();
-
-        let file = std::fs::File::open(path).unwrap();
-        let buf_reader = std::io::BufReader::new(file);
-
-        let gz_decoder = GzDecoder::new(buf_reader);
-        let gz_buf_reader = std::io::BufReader::new(gz_decoder);
-
         Ok(Self::new(
-            gz_buf_reader,
+            open_gz(path)?,
             sanitize,
             remove_hs,
             strict_parsing,
@@ -58,31 +104,12 @@ impl<R: BufRead> Iterator for MolBlockIter<R> {
     type Item = Result<RWMol, String>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // Consume all `$` characters and break when buffer is larger than 1. Exit
-        // function at EOF.
-        loop {
-            self.buf.clear();
-            let read = self.buf_read.read_until(b'$', &mut self.buf).unwrap();
-            if read == 0 {
-                return None;
-            } else if read == 1 {
-                continue;
-            } else {
-                break;
-            }
-        }
-
-        let block = std::str::from_utf8(&self.buf).unwrap();
-        let block = block.trim();
-
-        let rw_mol =
-            RWMol::from_mol_block(block, self.sanitize, self.remove_hs, self.strict_parsing);
-
-        let result = match rw_mol {
-            Some(rw_mol) => Ok(rw_mol),
-            _ => Err(block.to_string()),
-        };
-
-        Some(result)
+        self.records.next_record().map(|record| {
+            let record = record?;
+            RWMol::try_from_mol_block(&record, self.sanitize, self.remove_hs, self.strict_parsing)
+                .map_err(|e| e.to_string())
+        })
     }
 }
+
+impl<R: BufRead> std::iter::FusedIterator for MolBlockIter<R> {}

@@ -1,132 +1,159 @@
-use cxx::{let_cxx_string, CxxVector};
-use rdkit_sys::PeriodicTableOps;
+use cxx::let_cxx_string;
+use rdkit_sys::{periodic_table_ffi as ffi, PeriodicTableOps};
 
 pub struct PeriodicTable {}
 
 impl PeriodicTable {
-    /// Returns a vector of all stable valences. For atoms where we really don't
-    /// have any idea what a reasonable maximum valence is (like transition
-    /// metals), the vector ends with -1
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
-    pub fn get_valence_list(atomic_number: u32) -> &'static CxxVector<i32> {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getValenceList(atomic_number)
+    pub fn get_valence_list(atomic_number: u32) -> Vec<i32> {
+        Self::try_get_valence_list(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the mass of the most common isotope
-    /// # Arguments
-    /// * `atom` - The symbol of the element
+    pub fn try_get_valence_list(atomic_number: u32) -> Result<Vec<i32>, cxx::Exception> {
+        let values = ffi::get_periodic_table()?.getValenceList(atomic_number)?;
+        Ok(values.iter().copied().collect())
+    }
+
     pub fn get_most_common_isotope_mass(atom: &str) -> f64 {
-        let_cxx_string!(atom_cxx_string = atom);
-        rdkit_sys::periodic_table_ffi::get_periodic_table()
-            .getMostCommonIsotopeMass(&atom_cxx_string)
+        Self::try_get_most_common_isotope_mass(atom).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the atomic weight of the atom
+    pub fn try_get_most_common_isotope_mass(atom: &str) -> Result<f64, cxx::Exception> {
+        let_cxx_string!(atom = atom);
+        ffi::get_periodic_table()?.getMostCommonIsotopeMass(&atom)
+    }
+
     pub fn get_atomic_weight(atomic_number: u32) -> f64 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getAtomicWeight(atomic_number)
+        Self::try_get_atomic_weight(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the atomic number of the atom
-    /// # Arguments
-    /// * `atom` - The symbol of the element
+    pub fn try_get_atomic_weight(atomic_number: u32) -> Result<f64, cxx::Exception> {
+        ffi::get_periodic_table()?.getAtomicWeight(atomic_number)
+    }
+
     pub fn get_atomic_number(atom: &str) -> i32 {
-        let_cxx_string!(atom_cxx_string = atom);
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getAtomicNumber(&atom_cxx_string)
+        Self::try_get_atomic_number(atom).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the symbol of the element
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_atomic_number(atom: &str) -> Result<i32, cxx::Exception> {
+        let_cxx_string!(atom = atom);
+        ffi::get_periodic_table()?.getAtomicNumber(&atom)
+    }
+
     pub fn get_element_symbol(atomic_number: u32) -> String {
-        rdkit_sys::periodic_table_ffi::getElementSymbol(atomic_number)
+        Self::try_get_element_symbol(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the full element name
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_element_symbol(atomic_number: u32) -> Result<String, cxx::Exception> {
+        ffi::getElementSymbol(atomic_number)
+    }
+
     pub fn get_element_name(atomic_number: u32) -> String {
-        rdkit_sys::periodic_table_ffi::getElementName(atomic_number)
+        Self::try_get_element_name(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the atom's Van der Waals radius
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_element_name(atomic_number: u32) -> Result<String, cxx::Exception> {
+        ffi::getElementName(atomic_number)
+    }
+
     pub fn get_radius_van_der_waals(atomic_number: u32) -> f64 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getRvdw(atomic_number)
+        Self::try_get_radius_van_der_waals(atomic_number)
+            .expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the atom's covalent radius
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_radius_van_der_waals(atomic_number: u32) -> Result<f64, cxx::Exception> {
+        ffi::get_periodic_table()?.getRvdw(atomic_number)
+    }
+
     pub fn get_radius_covalent(atomic_number: u32) -> f64 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getRcovalent(atomic_number)
+        Self::try_get_radius_covalent(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the atom's bond radius
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_radius_covalent(atomic_number: u32) -> Result<f64, cxx::Exception> {
+        ffi::get_periodic_table()?.getRcovalent(atomic_number)
+    }
+
     pub fn get_radius_b0(atomic_number: u32) -> f64 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getRb0(atomic_number)
+        Self::try_get_radius_b0(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the atom's default valence
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_radius_b0(atomic_number: u32) -> Result<f64, cxx::Exception> {
+        ffi::get_periodic_table()?.getRb0(atomic_number)
+    }
+
     pub fn get_default_valence(atomic_number: u32) -> i32 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getDefaultValence(atomic_number)
+        Self::try_get_default_valence(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the number of outer shell electrons
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_default_valence(atomic_number: u32) -> Result<i32, cxx::Exception> {
+        ffi::get_periodic_table()?.getDefaultValence(atomic_number)
+    }
+
     pub fn get_n_outer_elecs(atomic_number: u32) -> i32 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getNouterElecs(atomic_number)
+        Self::try_get_n_outer_elecs(atomic_number).expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the atom's most common isotope
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_get_n_outer_elecs(atomic_number: u32) -> Result<i32, cxx::Exception> {
+        ffi::get_periodic_table()?.getNouterElecs(atomic_number)
+    }
+
     pub fn get_most_common_isotope(atomic_number: u32) -> i32 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getMostCommonIsotope(atomic_number)
+        Self::try_get_most_common_isotope(atomic_number)
+            .expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the mass of the isotope
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
-    /// * `isotope` - The isotope number
+    pub fn try_get_most_common_isotope(atomic_number: u32) -> Result<i32, cxx::Exception> {
+        ffi::get_periodic_table()?.getMostCommonIsotope(atomic_number)
+    }
+
     pub fn get_mass_for_isotope(atomic_number: u32, isotope: u32) -> f64 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table()
-            .getMassForIsotope(atomic_number, isotope)
+        Self::try_get_mass_for_isotope(atomic_number, isotope)
+            .expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the maximum recognized atomic number
+    pub fn try_get_mass_for_isotope(
+        atomic_number: u32,
+        isotope: u32,
+    ) -> Result<f64, cxx::Exception> {
+        ffi::get_periodic_table()?.getMassForIsotope(atomic_number, isotope)
+    }
+
     pub fn get_max_atomic_number() -> u32 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getMaxAtomicNumber()
+        Self::try_get_max_atomic_number().expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the abundance of the isotope
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
-    /// * `isotope` - The isotope number
+    pub fn try_get_max_atomic_number() -> Result<u32, cxx::Exception> {
+        ffi::get_periodic_table()?.getMaxAtomicNumber()
+    }
+
     pub fn get_abundance_for_isotope(atomic_number: u32, isotope: u32) -> f64 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table()
-            .getAbundanceForIsotope(atomic_number, isotope)
+        Self::try_get_abundance_for_isotope(atomic_number, isotope)
+            .expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns true if the first atom is more electronegative than the second
-    /// # Arguments
-    /// * `atomic_number1` - The atomic number of the first element
-    /// * `atomic_number2` - The atomic number of the second element
+    pub fn try_get_abundance_for_isotope(
+        atomic_number: u32,
+        isotope: u32,
+    ) -> Result<f64, cxx::Exception> {
+        ffi::get_periodic_table()?.getAbundanceForIsotope(atomic_number, isotope)
+    }
+
     pub fn more_electro_negative(atomic_number1: u32, atomic_number2: u32) -> bool {
-        rdkit_sys::periodic_table_ffi::get_periodic_table()
-            .moreElectroNegative(atomic_number1, atomic_number2)
+        Self::try_more_electro_negative(atomic_number1, atomic_number2)
+            .expect("RDKit periodic table lookup failed")
     }
 
-    /// Returns the row of the periodic table
-    /// # Arguments
-    /// * `atomic_number` - The atomic number of the element
+    pub fn try_more_electro_negative(
+        atomic_number1: u32,
+        atomic_number2: u32,
+    ) -> Result<bool, cxx::Exception> {
+        ffi::get_periodic_table()?.moreElectroNegative(atomic_number1, atomic_number2)
+    }
+
     pub fn get_row(atomic_number: u32) -> u32 {
-        rdkit_sys::periodic_table_ffi::get_periodic_table().getRow(atomic_number)
+        Self::try_get_row(atomic_number).expect("RDKit periodic table lookup failed")
+    }
+
+    pub fn try_get_row(atomic_number: u32) -> Result<u32, cxx::Exception> {
+        ffi::get_periodic_table()?.getRow(atomic_number)
     }
 }

@@ -1,0 +1,9 @@
+error[E0502]: cannot borrow `mol` as mutable because it is also borrowed as immutable
+ --> tests/ui/conformer_blocks_coordinates.rs:6:5
+  |
+5 |     let conf = mol.conformer(-1).unwrap();
+  |                --- immutable borrow occurs here
+6 |     mol.compute_2d_coords().unwrap();
+  |     ^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+7 |     println!("{}", conf.id());
+  |                    ---- immutable borrow later used here

@@ -12,8 +12,10 @@ impl From<&SubstructMatchItemFFI> for SubstructMatchItem {
         Self {
             query_atom_idx: rdkit_sys::substruct_match_ffi::substruct_match_item_query_atom_idx(
                 value,
-            ),
-            mol_atom_idx: rdkit_sys::substruct_match_ffi::substruct_match_item_mol_atom_idx(value),
+            )
+            .expect("RDKit operation failed"),
+            mol_atom_idx: rdkit_sys::substruct_match_ffi::substruct_match_item_mol_atom_idx(value)
+                .expect("RDKit operation failed"),
         }
     }
 }

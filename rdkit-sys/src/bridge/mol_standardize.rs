@@ -12,41 +12,41 @@ pub mod ffi {
         pub type CleanupParameters;
         pub type Uncharger;
 
-        pub fn tautomer_enumerator() -> SharedPtr<TautomerEnumerator>;
+        pub fn tautomer_enumerator() -> Result<UniquePtr<TautomerEnumerator>>;
 
         pub fn tautomer_enumerate(
-            tautomer_enumerator: &SharedPtr<TautomerEnumerator>,
-            mol: &SharedPtr<ROMol>,
-        ) -> SharedPtr<TautomerEnumeratorResult>;
+            tautomer_enumerator: &TautomerEnumerator,
+            mol: &ROMol,
+        ) -> Result<UniquePtr<TautomerEnumeratorResult>>;
         pub fn tautomer_enumerator_result_tautomers_size(
-            enumerator_result: &SharedPtr<TautomerEnumeratorResult>,
-        ) -> i32;
+            enumerator_result: &TautomerEnumeratorResult,
+        ) -> Result<usize>;
         pub fn tautomer_enumerator_result_tautomers_at(
-            enumerator_result: &SharedPtr<TautomerEnumeratorResult>,
+            enumerator_result: &TautomerEnumeratorResult,
             at: usize,
-        ) -> SharedPtr<ROMol>;
+        ) -> Result<UniquePtr<ROMol>>;
         pub fn tautomer_enumerator_canonicalize(
-            tautomer_enumerator: &SharedPtr<TautomerEnumerator>,
-            mol: &SharedPtr<ROMol>,
-        ) -> Result<SharedPtr<ROMol>>;
+            tautomer_enumerator: &TautomerEnumerator,
+            mol: &ROMol,
+        ) -> Result<UniquePtr<ROMol>>;
 
-        pub fn default_cleanup_parameters() -> SharedPtr<CleanupParameters>;
+        pub fn default_cleanup_parameters() -> Result<UniquePtr<CleanupParameters>>;
 
-        pub fn new_uncharger(canonical: bool) -> SharedPtr<Uncharger>;
+        pub fn new_uncharger(canonical: bool) -> Result<UniquePtr<Uncharger>>;
         pub fn uncharger_uncharge(
-            uncharger: &SharedPtr<Uncharger>,
-            mol: &SharedPtr<ROMol>,
-        ) -> SharedPtr<ROMol>;
+            uncharger: Pin<&mut Uncharger>,
+            mol: &ROMol,
+        ) -> Result<UniquePtr<ROMol>>;
 
         pub fn fragment_parent(
-            rw_mol: &SharedPtr<RWMol>,
-            cleanup_params: &SharedPtr<CleanupParameters>,
+            rw_mol: &RWMol,
+            cleanup_params: &CleanupParameters,
             skip_standardize: bool,
-        ) -> SharedPtr<RWMol>;
+        ) -> Result<UniquePtr<RWMol>>;
 
         pub fn normalize(
-            rw_mol: &SharedPtr<RWMol>,
-            cleanup_params: &SharedPtr<CleanupParameters>,
-        ) -> SharedPtr<RWMol>;
+            rw_mol: &RWMol,
+            cleanup_params: &CleanupParameters,
+        ) -> Result<UniquePtr<RWMol>>;
     }
 }

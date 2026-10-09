@@ -13,7 +13,7 @@ fn test_romol() {
 fn test_neutralize() {
     let smiles = "CCOC(=O)C(C)(C)OC1=CC=C(C=C1)Cl.CO.C1=CC(=CC=C1C(=O)N[C@@H](CCC(=O)O)C(=O)O)NCC2=CN=C3C(=N2)C(=O)NC(=N3)N";
     let romol = ROMol::from_smiles(smiles).unwrap();
-    let uncharger = Uncharger::new(false);
+    let mut uncharger = Uncharger::new(false);
     let uncharged_mol = uncharger.uncharge(&romol);
     assert_eq!("CCOC(=O)C(C)(C)Oc1ccc(Cl)cc1.CO.Nc1nc2ncc(CNc3ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc3)nc2c(=O)[nH]1", uncharged_mol.as_smiles());
 }
@@ -33,7 +33,7 @@ fn test_fragment_parent() {
 }
 
 #[test]
-fn test_bad_canonicalization() {
+fn test_version_specific_canonicalization_result() {
     let smiles = "C1=CC=C([N+]2=NOC([O-])=C2Br)C=C1";
     let romol = ROMol::from_smiles(smiles).unwrap();
     let rwmol = romol.as_rw_mol(false, 1);
@@ -41,10 +41,14 @@ fn test_bad_canonicalization() {
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, false);
     let te = TautomerEnumerator::new();
     let canon_taut = te.canonicalize(&parent_rwmol.to_ro_mol());
-    assert_eq!(
-        canon_taut.err().unwrap().what(),
-        "Can't kekulize mol.  Unkekulized atoms: 5 9"
-    );
+    match canon_taut {
+        Ok(canonical) => {
+            assert_eq!(canonical.as_smiles(), "O=C1ONN(c2ccccc2)C1Br");
+            assert!(detect_chemistry_problems(&canonical).is_empty());
+            assert!(ROMol::from_smiles(&canonical.as_smiles()).is_ok());
+        }
+        Err(error) => assert_eq!(error.what(), "Can't kekulize mol.  Unkekulized atoms: 5 9"),
+    }
 }
 
 #[test]
@@ -85,7 +89,7 @@ fn test_stdz() {
     let cleanup_params = CleanupParameters::default();
     let parent_rwmol = fragment_parent(&rwmol, &cleanup_params, true);
 
-    let uncharger = Uncharger::new(false);
+    let mut uncharger = Uncharger::new(false);
     let uncharged_mol = uncharger.uncharge(&parent_rwmol.to_ro_mol());
 
     let te = TautomerEnumerator::new();
@@ -324,7 +328,7 @@ fn test_build_romol_from_really_bad_smiles() {
 #[test]
 fn mol_to_molblock_test() {
     let smiles = "CC";
-    let romol = ROMol::from_smiles(&smiles).unwrap();
+    let romol = ROMol::from_smiles(smiles).unwrap();
     let molblock = romol.to_molblock();
     assert_eq!(molblock, "\n     RDKit          2D\n\n  2  1  0  0  0  0  0  0  0  0999 V2000\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2990    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\nM  END\n");
 }

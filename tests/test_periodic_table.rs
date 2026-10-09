@@ -99,5 +99,5 @@ fn get_abundance_for_isotope() {
 #[test]
 fn more_electro_negative() {
     let more_electro = PeriodicTable::more_electro_negative(6, 7);
-    assert_eq!(more_electro, false);
+    assert!(!more_electro);
 }
