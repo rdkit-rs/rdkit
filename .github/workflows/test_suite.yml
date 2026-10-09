@@ -1,119 +1,69 @@
-name: Tests, Clippy, and Format
+name: Packaged RDKit
 
 on:
-  pull_request: { }
+  pull_request:
+  workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  REPO_LOWER: rdkit-rs/cheminee
+permissions:
+  contents: read
 
 jobs:
+  test:
+    name: Ubuntu ${{ matrix.ubuntu }} / RDKit ${{ matrix.rdkit }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ubuntu: '26.04'
+            rdkit: '2025.03.6'
+            image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+          - ubuntu: '24.04'
+            rdkit: '2023.09.3'
+            image: ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+    container:
+      image: ${{ matrix.image }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - run: bash ci/install-deps.sh
+      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+        with:
+          toolchain: '1.99.0'
+          components: rustfmt, clippy
+      - run: cargo fmt --all --check
+      - run: cargo test --workspace --locked
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - run: cargo doc --workspace --no-deps --locked
+        env:
+          RUSTDOCFLAGS: -D warnings
+      - run: cargo check --workspace --all-features --locked
+        env:
+          CONDA_PREFIX: /usr
+
+  sanitizers:
+    name: C++ ASan and UBSan / Ubuntu 26.04
+    runs-on: ubuntu-24.04
+    container:
+      image: ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - run: bash ci/install-deps.sh
+      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
+        with:
+          toolchain: '1.99.0'
+      - run: bash ci/test-sanitizers.sh
+        env:
+          CARGO_BUILD_JOBS: '2'
+
   test_suite:
-    runs-on: buildjet-16vcpu-ubuntu-2204
-    env:
-      ARCH: amd64
-      DEBIAN_FRONTEND: noninteractive
-    permissions:
-      contents: read
-      packages: write
+    runs-on: ubuntu-24.04
+    needs: [test, sanitizers]
+    if: always()
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v2
-
-      - name: Run sccache-cache
-        uses: mozilla/sccache-action@eaed7fb9f8fb32adea8bd40d7f276f312de9beaf
-        with:
-          version: "v0.4.0-pre.10"
-
-      - name: Run sccache stat for check
-        shell: bash
-        run: ${SCCACHE_PATH} --show-stats
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libssl-dev libboost-iostreams-dev libboost-serialization-dev pkg-config curl tar
-
-      - name: Install RDKit
-        run: |
-          cd /tmp
-          if [ $(dpkg --print-architecture) = "amd64" ]; then
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
-            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
-          else
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
-            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
-          fi
-          sudo mv /tmp/rdkit-Release_2024_09_1/Code /usr/local/include/rdkit
-          sudo mv /tmp/rdkit-Release_2024_09_1/build/lib/* /usr/lib/
-
-      - name: Install latest stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          components: rustfmt, clippy
-
-      - name: Cargo test
-        run: |
-          RUST_WRAPPER=$SCCACHE_PATH cargo clean
-          RUST_WRAPPER=$SCCACHE_PATH cargo test --workspace
-
-  convention_checker:
-    env:
-      ARCH: amd64
-    runs-on: buildjet-16vcpu-ubuntu-2204
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v2
-
-      - name: Run sccache-cache
-        uses: mozilla/sccache-action@eaed7fb9f8fb32adea8bd40d7f276f312de9beaf
-        with:
-          version: "v0.4.0-pre.10"
-
-      - name: Run sccache stat for check
-        shell: bash
-        run: ${SCCACHE_PATH} --show-stats
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libssl-dev libboost-iostreams-dev libboost-serialization-dev pkg-config curl tar
-
-      - name: Install RDKit
-        run: |
-          cd /tmp
-          if [ $(dpkg --print-architecture) = "amd64" ]; then
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
-            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_amd64.tar.gz
-          else
-            curl -O https://rdkit-rs-debian.s3.eu-central-1.amazonaws.com/rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
-            sudo tar xf rdkit_2024_09_1_ubuntu_22_04_arm64.tar.gz
-          fi
-          sudo mv /tmp/rdkit-Release_2024_09_1/Code /usr/local/include/rdkit
-          sudo mv /tmp/rdkit-Release_2024_09_1/build/lib/* /usr/lib/
-
-      - name: Install latest stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          override: true
-          components: rustfmt, clippy
-
-      - name: Rust Format Check
-        run: |
-          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
-          pushd rdkit-sys
-          RUST_WRAPPER=$SCCACHE_PATH cargo fmt --check
-          popd
-
-      - name: Clippy Check
-        run: |
-          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
-          pushd rdkit-sys
-          RUST_WRAPPER=$SCCACHE_PATH cargo clippy
-          popd
+      - run: test '${{ needs.test.result }}' = success && test '${{ needs.sanitizers.result }}' = success
