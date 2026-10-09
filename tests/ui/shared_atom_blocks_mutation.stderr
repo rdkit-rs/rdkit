@@ -1,0 +1,9 @@
+error[E0502]: cannot borrow `mol` as mutable because it is also borrowed as immutable
+ --> tests/ui/shared_atom_blocks_mutation.rs:5:5
+  |
+4 |     let shared = mol.atom_ref(0).unwrap();
+  |                  --- immutable borrow occurs here
+5 |     mol.atom_with_idx(0).set_formal_charge(1);
+  |     ^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+6 |     println!("{}", shared.symbol());
+  |                    ------ immutable borrow later used here

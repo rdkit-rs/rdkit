@@ -8,80 +8,107 @@ pub mod ffi {
         pub type RWMol = crate::rw_mol_ffi::RWMol;
 
         pub type RemoveHsParameters;
-        pub fn new_remove_hs_parameters() -> SharedPtr<RemoveHsParameters>;
+        pub fn new_remove_hs_parameters() -> Result<UniquePtr<RemoveHsParameters>>;
 
-        pub fn get_remove_degree_zero(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_degree_zero(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_degree_zero(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_degree_zero(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_remove_higher_degrees(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_higher_degrees(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_higher_degrees(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_higher_degrees(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_remove_only_h_neighbors(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_only_h_neighbors(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_only_h_neighbors(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_only_h_neighbors(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_remove_isotopes(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_isotopes(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_isotopes(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_isotopes(params: Pin<&mut RemoveHsParameters>, what: bool) -> Result<()>;
 
-        pub fn get_remove_and_track_isotopes(params: &SharedPtr<RemoveHsParameters>) -> bool;
+        pub fn get_remove_and_track_isotopes(params: &RemoveHsParameters) -> Result<bool>;
         pub fn set_remove_and_track_isotopes(
-            params: &mut SharedPtr<RemoveHsParameters>,
+            params: Pin<&mut RemoveHsParameters>,
             what: bool,
-        );
+        ) -> Result<()>;
 
-        pub fn get_remove_dummy_neighbors(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_dummy_neighbors(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_dummy_neighbors(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_dummy_neighbors(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_remove_defining_bond_stereo(params: &SharedPtr<RemoveHsParameters>) -> bool;
+        pub fn get_remove_defining_bond_stereo(params: &RemoveHsParameters) -> Result<bool>;
         pub fn set_remove_defining_bond_stereo(
-            params: &mut SharedPtr<RemoveHsParameters>,
+            params: Pin<&mut RemoveHsParameters>,
             what: bool,
-        );
+        ) -> Result<()>;
 
-        pub fn get_remove_with_wedged_bond(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_with_wedged_bond(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_with_wedged_bond(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_with_wedged_bond(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_remove_with_query(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_with_query(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_with_query(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_with_query(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_remove_mapped(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_mapped(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_mapped(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_mapped(params: Pin<&mut RemoveHsParameters>, what: bool) -> Result<()>;
 
-        pub fn get_remove_in_s_groups(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_in_s_groups(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_in_s_groups(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_in_s_groups(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_show_warnings(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_show_warnings(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_show_warnings(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_show_warnings(params: Pin<&mut RemoveHsParameters>, what: bool) -> Result<()>;
 
-        pub fn get_remove_nonimplicit(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_nonimplicit(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_nonimplicit(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_nonimplicit(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_update_explicit_count(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_update_explicit_count(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_update_explicit_count(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_update_explicit_count(
+            params: Pin<&mut RemoveHsParameters>,
+            what: bool,
+        ) -> Result<()>;
 
-        pub fn get_remove_hydrides(params: &SharedPtr<RemoveHsParameters>) -> bool;
-        pub fn set_remove_hydrides(params: &mut SharedPtr<RemoveHsParameters>, what: bool);
+        pub fn get_remove_hydrides(params: &RemoveHsParameters) -> Result<bool>;
+        pub fn set_remove_hydrides(params: Pin<&mut RemoveHsParameters>, what: bool) -> Result<()>;
 
-        pub fn get_remove_nontetrahedral_neighbors(params: &SharedPtr<RemoveHsParameters>) -> bool;
+        pub fn get_remove_nontetrahedral_neighbors(params: &RemoveHsParameters) -> Result<bool>;
         pub fn set_remove_nontetrahedral_neighbors(
-            params: &mut SharedPtr<RemoveHsParameters>,
+            params: Pin<&mut RemoveHsParameters>,
             what: bool,
-        );
+        ) -> Result<()>;
 
         pub fn remove_hs_parameters(
-            mol: &SharedPtr<ROMol>,
-            params: &SharedPtr<RemoveHsParameters>,
+            mol: &ROMol,
+            params: &RemoveHsParameters,
             sanitize: bool,
-        ) -> SharedPtr<ROMol>;
+        ) -> Result<UniquePtr<ROMol>>;
 
         pub fn add_hs(
-            mol: &SharedPtr<ROMol>,
+            mol: &ROMol,
             explicit_only: bool,
             add_coords: bool,
             add_residue_info: bool,
-        ) -> SharedPtr<ROMol>;
+        ) -> Result<UniquePtr<ROMol>>;
 
-        pub fn romol_set_hybridization(mol: &mut SharedPtr<ROMol>);
+        pub fn romol_set_hybridization(mol: Pin<&mut ROMol>) -> Result<()>;
 
-        pub fn clean_up(rw_mol: &mut SharedPtr<RWMol>);
+        pub fn clean_up(rw_mol: Pin<&mut RWMol>) -> Result<()>;
     }
 }

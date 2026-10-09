@@ -6,8 +6,7 @@
 namespace RDKit {
 using Descriptors::Properties;
 
-std::shared_ptr<Properties> new_properties();
-std::unique_ptr<std::vector<std::string>> get_property_names(const std::shared_ptr<Properties> &props);
-std::unique_ptr<std::vector<double>> compute_properties(const std::shared_ptr<Properties> &props,
-                                                        const std::shared_ptr<ROMol> &mol);
+std::unique_ptr<Properties> new_properties();
+std::unique_ptr<std::vector<std::string>> get_property_names(const Properties &props);
+std::unique_ptr<std::vector<double>> compute_properties(const Properties &props, const ROMol &mol);
 } // namespace RDKit

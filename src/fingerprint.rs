@@ -1,28 +1,41 @@
 use bitvec::prelude::*;
-use cxx::SharedPtr;
+use cxx::UniquePtr;
+use rdkit_sys::fingerprint_ffi;
 
 #[derive(Clone, Debug)]
 pub struct Fingerprint(pub BitVec<u8, bitvec::order::Lsb0>);
 
 impl Fingerprint {
-    pub fn new(ptr: SharedPtr<rdkit_sys::fingerprint_ffi::ExplicitBitVect>) -> Self {
-        let unique_ptr_bytes = rdkit_sys::fingerprint_ffi::explicit_bit_vect_to_u64_vec(&ptr);
-        let rdkit_fingerprint_bytes: Vec<u64> = unique_ptr_bytes.into_iter().copied().collect();
-        let mut bitvec_u64 = bitvec::vec::BitVec::<u64, Lsb0>::from_vec(rdkit_fingerprint_bytes);
+    pub fn new(ptr: UniquePtr<fingerprint_ffi::ExplicitBitVect>) -> Self {
+        Self::try_new(ptr).expect("RDKit fingerprint conversion failed")
+    }
 
-        let mut idiomatic_bitvec_u8 = bitvec::vec::BitVec::<u8, Lsb0>::new();
-        idiomatic_bitvec_u8.append(&mut bitvec_u64);
+    pub(crate) fn try_new(
+        ptr: UniquePtr<fingerprint_ffi::ExplicitBitVect>,
+    ) -> Result<Self, cxx::Exception> {
+        let bits = fingerprint_ffi::explicit_bit_vect_num_bits(&ptr)? as usize;
+        let words = fingerprint_ffi::explicit_bit_vect_to_u64_vec(&ptr)?;
+        let mut bytes = Vec::with_capacity(words.len() * 8);
+        for word in words.iter() {
+            bytes.extend_from_slice(&word.to_le_bytes());
+        }
+        let mut result = BitVec::from_vec(bytes);
+        result.truncate(bits);
+        Ok(Self(result))
+    }
 
-        Fingerprint(idiomatic_bitvec_u8)
+    pub fn tanimoto_similarity(&self, other: &Fingerprint) -> f32 {
+        assert_eq!(self.0.len(), other.0.len(), "fingerprint sizes must match");
+        let intersection = (self.0.clone() & &other.0).count_ones();
+        let union = self.0.count_ones() + other.0.count_ones() - intersection;
+        if union == 0 {
+            1.0
+        } else {
+            intersection as f32 / union as f32
+        }
     }
 
     pub fn tanimoto_distance(&self, other: &Fingerprint) -> f32 {
-        let and = self.0.clone() & &other.0;
-        let or = self.0.clone() | &other.0;
-
-        let and_ones = and.count_ones();
-        let or_ones = or.count_ones();
-
-        and_ones as f32 / or_ones as f32
+        self.tanimoto_similarity(other)
     }
 }

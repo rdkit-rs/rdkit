@@ -1,146 +1,99 @@
-const CPP_VERSION_FLAG: &str = "-std=c++17";
+use std::env;
+use std::path::PathBuf;
 
 fn main() {
-    if std::env::var("DOCS_RS").is_ok() {
+    for name in [
+        "DOCS_RS",
+        "RDKIT_PREFIX",
+        "RDKIT_INCLUDE_DIR",
+        "RDKIT_LIB_DIR",
+        "CONDA_PREFIX",
+    ] {
+        println!("cargo:rerun-if-env-changed={name}");
+    }
+    if env::var_os("DOCS_RS").is_some() {
         return;
     }
 
-    env_logger::init();
-
-    let use_conda = std::env::var("CARGO_FEATURE_DYNAMIC_LINKING_FROM_CONDA").is_ok();
-
-    let mut lib_paths = vec![];
-    let mut include_paths = vec![];
-
-    match (std::env::consts::OS, std::env::consts::ARCH, use_conda) {
-        (_, _, true) => {
-            // prefer the prefix env var, if not, fall back to the base from the CLI
-            match std::env::var("CONDA_PREFIX") {
-                Ok(prefix) => {
-                    include_paths.push(format!("{prefix}/include"));
-                    include_paths.push(format!("{prefix}/include/rdkit"));
-                    lib_paths.push(format!("{prefix}/lib"));
-                }
-                Err(_) => {
-                    let conda = which::which("conda")
-                        .map(|p| p.to_str().unwrap().to_string())
-                        .unwrap_or_else(|_| panic!("conda not found"));
-                    let mut conda = std::process::Command::new(conda);
-                    conda.args(["info", "--base"]);
-
-                    let output = conda.output().unwrap();
-                    let stdout = String::from_utf8(output.stdout).unwrap();
-                    let conda_root = stdout.trim().to_string();
-
-                    lib_paths.push(format!("{}/lib", conda_root));
-                    include_paths.push(format!("{}/include", conda_root));
-                    include_paths.push(format!("{}/include/rdkit", conda_root));
-                }
-            }
-        }
-        ("macos", "x86_64", _) => {
-            include_paths.push("/usr/local/include".to_string());
-            include_paths.push("/usr/local/include/rdkit".to_string());
-        }
-        ("macos", "aarch64", _) => {
-            include_paths.push("/opt/homebrew/include".to_string());
-            include_paths.push("/opt/homebrew/include/rdkit".to_string());
-            lib_paths.push("/opt/homebrew/lib".to_string())
-        }
-        ("linux", _, _) => {
-            include_paths.push("/usr/local/include".to_string());
-            include_paths.push("/usr/local/include/rdkit".to_string());
-            include_paths.push("/usr/include".to_string());
-            include_paths.push("/usr/include/rdkit".to_string());
-        }
-        (unsupported_os, unsupported_arch, use_conda) => panic!(
-            "sorry, rdkit-sys doesn't support {}/{}/use_conda={} at this time",
-            unsupported_os, unsupported_arch, use_conda
-        ),
-    };
-
-    let dir = std::fs::read_dir("src/bridge").unwrap();
-    let rust_files = dir
-        .into_iter()
-        .filter_map(|p| match p {
-            Ok(p) => {
-                if p.metadata().unwrap().is_file() {
-                    Some(p.path())
-                } else {
-                    None
-                }
-            }
-            Err(_) => None,
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+    let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
+    if !matches!(target_os.as_str(), "linux" | "macos") {
+        panic!("rdkit-sys supports Linux and macOS; {target_os}/{target_arch} is not tested");
+    }
+    let prefix = env::var_os("RDKIT_PREFIX")
+        .or_else(|| {
+            env::var_os("CARGO_FEATURE_DYNAMIC_LINKING_FROM_CONDA").map(|_| {
+                env::var_os("CONDA_PREFIX")
+                    .expect("activate a conda environment or set RDKIT_PREFIX")
+            })
         })
-        .filter(|p| !p.ends_with("mod.rs"))
-        .collect::<Vec<_>>();
+        .map(PathBuf::from)
+        .unwrap_or_else(|| match (target_os.as_str(), target_arch.as_str()) {
+            ("macos", "aarch64") => PathBuf::from("/opt/homebrew"),
+            ("macos", _) => PathBuf::from("/usr/local"),
+            _ => PathBuf::from("/usr"),
+        });
+    let include_dir = env::var_os("RDKIT_INCLUDE_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| prefix.join("include/rdkit"));
+    let lib_dir = env::var_os("RDKIT_LIB_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| prefix.join("lib"));
+    if !include_dir.join("GraphMol/ROMol.h").is_file() {
+        panic!(
+            "RDKit headers not found at {}. Install librdkit-dev or set RDKIT_PREFIX / RDKIT_INCLUDE_DIR; see docs/building.md",
+            include_dir.display()
+        );
+    }
 
-    let mut wrapper_cc_paths = vec![];
-
-    let wrapper_root = std::path::PathBuf::from("wrapper");
+    let mut rust_files: Vec<_> = std::fs::read_dir("src/bridge")
+        .expect("read src/bridge")
+        .map(|entry| entry.expect("read bridge entry").path())
+        .filter(|path| path.extension().is_some_and(|ext| ext == "rs"))
+        .filter(|path| !path.ends_with("mod.rs"))
+        .collect();
+    rust_files.sort();
+    let mut cpp_files = Vec::new();
+    println!("cargo:rerun-if-changed=src/bridge");
+    println!("cargo:rerun-if-changed=wrapper");
     for file in &rust_files {
-        let file_name = file.file_name().unwrap();
-        let file_name = file_name.to_str().unwrap();
-        let base_name = &file_name[0..file_name.len() - 3];
-
-        let cc_path = wrapper_root.join("src").join(format!("{}.cc", base_name));
-        let meta = std::fs::metadata(&cc_path).unwrap();
-        if !meta.is_file() {
-            panic!("{} must exist", cc_path.display())
+        let stem = file.file_stem().unwrap().to_str().unwrap();
+        let source = PathBuf::from(format!("wrapper/src/{stem}.cc"));
+        let header = PathBuf::from(format!("wrapper/include/{stem}.h"));
+        assert!(source.is_file(), "{} must exist", source.display());
+        assert!(header.is_file(), "{} must exist", header.display());
+        for path in [file, &source, &header] {
+            println!("cargo:rerun-if-changed={}", path.display());
         }
-        println!("cargo:rerun-if-changed={}", cc_path.to_str().unwrap());
-        wrapper_cc_paths.push(cc_path);
-
-        let h_path = wrapper_root
-            .join("include")
-            .join(format!("{}.h", base_name));
-        let meta = std::fs::metadata(&h_path)
-            .unwrap_or_else(|_| panic!("could not get metadata for {h_path:?}"));
-        if !meta.is_file() {
-            panic!("{} must exist", h_path.display())
-        }
-        println!("cargo:rerun-if-changed={}", h_path.to_str().unwrap());
+        cpp_files.push(source);
     }
 
     cxx_build::bridges(rust_files)
-        .files(wrapper_cc_paths)
-        .includes(include_paths)
-        .include(std::env::var("CARGO_MANIFEST_DIR").unwrap())
-        .flag(CPP_VERSION_FLAG)
+        .files(cpp_files)
+        .include(include_dir)
+        .include(prefix.join("include"))
+        .include(prefix.join("include/eigen3"))
+        .include(env::var_os("CARGO_MANIFEST_DIR").unwrap())
+        .std("c++20")
         .warnings(false)
-        // rdkit has warnings that blow up our build. we could enumerate all those warnings and tell
-        // the compiler to allow them... .warnings_into_errors(true)
-        .compile("rdkit");
+        .compile("rdkit_cxx_bridge");
 
-    for path in lib_paths {
-        println!("cargo:rustc-link-search=native={}", path);
-    }
-    // println!("cargo:rustc-link-lib=static=c++");
-
-    for lib in &[
-        // "Catalogs",
-        // "ChemReactions",
-        // "ChemTransforms",
+    println!("cargo:rustc-link-search=native={}", lib_dir.display());
+    for lib in [
         "DataStructs",
-        // "Depictor",
+        "Depictor",
         "Descriptors",
         "FileParsers",
         "Fingerprints",
-        // "GenericGroups",
         "GraphMol",
         "MolStandardize",
-        // "MolTransforms",
-        // "PartialCharges",
         "RDGeneral",
-        // "RDGeometryLib",
-        // "RingDecomposerLib",
+        "RDGeometryLib",
         "ScaffoldNetwork",
         "SmilesParse",
-        // "Subgraphs",
         "SubstructMatch",
     ] {
-        println!("cargo:rustc-link-lib=dylib=RDKit{}", lib);
+        println!("cargo:rustc-link-lib=dylib=RDKit{lib}");
     }
-
     println!("cargo:rustc-link-lib=dylib=boost_serialization");
 }

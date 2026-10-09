@@ -1,0 +1,9 @@
+error[E0499]: cannot borrow `mol` as mutable more than once at a time
+ --> tests/ui/low_level_mutable_alias.rs:6:41
+  |
+5 |     let first = ffi::get_atom_with_idx(mol.pin_mut(), 0).unwrap();
+  |                                        --- first mutable borrow occurs here
+6 |     let second = ffi::get_atom_with_idx(mol.pin_mut(), 0).unwrap();
+  |                                         ^^^ second mutable borrow occurs here
+7 |     ffi::set_formal_charge(first, 1).unwrap();
+  |                            ----- first borrow later used here

@@ -24,3 +24,8 @@ pub use scaffold_network::ffi as scaffold_network_ffi;
 
 mod substruct_match;
 pub use substruct_match::ffi as substruct_match_ffi;
+
+mod bond;
+pub use bond::ffi as bond_ffi;
+mod conformer;
+pub use conformer::ffi as conformer_ffi;

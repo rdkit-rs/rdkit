@@ -1,0 +1,9 @@
+error[E0502]: cannot borrow `mol` as mutable because it is also borrowed as immutable
+ --> tests/ui/bond_blocks_graph_edit.rs:5:5
+  |
+4 |     let bond = mol.bond(0).unwrap();
+  |                --- immutable borrow occurs here
+5 |     mol.remove_atom(0).unwrap();
+  |     ^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+6 |     println!("{}", bond.idx());
+  |                    ---- immutable borrow later used here

@@ -1,13 +1,13 @@
-name: clang-format Check
-on: [push, pull_request]
+name: C++ formatting
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
 jobs:
-  formatting-check:
-    name: Formatting Check
-    runs-on: ubuntu-latest
+  convention_checker:
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - name: Run clang-format style check for C/C++/Protobuf programs.
-        uses: jidicula/clang-format-action@v4.13.0
-        with:
-          clang-format-version: "13"
-          check-path: "rdkit-sys/wrapper"
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - run: sudo apt-get update && sudo apt-get install -y clang-format-18
+      - run: find rdkit-sys/wrapper -type f \( -name '*.h' -o -name '*.cc' \) -print0 | xargs -0 clang-format-18 --dry-run --Werror

@@ -40,15 +40,15 @@ fn test_set_and_get_properties() {
     }
     {
         let mut carbon = romol.atom_with_idx(0);
-        carbon.set_prop("float", 3.14);
+        carbon.set_prop("float", 2.5);
         let carbon_3 = romol.atom_with_idx(0);
-        assert_eq!(carbon_3.get_float_prop("float").unwrap(), 3.14);
+        assert_eq!(carbon_3.get_float_prop("float").unwrap(), 2.5);
     }
     {
         let mut carbon = romol.atom_with_idx(0);
         carbon.set_prop("bool", true);
         let carbon_4 = romol.atom_with_idx(0);
-        assert_eq!(carbon_4.get_bool_prop("bool").unwrap(), true);
+        assert!(carbon_4.get_bool_prop("bool").unwrap());
     }
     {
         let mut carbon = romol.atom_with_idx(0);
@@ -58,7 +58,7 @@ fn test_set_and_get_properties() {
     }
     let carbon = romol.atom_with_idx(0);
     assert_eq!(carbon.get_int_prop("int").unwrap(), 42);
-    assert_eq!(carbon.get_float_prop("float").unwrap(), 3.14);
+    assert_eq!(carbon.get_float_prop("float").unwrap(), 2.5);
 }
 
 #[test]

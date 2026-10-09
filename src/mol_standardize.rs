@@ -1,128 +1,140 @@
-use cxx::SharedPtr;
+use cxx::UniquePtr;
+use rdkit_sys::mol_standardize_ffi as ffi;
 
 use crate::{ROMol, RWMol};
 
 pub struct CleanupParameters {
-    pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::CleanupParameters>,
+    pub(crate) ptr: UniquePtr<ffi::CleanupParameters>,
 }
 
 impl Default for CleanupParameters {
     fn default() -> Self {
-        CleanupParameters {
-            ptr: rdkit_sys::mol_standardize_ffi::default_cleanup_parameters(),
+        Self {
+            ptr: ffi::default_cleanup_parameters().expect("RDKit cleanup allocation failed"),
         }
     }
 }
 
 pub struct TautomerEnumerator {
-    pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::TautomerEnumerator>,
+    pub(crate) ptr: UniquePtr<ffi::TautomerEnumerator>,
 }
 
 impl Default for TautomerEnumerator {
     fn default() -> Self {
-        TautomerEnumerator::new()
+        Self::new()
     }
 }
 
 impl TautomerEnumerator {
     pub fn new() -> Self {
-        let ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator();
-
-        TautomerEnumerator { ptr }
+        Self::try_new().expect("RDKit tautomer enumerator allocation failed")
     }
 
-    pub fn enumerate(&self, ro_mol: &crate::ROMol) -> TautomerEnumeratorResult {
-        let t_enumerator_result =
-            rdkit_sys::mol_standardize_ffi::tautomer_enumerate(&self.ptr, &ro_mol.ptr);
-        let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(
-            &t_enumerator_result,
-        ) as usize;
-
-        TautomerEnumeratorResult {
-            pos: 0,
-            size,
-            t_enumerator_result,
-        }
+    pub fn try_new() -> Result<Self, cxx::Exception> {
+        Ok(Self {
+            ptr: ffi::tautomer_enumerator()?,
+        })
     }
 
-    pub fn canonicalize(&self, ro_mol: &crate::ROMol) -> Result<crate::ROMol, cxx::Exception> {
-        let canonical_mol_ptr = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_canonicalize(
-            &self.ptr,
-            &ro_mol.ptr,
-        );
-        Ok(crate::ROMol {
-            ptr: canonical_mol_ptr?,
+    pub fn enumerate(&self, mol: &ROMol) -> TautomerEnumeratorResult {
+        self.try_enumerate(mol)
+            .expect("RDKit tautomer enumeration failed")
+    }
+
+    pub fn try_enumerate(&self, mol: &ROMol) -> Result<TautomerEnumeratorResult, cxx::Exception> {
+        let ptr = ffi::tautomer_enumerate(&self.ptr, &mol.ptr)?;
+        let size = ffi::tautomer_enumerator_result_tautomers_size(&ptr)?;
+        Ok(TautomerEnumeratorResult { ptr, pos: 0, size })
+    }
+
+    pub fn canonicalize(&self, mol: &ROMol) -> Result<ROMol, cxx::Exception> {
+        Ok(ROMol {
+            ptr: ffi::tautomer_enumerator_canonicalize(&self.ptr, &mol.ptr)?,
         })
     }
 }
 
 pub struct TautomerEnumeratorResult {
-    // t_enumerator: SharedPtr<TautomerEnumerator>,
-    pub(crate) t_enumerator_result:
-        SharedPtr<rdkit_sys::mol_standardize_ffi::TautomerEnumeratorResult>,
+    ptr: UniquePtr<ffi::TautomerEnumeratorResult>,
     pos: usize,
     size: usize,
 }
 
+impl TautomerEnumeratorResult {
+    pub fn get(&self, idx: usize) -> Result<ROMol, cxx::Exception> {
+        Ok(ROMol {
+            ptr: ffi::tautomer_enumerator_result_tautomers_at(&self.ptr, idx)?,
+        })
+    }
+
+    pub fn try_next(&mut self) -> Result<Option<ROMol>, cxx::Exception> {
+        if self.pos == self.size {
+            return Ok(None);
+        }
+        let next = self.get(self.pos)?;
+        self.pos += 1;
+        Ok(Some(next))
+    }
+}
+
 impl Iterator for TautomerEnumeratorResult {
-    type Item = crate::ROMol;
+    type Item = ROMol;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.pos >= self.size {
-            None
-        } else {
-            let next = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_at(
-                &self.t_enumerator_result,
-                self.pos,
-            );
-            if next.is_null() {
-                log::warn!(
-                    "got a null ptr from tautomer_enumerator_result->at({})",
-                    self.pos
-                );
-                None
-            } else {
-                self.pos += 1;
-                Some(crate::ROMol { ptr: next })
-            }
-        }
+        self.try_next().expect("RDKit tautomer copy failed")
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let size = rdkit_sys::mol_standardize_ffi::tautomer_enumerator_result_tautomers_size(
-            &self.t_enumerator_result,
-        );
-        (size as usize, Some(size as usize))
+        let remaining = self.size - self.pos;
+        (remaining, Some(remaining))
     }
 }
 
-pub fn fragment_parent(
-    rw_mol: &RWMol,
-    cleanup_params: &CleanupParameters,
+impl ExactSizeIterator for TautomerEnumeratorResult {}
+impl std::iter::FusedIterator for TautomerEnumeratorResult {}
+
+pub fn try_fragment_parent(
+    mol: &RWMol,
+    params: &CleanupParameters,
     skip_standardize: bool,
-) -> RWMol {
-    let ptr = rdkit_sys::mol_standardize_ffi::fragment_parent(
-        &rw_mol.ptr,
-        &cleanup_params.ptr,
-        skip_standardize,
-    );
-    RWMol { ptr }
+) -> Result<RWMol, cxx::Exception> {
+    Ok(RWMol {
+        ptr: ffi::fragment_parent(&mol.ptr, &params.ptr, skip_standardize)?,
+    })
+}
+
+pub fn fragment_parent(mol: &RWMol, params: &CleanupParameters, skip_standardize: bool) -> RWMol {
+    try_fragment_parent(mol, params, skip_standardize).expect("RDKit fragment parent failed")
+}
+
+pub fn normalize(mol: &RWMol, params: &CleanupParameters) -> Result<RWMol, cxx::Exception> {
+    Ok(RWMol {
+        ptr: ffi::normalize(&mol.ptr, &params.ptr)?,
+    })
 }
 
 pub struct Uncharger {
-    pub(crate) ptr: SharedPtr<rdkit_sys::mol_standardize_ffi::Uncharger>,
+    ptr: UniquePtr<ffi::Uncharger>,
 }
 
 impl Uncharger {
-    pub fn new(standardize: bool) -> Self {
-        Uncharger {
-            ptr: rdkit_sys::mol_standardize_ffi::new_uncharger(standardize),
-        }
+    pub fn new(canonical: bool) -> Self {
+        Self::try_new(canonical).expect("RDKit uncharger allocation failed")
     }
 
-    pub fn uncharge(&self, mol: &ROMol) -> ROMol {
-        ROMol {
-            ptr: rdkit_sys::mol_standardize_ffi::uncharger_uncharge(&self.ptr, &mol.ptr),
-        }
+    pub fn try_new(canonical: bool) -> Result<Self, cxx::Exception> {
+        Ok(Self {
+            ptr: ffi::new_uncharger(canonical)?,
+        })
+    }
+
+    pub fn uncharge(&mut self, mol: &ROMol) -> ROMol {
+        self.try_uncharge(mol).expect("RDKit uncharging failed")
+    }
+
+    pub fn try_uncharge(&mut self, mol: &ROMol) -> Result<ROMol, cxx::Exception> {
+        Ok(ROMol {
+            ptr: ffi::uncharger_uncharge(self.ptr.pin_mut(), &mol.ptr)?,
+        })
     }
 }

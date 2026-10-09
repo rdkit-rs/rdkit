@@ -1,0 +1,11 @@
+error[E0597]: `mol` does not live long enough
+ --> tests/ui/atom_outlives_molecule.rs:5:9
+  |
+3 |     let atom = {
+  |         ---- borrow later stored here
+4 |         let mol = ROMol::from_smiles("C").unwrap();
+  |             --- binding `mol` declared here
+5 |         mol.atom_ref(0).unwrap()
+  |         ^^^ borrowed value does not live long enough
+6 |     };
+  |     - `mol` dropped here while still borrowed
